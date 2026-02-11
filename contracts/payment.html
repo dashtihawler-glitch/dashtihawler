@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پسولەی پارەدان - نوسینگەی دەشتی هەولێر</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;700&family=Noto+Sans+Arabic:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <button id="sidebar-toggle" class="toggle-btn" aria-label="کردنەوەی لیست">
+            <i class='bx bx-menu'></i>
+        </button>
+        <div class="header-brand">
+            <img src="../assets/icon.png" alt="لۆگۆ" class="header-logo">
+            <h3>نوسینگەی دەشتی هەولێر</h3>
+        </div>
+        <div class="user-info" id="user-display">
+            <span id="user-email">بارکردن...</span>
+            <i class='bx bxs-user-circle'></i>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="../dashboard.html"><i class='bx bxs-dashboard'></i><span>داشبۆردی سەرەکی</span></a></li>
+                    <li class="active"><a href="index.html"><i class='bx bx-file'></i><span>گرێبەستەکان</span></a></li>
+                    <li><a href="#"><i class='bx bx-archive'></i><span>ئەرشیفی گرێبەستەکان</span></a></li>
+                    <li><a href="#"><i class='bx bx-shield-quarter'></i><span>بەشی دڵنیایی (تەئمینات)</span></a></li>
+                    <li><a href="../krechi\index.html"><i class='bx bx-group'></i><span>کرێچییەکان</span></a></li>
+                    <li><a href="#"><i class='bx bx-cog'></i><span>ڕێکخستنی وێب</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logout-btn" class="logout-btn">چوونەدەرەوە</a>
+            </div>
+        </aside>
+        <main class="main-content" id="main-content">
+            <div class="content-area">
+                <div class="page-header-flex">
+                    <h2>پسولەی پارەدان</h2>
+                    <a href="index.html" class="btn-login btn-back">
+                        <i class='bx bx-arrow-back'></i> گەڕانەوە
+                    </a>
+                </div>
+                
+                <div class="form-container">
+                    <form name="submit-to-google-sheet" id="paymentForm">
+                        <div class="form-grid">
+                            <!-- ڕیزی یەکەم -->
+                            <div class="input-group">
+                                <label for="employeeEmail">ناوی کارمەند (ئەوەی پسولەکە پڕ دەکاتەوە)</label>
+                                <input type="email" id="employeeEmail" name="ئەمڕۆ کێ پسولەکە پڕ دەکاتەوە؟" placeholder="ئیمەیڵی کارمەند..." readonly required class="input-readonly">
+                            </div>
+                            <div class="input-group">
+                                <label>جۆری پارەدان</label>
+                                <select name="Type of payment" aria-label="جۆری پارەدان" required>
+                                    <option value="" disabled selected>هەڵبژێرە...</option>
+                                    <option value="کرێ">کرێ (Rent)</option>
+                                    <option value="کڕین">کڕین (Purchase)</option>
+                                    <option value="پێشەکی">پێشەکی (Deposit)</option>
+                                    <option value="دڵنیایی - تامینات">دڵنیایی - تامینات (Security Deposit)</option>
+                                    <option value="Commission">دەڵاڵی (Commission)</option>
+                                </select>
+                            </div>
+
+                            <!-- ڕیزی دووەم -->
+                            <div class="input-group">
+                                <label for="payerName">ناوی سیانی پارەدەر (کڕیار/کرێچی)</label>
+                                <input id="payerName" type="text" name="Third name of payer" placeholder="ناوی ئەو کەسەی پارەکە دەدات" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="payeeName">ناوی سیانی پارە وەرگر (خاوەن موڵک)</label>
+                                <input id="payeeName" type="text" name="Third name of payee" placeholder="ناوی ئەو کەسەی پارەکە وەردەگرێت" required>
+                            </div>
+
+                            <!-- ڕیزی سێیەم -->
+                            <div class="input-group">
+                                <label for="propertyType">جۆری موڵک</label>
+                                <select id="propertyType" name="Type of property" required>
+                                    <option value="" disabled selected>هەڵبژێرە...</option>
+                                    <option value="خانوو">خانوو</option>
+                                    <option value="شووقە">شووقە</option>
+                                    <option value="دوکان">دوکان</option>
+                                    <option value="زەوی">زەوی</option>
+                                    <option value="باڵەخانە">باڵەخانە</option>
+                                    <option value="زەوی کشتوکاڵی">زەوی کشتوکاڵی</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="propertyNumber">ژمارەی موڵک</label>
+                                <input id="propertyNumber" type="text" name="number of property" placeholder="ژمارەی خانوو یان شوقە" required>
+                            </div>
+
+                            <!-- ڕیزی چوارەم -->
+                            <div class="input-group">
+                                <label>جۆری دراو</label>
+                                <select id="currencyType" name="Currency type" aria-label="جۆری دراو" required>
+                                    <option value="دۆلاری ئەمریکی (USD)">دۆلاری ئەمریکی ($)</option>
+                                    <option value="دیناری عێڕاقی (IQD)">دیناری عێڕاقی (IQD)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="receivedAmount">بڕی پارەی وەرگیراو (بە ژمارە)</label>
+                                <input type="text" inputmode="numeric" id="receivedAmount" name="Amount of money received in number" placeholder="0" required>
+                                <div id="received-words" class="amount-words"></div>
+                            </div>
+
+                            <!-- ڕیزی پێنجەم -->
+                            <div class="input-group full-width">
+                                <label for="remainingAmount">بڕی پارەی ماوە (بە ژمارە)</label>
+                                <input type="text" inputmode="numeric" id="remainingAmount" name="Amount of money remaining in number" placeholder="ئەگەر پارە نەماوە بنووسە 0" required>
+                                <div id="remaining-words" class="amount-words"></div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-login form-submit-btn">
+                            <i class='bx bx-send'></i> ناردنی پسولە
+                        </button>
+                    </form>
+                    <p id="msg" class="status-message"></p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="../dashboard.js"></script>
+    
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxQetOPIZlm8LDWDKPlmMmY-TigvZXzFKlBQrbaMsJsG6DRxhTkhf4VcbVKNXZudEU4/exec';
+        const form = document.forms['submit-to-google-sheet'];
+        const msg = document.getElementById("msg");
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+
+            msg.style.color = "#1a2a6c";
+            msg.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> تکایە چاوەڕێ بکە...";
+            
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                .then(response => {
+                    msg.style.color = "#27ae60";
+                    msg.innerHTML = "<i class='bx bx-check-circle'></i> سوپاس! پسولەکە بە سەرکەوتوویی تۆمارکرا.";
+                    form.reset();
+                    // پاککردنەوەی نووسینی ژێرەوەی خانەکان
+                    receivedWords.innerHTML = "";
+                    remainingWords.innerHTML = "";
+                })
+                .catch(error => {
+                    msg.style.color = "#b21f1f";
+                    msg.innerHTML = "<i class='bx bx-error'></i> کێشەیەک ڕوویدا! تکایە دڵنیابەوە لە ئینتەرنێتەکەت.";
+                    console.error('Error!', error.message);
+                });
+        });
+
+        // گۆڕینی ژمارە بۆ نووسین
+        const receivedInput = document.getElementById('receivedAmount');
+        const remainingInput = document.getElementById('remainingAmount');
+        const receivedWords = document.getElementById('received-words');
+        const remainingWords = document.getElementById('remaining-words');
+        const currencySelect = document.getElementById('currencyType');
+
+        function numToKurdish(n) {
+            if (n == 0) return "سفر";
+            if (!n) return "";
+            
+            const ones = ["", "یەك", "دوو", "سێ", "چوار", "پێنج", "شەش", "حەوت", "هەشت", "نۆ"];
+            const teens = ["دە", "یازدە", "دوازدە", "سێزدە", "چواردە", "پانزدە", "شازدە", "حەڤدە", "هەژدە", "نۆزدە"];
+            const tens = ["", "", "بیست", "سی", "چل", "پەنجا", "شەست", "حەفتا", "هەشتا", "نەوەد"];
+            const hundreds = ["", "سەد", "دوو سەد", "سێ سەد", "چوار سەد", "پێنج سەد", "شەش سەد", "حەوت سەد", "هەشت سەد", "نۆ سەد"];
+
+            function convert(num) {
+                if (num === 0) return "";
+                if (num < 10) return ones[num];
+                if (num < 20) return teens[num - 10];
+                if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? " و " + ones[num % 10] : "");
+                if (num < 1000) return hundreds[Math.floor(num / 100)] + (num % 100 ? " و " + convert(num % 100) : "");
+                if (num < 1000000) {
+                    return (Math.floor(num / 1000) === 1 ? "هەزار" : convert(Math.floor(num / 1000)) + " هەزار") + (num % 1000 ? " و " + convert(num % 1000) : "");
+                }
+                if (num < 1000000000) {
+                    return convert(Math.floor(num / 1000000)) + " ملیۆن" + (num % 1000000 ? " و " + convert(num % 1000000) : "");
+                }
+                return convert(Math.floor(num / 1000000000)) + " ملیار" + (num % 1000000000 ? " و " + convert(num % 1000000000) : "");
+            }
+
+            return convert(n);
+        }
+
+        function updateWords(input, display) {
+            const rawValue = input.value.replace(/,/g, ''); // لابردنی فاریزەکان
+            const val = parseInt(rawValue, 10);
+            if (!isNaN(val) && rawValue.length > 0) {
+                let text = numToKurdish(val);
+                const currency = currencySelect.value;
+               if (currency === "دۆلاری ئەمریکی (USD)") {
+                    text += " دۆلار";
+                } else if (currency === "دیناری عێڕاقی (IQD)") {
+                    text += " دینار";
+                }
+                display.textContent = text;
+            } else {
+                display.textContent = "";
+            }
+        }
+
+        function formatAndDisplay(input, wordsDisplay) {
+            // لابردنی فاریزەی پێشوو و هەر کاراکتەرێکی تر جگە لە ژمارە
+            let value = input.value.replace(/[^0-9]/g, '');
+            
+            if (value.trim() === '') {
+                input.value = '';
+                wordsDisplay.textContent = '';
+                return;
+            }
+            
+            // زیادکردنی فاریزە بۆ ژمارەکە
+            input.value = Number(value).toLocaleString('en-US');
+            
+            // نوێکردنەوەی نووسینەکەی خوارەوە
+            updateWords(input, wordsDisplay);
+        }
+
+        // گوێگرتن بۆ نووسین لەناو خانەکاندا
+        receivedInput.addEventListener('input', () => formatAndDisplay(receivedInput, receivedWords));
+        remainingInput.addEventListener('input', () => formatAndDisplay(remainingInput, remainingWords));
+
+        // گوێگرتن بۆ گۆڕینی جۆری دراو
+        currencySelect.addEventListener('change', () => {
+            updateWords(receivedInput, receivedWords);
+            updateWords(remainingInput, remainingWords);
+        });
+    </script>
+</body>
+</html>

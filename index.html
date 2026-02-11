@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>چوونەژوورەوە - نوسینگەی دەشتی هەولێر</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo-box">
+                    <img src="assets/icon.png" alt="لۆگۆ">
+                </div>
+                <h1>نوسینگەی دەشتی هەولێر</h1>
+                <p>تکایە بۆ بەردەوامبوون بچۆ ژوورەوە</p>
+            </div>
+            
+            <form id="login-form">
+                <div class="input-group">
+                    <label>ئیمەیڵ</label>
+                    <input type="email" name="email" required placeholder="example@email.com">
+                </div>
+                
+                <div class="input-group">
+                    <label>وشەی نهێنی</label>
+                    <input type="password" name="password" id="password" required placeholder="••••••••">
+                    <i class="far fa-eye" id="togglePassword"></i>
+                </div>
+
+                <p id="error-message" class="error-msg hidden"></p>
+                
+                <button type="submit" class="btn-login">چوونەژوورەوە</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="app.js"></script>
+</body>
+</html>

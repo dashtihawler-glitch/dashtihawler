@@ -1,0 +1,793 @@
+/* پێناسەکردنی ڕەنگە سەرەکییەکان بۆ ئەوەی لە هەموو شوێنێک بەکاریان بهێنینەوە */
+:root {
+    --primary-color: #1a2a6c; /* شینی تۆخ */
+    --accent-color: #b21f1f;  /* سوور بۆ هەڵەکان */
+    --bg-gradient: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); /* ڕەنگی تێکەڵ بۆ باکگراوند */
+}
+
+/* ڕێکخستنی گشتی بۆ هەموو لاپەڕەکە */
+* {
+    box-sizing: border-box;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    margin: 0;
+    padding: 0;
+    /* ئەم کۆدە ڕەنگە شینە نامۆکە لە هەموو شوێنێک لادەبات */
+    -webkit-tap-highlight-color: transparent;
+    outline: none; /* بۆ دڵنیایی زیاتر کە هیچ چوارچێوەیەکی تر دەرنەکەوێت */
+}
+
+/* دیزاینی باکگراوندی لاپەڕەکە */
+.login-page {
+    height: 100vh;
+    display: flex;
+    justify-content: center; /* ناوەندکردنی ئاسۆیی */
+    align-items: center;     /* ناوەندکردنی ستوونی */
+    position: relative;
+    overflow: hidden;
+}
+
+/* زیادکردنی وێنەی باکگراوند بە شێوەی تەڵخ (Blur) */
+.login-page::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* تکایە دڵنیابە ناوی وێنەکەت background.jpg بێت لەناو فۆڵدەری assets */
+    background: linear-gradient(rgba(26, 42, 108, 0.7), rgba(178, 31, 31, 0.5)), url('assets/background.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(6px); /* ڕێژەی تەڵخبوون */
+    transform: scale(1.05); /* بۆ ئەوەی لێوارەکان سپی دەرنەکەون */
+    z-index: -1;
+}
+
+/* کارتە سپییەکەی ناوەڕاست */
+.login-card {
+    background: rgba(255, 255, 255, 0.95); /* سپی کەمێک شەفاف */
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2); /* سێبەری کارتەکە */
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* لۆگۆ و ناونیشانەکان */
+.login-header .logo-box {
+    width: 90px; /* دەتوانیت قەبارەی لۆگۆکە لێرەوە بگۆڕیت */
+    height: 90px;
+    margin: 0 auto 15px auto; /* بۆ ناوەندکردنی لۆگۆکە */
+}
+.login-header .logo-box img {
+    width: 100%;
+}
+.login-header h1 { font-size: 1.5rem; color: #333; }
+.login-header p { font-size: 0.9rem; color: #666; margin-bottom: 30px; }
+
+/* دیزاینی خانەکانی نووسین */
+.input-group { text-align: right; margin-bottom: 15px; position: relative; }
+.input-group label { display: block; font-weight: bold; margin-bottom: 8px; color: #444; }
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    outline: none;
+    transition: 0.3s;
+    text-align: right;
+}
+
+/* گۆڕینی ڕەنگی خانەکە کاتێک کلیکی تێدا دەکەیت */
+.input-group input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(26, 42, 108, 0.2);
+}
+
+/* ئایکۆنی بینینی پاسۆرد */
+#togglePassword {
+    position: absolute;
+    left: 15px;
+    top: 56px; /* ڕێکخستنی شوێنی ئایکۆنەکە بۆ ناوەڕاستی ئینپوت */
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+}
+
+#password {
+    padding-left: 40px; /* بۆ ئەوەی نووسین نەچێتە ژێر ئایکۆنەکە */
+}
+
+/* دوگمەی چوونەژوورەوە */
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* گۆڕینی دوگمەکە کاتێک ماوس دەچێتە سەری */
+.btn-login:hover {
+    background-color: #121d4d;
+    transform: translateY(-2px); /* کەمێک بەرزبوونەوە */
+}
+
+/* دیزاینی پەیامی هەڵە */
+.error-msg { color: var(--accent-color); margin-top: 15px; font-size: 0.9rem; }
+
+/* ==================
+   ستایلی داشبۆرد
+   ================== */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    background-image: none;
+    padding-top: 80px; /* بۆشایی ئاسایی بۆ لاپتۆپ */
+}
+
+.sidebar {
+    width: 280px;
+    background: linear-gradient(180deg, #1a2a6c 0%, #2a4896 100%);
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+    transition: transform 0.3s ease, width 0.3s ease;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+    z-index: 100;
+    border-left: none;
+    position: fixed;
+    top: 80px;
+    right: 0;
+    bottom: 0;
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+.sidebar-nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar-nav li a {
+    display: flex;
+    align-items: center;
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    padding: 14px 20px;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.sidebar-nav i {
+    font-size: 1rem;
+    margin-left: 15px;
+    transition: transform 0.3s;
+    color: rgba(255,255,255,0.6);
+}
+
+.sidebar-nav li a:hover, .sidebar-nav li.active a {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    transform: translateX(-5px); /* جوڵە بۆ لای چەپ */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.sidebar-nav li a:hover i {
+    transform: scale(1.1);
+    color: #ffffff;
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+.logout-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px;
+    background: rgba(231, 76, 60, 0.1);
+    color: #ff6b6b;
+    text-decoration: none;
+    border-radius: 15px;
+    transition: all 0.3s;
+    font-weight: bold;
+    border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+.logout-btn:hover {
+    background: #e74c3c;
+    color: white;
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+    transform: translateY(-2px);
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    margin-right: 280px; /* بۆشایی بۆ سایدبار */
+    width: calc(100% - 280px);
+    transition: margin-right 0.3s ease, width 0.3s ease;
+}
+
+.main-header {
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f); /* ڕەنگێکی جیاواز و مۆدێرن */
+    padding: 0 30px;
+    box-shadow: 0 4px 25px rgba(0,0,0,0.15);
+    margin-bottom: 0;
+    border-bottom: none;
+    position: fixed;
+    width: 100%;
+    height: 80px;
+    top: 0;
+    right: 0;
+    z-index: 90;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    order: 1; /* لە لاپتۆپ یەکەم شتە (لای ڕاست) */
+}
+
+.toggle-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.header-logo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
+    transition: transform 0.3s ease;
+    background-color: #ffffff;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    order: 2;
+    margin-right: 20px;
+    flex-grow: 1; /* پڕکردنەوەی بۆشایی */
+}
+
+.header-brand h3 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    letter-spacing: 0.5px;
+}
+
+/* دیزاینی بەشی بەکارهێنەر لە هێدەر */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(18, 240, 129, 0.45);
+    padding: 5px 15px;
+    border-radius: 50px;
+    color: #ffffff;
+    font-weight: 500;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(165, 197, 181, 0.687);
+    position: relative;
+    overflow: hidden;
+    order: 3;
+    margin-right: auto;
+}
+
+/* ئەنیمەیشنی بریقەدار (Shimmer Effect) */
+.user-info::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: skewX(-25deg);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    100% { left: 200%; }
+}
+
+.user-info i {
+    font-size: 1.5rem;
+    text-shadow: none;
+}
+
+.content-area {
+    margin: 40px;
+    background: var(--surface-color);
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
+    min-height: 300px;
+}
+
+.content-area h2 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+}
+
+.content-area p {
+    color: #666;
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+/* ==================
+   ئەنیمەیشن و ڕیسپۆنسیڤ
+   ================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* دۆخی داخراوی سایدبار */
+body.sidebar-closed .sidebar {
+    transform: translateX(100%);
+}
+
+body.sidebar-closed .main-content {
+    margin-right: 0;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .login-branding-section {
+        display: none;
+    }
+    
+    .sidebar-nav {
+        display: flex; /* پیشاندانی مینیو لە مۆبایل */
+    }
+
+    .sidebar-footer {
+        margin-top: auto;
+    }
+
+    .main-content {
+        padding: 0;
+        width: 100%;
+    }
+
+    .main-header {
+        height: 130px; /* بەرزی نوێ بۆ دوو ڕیز */
+        padding: 10px 20px;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-content: center;
+    }
+
+    .header-brand {
+        width: 100%;
+        order: 1;
+        justify-content: flex-start;
+        margin-bottom: 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 5px;
+        gap: 8px;
+    }
+
+    .header-brand h3 {
+        display: block;
+        font-size: 1.2rem;
+    }
+
+    .header-logo {
+        width: 45px;
+        height: 45px;
+    }
+
+    .toggle-btn {
+        order: 2;
+    }
+
+    .user-info {
+        order: 3;
+        margin: 0;
+        padding: 5px 15px;
+        background: rgba(18, 240, 129, 0.45);
+        border: 1px solid rgba(165, 197, 181, 0.687);
+    }
+
+    .user-info span {
+        display: inline-block;
+        font-size: 0.75rem;
+        max-width: 150px; /* شوێنی زیاتر هەیە لە ڕیزی دووەم */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+    }
+
+    .content-area {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .dashboard-container {
+        flex-direction: column;
+        padding-top: 130px; /* گونجاندن لەگەڵ بەرزی نوێی هێدەر */
+    }
+
+    .sidebar {
+        width: 280px; /* پانی دیاریکراو نەک هەموو شاشەکە */
+        transform: translateX(100%);
+        top: 130px; /* دەستپێکردن لەژێر هێدەرەکە */
+        height: calc(100vh - 130px); /* بەرزی تەواو بەبێ هێدەر */
+        right: 0;
+        left: auto;
+        box-shadow: -5px 0 20px rgba(0,0,0,0.15);
+    }
+    
+    .main-content {
+        margin-right: 0;
+        width: 100%;
+        padding-top: 0;
+    }
+
+    body.sidebar-open .sidebar {
+        transform: translateX(0);
+    }
+}
+
+/* ==================
+   بەشی گرێبەستەکان (Contracts)
+   ================== */
+.contracts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 30px;
+    padding: 10px;
+    animation: fadeIn 0.8s ease-out;
+}
+
+.contract-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+}
+
+.contract-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+
+.card-rent:hover {
+    box-shadow: 0 20px 40px rgba(178, 31, 31, 0.15);
+}
+
+/* ڕەنگەکان بۆ هەر کاردێک */
+.card-sales { border-top: 6px solid var(--primary-color); }
+.card-rent { border-top: 6px solid var(--accent-color); }
+.card-payment { border-top: 6px solid #27ae60; }
+
+.card-icon {
+    font-size: 2.2rem;
+    margin-bottom: 15px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    transition: all 0.5s ease;
+}
+
+.card-sales .card-icon { background: rgba(26, 42, 108, 0.08); color: var(--primary-color); }
+.card-rent .card-icon { background: rgba(178, 31, 31, 0.08); color: var(--accent-color); }
+.card-payment .card-icon { background: rgba(39, 174, 96, 0.08); color: #27ae60; }
+
+.contract-card:hover .card-icon {
+    transform: scale(1.1) rotate(10deg);
+    background: #ffffff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* ئەنیمەیشنی بریقە (Shine Effect) */
+.contract-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent);
+    transform: skewX(-25deg);
+    transition: 0s;
+}
+
+.contract-card:hover::before {
+    left: 100%;
+    transition: 0.7s;
+}
+
+.contract-card h3 { color: #333; margin-bottom: 8px; font-size: 1.1rem; }
+.contract-card p { color: #777; font-size: 0.8rem; line-height: 1.5; }
+
+/* بچووککردنەوەی زیاتر بۆ مۆبایل */
+@media (max-width: 768px) {
+    .contracts-grid {
+        grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+        gap: 15px;
+    }
+
+    .contract-card {
+        padding: 15px 10px;
+    }
+
+    .card-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+
+    .contract-card h3 {
+        font-size: 1rem;
+    }
+
+    .contract-card p {
+        font-size: 0.75rem;
+    }
+}
+
+/* ==================
+   ستایلی فۆڕمەکان (Forms)
+   ================== */
+.form-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* دوو ستوون بۆ لاپتۆپ */
+    gap: 15px;
+}
+
+.full-width {
+    grid-column: 1 / -1; /* خانەیەک کە هەموو پانییەکە بگرێت */
+}
+
+.input-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    outline: none;
+    transition: 0.3s;
+    text-align: right;
+    background-color: white;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+}
+
+.input-group select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(26, 42, 108, 0.2);
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 15px;
+    background-color: #fdfdfd;
+}
+
+.form-section h4 {
+    margin-bottom: 5px;
+    color: var(--primary-color);
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.form-row {
+    display: grid;
+    gap: 15px;
+    align-items: start;
+    padding-top: 10px;
+}
+
+/* Define column counts for rows. This prevents unwanted wrapping on medium screens. */
+.form-row-2-cols {
+    grid-template-columns: 1fr 1fr;
+}
+
+.form-row-3-cols {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+
+/* Reset margin for input-groups inside these new containers */
+.form-section .input-group,
+.form-row .input-group {
+    margin-bottom: 0;
+}
+
+/* ==================
+   Rent Form Specific Styles
+   ================== */
+.rent-form-container .form-section {
+    border: 1px solid #fde8e8;
+    border-top: 4px solid var(--accent-color);
+    box-shadow: 0 5px 15px rgba(178, 31, 31, 0.05);
+}
+
+.rent-form-container .form-section h4 {
+    color: var(--accent-color);
+    border-bottom-color: #fde8e8;
+}
+
+/* ==================
+   Sales Form Specific Styles
+   ================== */
+.sales-form-container .form-section {
+    border: 1px solid #e8eaf6; /* Light blue border */
+    border-top: 4px solid var(--primary-color);
+    box-shadow: 0 5px 15px rgba(26, 42, 108, 0.05);
+}
+
+.sales-form-container .form-section h4 {
+    color: var(--primary-color);
+    border-bottom-color: #e8eaf6;
+}
+/* ==================
+   Responsive Form Adjustments
+   ================== */
+
+/* Tablet View - Stacking main sections and adjusting multi-column rows */
+@media (max-width: 992px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    .form-row-3-cols {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* بۆ مۆبایل دەبێتە یەک ستوون */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .form-row,
+    .form-row-2-cols,
+    .form-row-3-cols {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .form-container {
+        padding: 0 5px;
+    }
+
+    .input-group {
+        margin-bottom: 15px;
+    }
+
+    .input-group input, 
+    .input-group select {
+        font-size: 16px; /* ڕێگری لە زوومکردنی ئۆتۆماتیکی لە ئایفۆن */
+        padding: 14px;
+    }
+
+    .btn-login {
+        padding: 14px;
+        font-size: 1.1rem;
+    }
+}
+
+/* ==================
+   ستایلی تایبەت بە لاپەڕەی پارەدان (Payment Page)
+   ================== */
+.page-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.page-description {
+    margin-bottom: 30px;
+}
+
+.other-neighborhood-input {
+    margin-top: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+.btn-back {
+    width: auto !important; /* گرنگ: بۆ ئەوەی پانی ١٠٠٪ی btn-login لاببات */
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.input-readonly {
+    background-color: #e9ecef !important;
+    cursor: not-allowed;
+    color: #555;
+}
+
+.amount-words {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 5px;
+}
+
+.form-submit-btn {
+    margin-top: 20px;
+}
+
+.status-message {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: bold;
+}

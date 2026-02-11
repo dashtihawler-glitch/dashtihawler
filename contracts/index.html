@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>گرێبەستەکان - نوسینگەی دەشتی هەولێر</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;700&family=Noto+Sans+Arabic:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <button id="sidebar-toggle" class="toggle-btn" aria-label="کردنەوەی لیست">
+            <i class='bx bx-menu'></i>
+        </button>
+        <div class="header-brand">
+            <img src="../assets/icon.png" alt="لۆگۆ" class="header-logo">
+            <h3>نوسینگەی دەشتی هەولێر</h3>
+        </div>
+        <div class="user-info" id="user-display">
+            <span id="user-email">بارکردن...</span>
+            <i class='bx bxs-user-circle'></i>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="../dashboard.html"><i class='bx bxs-dashboard'></i><span>داشبۆردی سەرەکی</span></a></li>
+                    <li class="active"><a href="#"><i class='bx bxs-file-blank'></i><span>گرێبەستەکان</span></a></li>
+                    <li><a href="#"><i class='bx bx-archive'></i><span>ئەرشیفی گرێبەستەکان</span></a></li>
+                    <li><a href="#"><i class='bx bx-shield-quarter'></i><span>بەشی دڵنیایی (تەئمینات)</span></a></li>
+                    <li><a href="../krechi\index.html"><i class='bx bx-group'></i><span>کرێچییەکان</span></a></li>
+                    <li><a href="#"><i class='bx bx-cog'></i><span>ڕێکخستنی وێب</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logout-btn" class="logout-btn">چوونەدەرەوە</a>
+            </div>
+        </aside>
+        <main class="main-content" id="main-content">
+            <div class="content-area">
+                <h2>بەشی گرێبەستەکان</h2>
+                <p class="page-description">تکایە جۆری ئەو گرێبەستە هەڵبژێرە کە دەتەوێت ئەنجامی بدەیت:</p>
+                
+                <div class="contracts-grid">
+                    <!-- کاردی گرێبەستی فرۆشتن (شین) -->
+                    <a href="sales.html" class="contract-card card-sales">
+                        <div class="card-icon"><i class='bx bxs-building-house'></i></div>
+                        <h3>گرێبەستی فرۆشتن</h3>
+                        <p>تۆمارکردنی گرێبەستی کڕین و فرۆشتنی خانوو و زەوی بە شێوەی یاسایی.</p>
+                    </a>
+
+                    <!-- کاردی گرێبەستی بەکرێدان (سوور) -->
+                    <a href="rent.html" class="contract-card card-rent">
+                        <div class="card-icon"><i class='bx bxs-key'></i></div>
+                        <h3>گرێبەستی بەکرێدان</h3>
+                        <p>ڕێکخستنی گرێبەستی بەکرێدان لە نێوان خاوەن موڵک و کرێچی.</p>
+                    </a>
+
+                    <!-- کاردی پسولەی پارەدان (سەوز) -->
+                    <a href="payment.html" class="contract-card card-payment">
+                        <div class="card-icon"><i class='bx bxs-receipt'></i></div>
+                        <h3>پسولەی پارەدان</h3>
+                        <p>دروستکردنی پسولەی وەرگرتن و پێدانی پارە بۆ مامەڵەکان.</p>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="../dashboard.js"></script>
+    <script type="module" src="../shared.js"></script>
+</body>
+</html>

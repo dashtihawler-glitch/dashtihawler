@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بەڕێوەبردنی کرێچییەکان</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;700&family=Noto+Sans+Arabic:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ئەم کۆدە ڕەنگە شینە نامۆکە لە هەموو شوێنێک لادەبات */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            outline: none; /* بۆ دڵنیایی زیاتر کە هیچ چوارچێوەیەکی تر دەرنەکەوێت */
+        }
+        /* دیزاینی نوێی کاردەکان */
+        .tenants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            padding-top: 10px;
+        }
+
+        .tenant-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f0;
+        }
+        /* ستایلی کارد کاتێک کراوەیە (ڕەنگی کاڵ) */
+        .tenant-card:not(.collapsed) {
+            background-color: #f4f8fb;
+            border-color: #c5d7ef;
+        }
+        .tenant-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .tenant-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+        .tenant-name i { font-size: 1.4rem; }
+
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex-grow: 1;
+            /* ئەنیمەیشن */
+            max-height: 500px;
+            opacity: 1;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+        .info-item i {
+            font-size: 1.2rem;
+            color: #888;
+            width: 20px;
+            text-align: center;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #fafafa;
+            border-top: 1px solid #f0f0f0;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+        .payment-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* سویچی دۆخی پارەدان - دیزاینی نوێ */
+        .status-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .status-switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ff7675; /* سوور */
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        input:checked + .slider { background-color: #00b894; } /* سەوز */
+        input:checked + .slider:before { transform: translateX(20px); }
+        
+        .card-actions {
+            display: flex;
+            align-items: center;
+            /* ئەنیمەیشن */
+            max-width: 150px;
+            opacity: 1;
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        /* دوگمەکانی کردار - دیزاینی نوێ */
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 1.1rem;
+        }
+        .btn-edit { 
+            background-color: rgba(253, 203, 110, 0.3); 
+            color: #e17055; 
+        }
+        .btn-edit:hover { 
+            background-color: #e17055; 
+            color: white; 
+            transform: translateY(-3px);
+        }
+        .btn-delete { 
+            background-color: rgba(255, 118, 117, 0.3); 
+            color: #d63031; 
+        }
+        .btn-delete:hover { 
+            background-color: #d63031; 
+            color: white; 
+            transform: translateY(-3px) rotate(10deg);
+        }
+        
+        /* مۆداڵ (پۆپ ئەپ) - دیزاینی نوێ */
+        .modal {
+            display: flex; /* هەمیشە فلێکس بێت بۆ ناوەندکردن */
+            align-items: center;
+            justify-content: center;
+            position: fixed; 
+            z-index: 1000; 
+            inset: 0; /* top, right, bottom, left: 0 */
+            padding: 20px;
+
+            /* بۆ ئەنیمەیشن */
+            background-color: rgba(0,0,0,0);
+            -webkit-backdrop-filter: blur(0px);
+            backdrop-filter: blur(0px);
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, background-color 0.3s ease, -webkit-backdrop-filter 0.3s ease, backdrop-filter 0.3s ease;
+        }
+        .modal.visible {
+            visibility: visible;
+            opacity: 1;
+            background-color: rgba(0,0,0,0.6);
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 30px;
+            width: 100%;
+            max-width: 550px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease-out;
+        }
+        .modal.visible .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .close-modal {
+            position: absolute;
+            left: 25px;
+            top: 25px;
+            font-size: 24px;
+            background: #f1f2f6;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            color: #333;
+        }
+        .close-modal:hover { background: #ff7675; color: white; }
+
+        /* دوگمەی زیادکردن */
+        .btn-add-new {
+            background: linear-gradient(135deg, var(--primary-color), #2a4896);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 15px;
+            border: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(26, 42, 108, 0.2);
+            transition: 0.3s;
+        }
+        .btn-add-new:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(26, 42, 108, 0.3);
+        }
+
+        /* فۆڕم */
+        .input-group label {
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .input-group input, .input-group select {
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            padding: 15px;
+            border-radius: 15px;
+            transition: 0.3s;
+            width: 100%;
+            font-family: inherit;
+        }
+        .input-group input:focus, .input-group select:focus {
+            background: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        @media (max-width: 768px) {
+            .tenants-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .content-area { padding: 20px; }
+        }
+
+        /* ئەنیمەیشنی زیادکردن و سڕینەوەی کارت */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeOutDown {
+            to {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
+
+        .card-enter-active {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        .card-exit-active {
+            animation: fadeOutDown 0.4s ease-in forwards;
+        }
+
+        /* ستایلی دوگمەی شاردنەوەی زانیارییەکان */
+        .toggle-details-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: #999;
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .toggle-details-btn:hover { background-color: #f0f0f0; color: var(--primary-color); }
+        
+        /* دۆخی داخراو بە ئەنیمەیشنەوە */
+        .tenant-card.collapsed .card-body { 
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .tenant-card.collapsed .card-actions { 
+            max-width: 0;
+            opacity: 0;
+        }
+        .tenant-card.collapsed .toggle-details-btn { transform: rotate(180deg); }
+
+        /* زانیاری کاتی ماوە کاتێک کارتەکە داخراوە */
+        .collapsed-info {
+            display: none; /* لە دۆخی ئاسایی دیار نییە */
+            margin-right: 15px;
+            font-size: 0.85rem;
+            align-items: center;
+            gap: 5px;
+        }
+        .tenant-card.collapsed .collapsed-info { display: inline-flex; }
+
+        /* ستایلی بەشی سەرەوەی لاپەڕە و گونجاندن بۆ مۆبایل */
+        .page-header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .page-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .search-box {
+            position: relative;
+        }
+        .search-box input {
+            padding: 10px 35px 10px 15px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            outline: none;
+            width: 200px;
+            font-family: inherit;
+            transition: width 0.3s ease;
+        }
+        .search-box i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 1.2rem;
+        }
+        .filter-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            -webkit-user-select: none; /* For Safari */
+            user-select: none;
+        }
+        .filter-label input {
+            width: 18px;
+            height: 18px;
+            accent-color: #ff7675;
+        }
+        .filter-label span {
+            font-weight: bold;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .form-row-rent {
+            grid-template-columns: 3fr 1fr;
+        }
+
+        @media (max-width: 992px) {
+            .page-header-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .page-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-box input {
+                width: 100%;
+            }
+            .form-row-rent {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ستایلی بەشی ئاگادارییەکان */
+        .notification-area {
+            position: relative;
+        }
+
+        #notification-btn {
+            background: #fff;
+            color: #666;
+            border: 1px solid #e0e0e0;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        #notification-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+        }
+        #notification-btn i {
+            font-size: 1.4rem;
+        }
+
+        #notification-btn .badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 10px;
+            height: 10px;
+            background-color: #ff4d4d;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 77, 77, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); }
+        }
+
+        .notification-dropdown {
+            position: absolute;
+            top: 120%;
+            left: 0;
+            width: 340px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            z-index: 1001;
+            opacity: 0;
+            transform: translateY(10px) scale(0.95);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .notification-dropdown.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .notification-header { padding: 15px 20px; background-color: #f8f9fa; border-bottom: 1px solid #eee; }
+        .notification-header h4 { margin: 0; font-size: 1rem; color: #333; }
+        .notification-list { max-height: 350px; overflow-y: auto; }
+        .notification-item { display: flex; align-items: center; gap: 15px; padding: 15px 20px; border-bottom: 1px solid #f0f0f0; transition: background-color 0.2s; }
+        .notification-item:last-child { border-bottom: none; }
+        .notification-item:hover { background-color: #f4f8fb; }
+        .notification-item .icon { font-size: 1.5rem; color: #ff9f43; }
+        .notification-item .content p { margin: 0; font-size: 0.9rem; color: #333; line-height: 1.5; }
+        .notification-item .content p strong { color: var(--primary-color); }
+        .no-notification { padding: 40px 20px; text-align: center; color: #888; }
+
+        @media (max-width: 992px) {
+            .page-header-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .page-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-box input {
+                width: 100%;
+            }
+            .form-row-rent {
+                grid-template-columns: 1fr;
+            }
+            
+            /* ستایلی بەشی ئاگادارییەکان */
+            .notification-area {
+                position: relative;
+            }
+
+            #notification-btn {
+                width: 100%;
+            }
+            .page-actions .btn-add-new {
+                width: 100%;
+                justify-content: center;
+            }
+            .notification-dropdown {
+                width: auto;
+                left: 10px;
+                right: 10px;
+            }
+        }
+
+        /* New styles for modals to remove inline styles */
+        #modal-title {
+            margin-bottom: 20px;
+        }
+        
+        #tenant-form .btn-add-new {
+            margin-top: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .input-group.is-paid-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .is-paid-group label {
+            margin: 0;
+        }
+
+        .confirmation-modal .modal-content {
+            text-align: center;
+        }
+
+        #deleteModal .modal-content {
+            max-width: 400px;
+        }
+
+        #renewModal .modal-content {
+            max-width: 450px;
+        }
+
+        .confirmation-modal .modal-icon {
+            margin-bottom: 20px;
+            font-size: 4rem;
+        }
+
+        .confirmation-modal .modal-icon.icon-danger {
+            color: #ff7675;
+        }
+
+        .confirmation-modal .modal-icon.icon-success {
+            color: #00b894;
+        }
+
+        .confirmation-modal h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .confirmation-modal p {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .confirmation-modal .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .confirmation-modal .modal-actions-column {
+            flex-direction: column;
+        }
+
+        .confirmation-modal .modal-button {
+            padding: 12px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .confirmation-modal .btn-cancel {
+            border: 1px solid #ddd;
+            background: white;
+            color: #555;
+        }
+
+        .confirmation-modal .btn-confirm-danger {
+            border: none;
+            background: #ff7675;
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 118, 117, 0.3);
+        }
+
+        .confirmation-modal .btn-confirm-success {
+            border: none;
+            background: #00b894;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 184, 148, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- هێدەر دەهێنینە دەرەوە بۆ ئەوەی وەک لاپەڕەکانی تر بێت -->
+    <header class="main-header">
+        <!-- دوگمەی مینیو -->
+        <button id="sidebar-toggle" class="toggle-btn" aria-label="کردنەوەی لیست">
+            <i class='bx bx-menu'></i>
+        </button>
+        <!-- بەشی لۆگۆ و ناو -->
+        <div class="header-brand">
+            <img src="../assets/icon.png" alt="لۆگۆ" class="header-logo">
+            <h3>نوسینگەی دەشتی هەولێر</h3>
+        </div>
+        <!-- زانیاری بەکارهێنەر -->
+        <div class="user-info" id="user-display">
+            <span id="user-email">بارکردن...</span>
+            <i class='bx bxs-user-circle'></i>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- سایدبار -->
+        <aside class="sidebar" id="sidebar">
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="../dashboard.html"><i class='bx bxs-dashboard'></i><span>داشبۆردی سەرەکی</span></a></li>
+                    <li><a href="../contracts/index.html"><i class='bx bxs-file-blank'></i><span>گرێبەستەکان</span></a></li>
+                    <li><a href="#"><i class='bx bx-archive'></i><span>ئەرشیفی گرێبەستەکان</span></a></li>
+                    <li><a href="../taminat/index.html"><i class='bx bx-shield-quarter'></i><span>بەشی دڵنیایی (تەئمینات)</span></a></li>
+                    <li class="active"><a href="#"><i class='bx bx-group'></i><span>کرێچییەکان</span></a></li>
+                    <li><a href="#"><i class='bx bx-cog'></i><span>ڕێکخستنی وێب</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logout-btn" class="logout-btn">چوونەدەرەوە</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="content-area">
+                <div class="page-header-actions">
+                    <h2>لیستی کرێچییەکان</h2>
+                    <div class="page-actions">
+                        <div class="search-box">
+                            <input type="text" id="search-tenant" placeholder="گەڕان بەدوای ناو..." oninput="filterTenants()">
+                            <i class='bx bx-search'></i>
+                        </div>
+                        <label class="filter-label">
+                            <input type="checkbox" id="filter-unpaid" onchange="filterTenants()">
+                            <span>تەنها قەرزدارەکان</span>
+                        </label>
+                        <!-- بەشی ئاگادارییەکان -->
+                        <div class="notification-area">
+                            <button id="notification-btn" aria-label="کردنەوەی ئاگادارییەکان">
+                                <i class='bx bxs-bell'></i>
+                                <span id="notification-badge" class="badge hidden"></span>
+                            </button>
+                            <div id="notification-dropdown" class="notification-dropdown">
+                                <div class="notification-header"><h4>ئاگادارییەکان</h4></div>
+                                <div id="notification-list" class="notification-list">
+                                    <!-- ئاگادارییەکان لێرە دادەنرێن -->
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="openModal()" class="btn-add-new">
+                            <i class='bx bx-plus'></i> زیادکردنی کرێچی
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tenants-grid" id="tenants-container">
+                    <!-- کاردی کرێچییەکان لێرە دادەنرێن -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- مۆداڵی زیادکردن/دەستکاری -->
+    <div id="tenantModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title">زیادکردنی کرێچی نوێ</h3>
+            <form id="tenant-form">
+                <input type="hidden" id="tenant-id">
+                <div class="input-group">
+                    <label>ناوی سیانی</label>
+                    <input type="text" id="full_name" required>
+                </div>
+                <div class="input-group">
+                    <label>ژمارەی مۆبایل</label>
+                    <input type="text" id="phone_number" required>
+                </div>
+                <div class="form-row form-row-2-cols">
+                    <div class="input-group">
+                        <label>ژمارەی موڵک</label>
+                        <input type="text" id="property_number" required>
+                    </div>
+                    <div class="input-group">
+                        <label>جۆری موڵک</label>
+                        <select id="property_type">
+                            <option value="شووقە">شووقە</option>
+                            <option value="خانوو">خانوو</option>
+                            <option value="دوکان">دوکان</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row form-row-rent">
+                    <div class="input-group">
+                        <label>کرێی مانگانە</label>
+                        <input type="number" id="monthly_rent" required>
+                    </div>
+                    <div class="input-group">
+                        <label>جۆری دراو</label>
+                        <select id="currency">
+                            <option value="د.ع">د.ع</option>
+                            <option value="$">$</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>مێژووی تۆمارکردن</label>
+                    <input type="date" id="registration_date" required>
+                </div>
+                <div class="input-group is-paid-group">
+                    <label>پارەی داوە؟</label>
+                    <label class="status-switch">
+                        <input type="checkbox" id="is_paid">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <button type="submit" class="btn-add-new">تۆمارکردن</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- مۆداڵی دڵنیابوونەوە لە سڕینەوە -->
+    <div id="deleteModal" class="modal confirmation-modal">
+        <div class="modal-content">
+            <div class="modal-icon icon-danger">
+                <i class='bx bx-error-circle'></i>
+            </div>
+            <h3>دڵنیایت لە سڕینەوە؟</h3>
+            <p>ئەم کردارە گەڕانەوەی نییە. ئایا دڵنیایت دەتەوێت ئەم کرێچییە بسڕیتەوە؟</p>
+            <div class="modal-actions">
+                <button onclick="closeDeleteModal()" class="modal-button btn-cancel">پاشگەزبوونەوە</button>
+                <button onclick="confirmDelete()" class="modal-button btn-confirm-danger">بەڵێ، بیسڕەوە</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مۆداڵی دڵنیابوونەوە لە نوێکردنەوەی مانگ -->
+    <div id="renewModal" class="modal confirmation-modal">
+        <div class="modal-content">
+            <div class="modal-icon icon-success">
+                <i class='bx bx-calendar-check'></i>
+            </div>
+            <h3>نوێکردنەوەی مانگی کرێ</h3>
+            <p>کرێی ئەم مانگە وەرگیرا. ئایا دەتەوێت بەرواری کرێدان نوێ بکەیتەوە بۆ مانگی داهاتوو و سویچەکە بکەیتەوە سوور؟</p>
+            <div class="modal-actions modal-actions-column">
+                <button onclick="confirmRenew()" class="modal-button btn-confirm-success">بەڵێ، نوێی بکەرەوە</button>
+                <button onclick="justRecordPayment()" class="modal-button btn-cancel">نەخێر، تەنها وەک پارەدراو تۆماری بکە</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="../script.js"></script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>گرێبەستی بەکرێدان - نوسینگەی دەشتی هەولێر</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;700&family=Noto+Sans+Arabic:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <button id="sidebar-toggle" class="toggle-btn" aria-label="کردنەوەی لیست">
+            <i class='bx bx-menu'></i>
+        </button>
+        <div class="header-brand">
+            <img src="../assets/icon.png" alt="لۆگۆ" class="header-logo">
+            <h3>نوسینگەی دەشتی هەولێر</h3>
+        </div>
+        <div class="user-info" id="user-display">
+            <span id="user-email">بارکردن...</span>
+            <i class='bx bxs-user-circle'></i>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="../dashboard.html"><i class='bx bxs-dashboard'></i><span>داشبۆردی سەرەکی</span></a></li>
+                    <li class="active"><a href="index.html"><i class='bx bx-file'></i><span>گرێبەستەکان</span></a></li>
+                    <li><a href="#"><i class='bx bx-archive'></i><span>ئەرشیفی گرێبەستەکان</span></a></li>
+                    <li><a href="#"><i class='bx bx-shield-quarter'></i><span>بەشی دڵنیایی (تەئمینات)</span></a></li>
+                    <li><a href="../krechi\index.html"><i class='bx bx-group'></i><span>کرێچییەکان</span></a></li>
+                    <li><a href="#"><i class='bx bx-cog'></i><span>ڕێکخستنی وێب</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logout-btn" class="logout-btn">چوونەدەرەوە</a>
+            </div>
+        </aside>
+        <main class="main-content" id="main-content">
+            <div class="content-area">
+                <div class="page-header-flex">
+                    <h2>گرێبەستی بەکرێدان</h2>
+                    <a href="index.html" class="btn-login btn-back">
+                        <i class='bx bx-arrow-back'></i> گەڕانەوە
+                    </a>
+                </div>
+                
+                <div class="form-container rent-form-container">
+                    <form id="rentForm">
+                        <div class="form-grid">
+                            <!-- Employee Email (Auto-filled) -->
+                            <div class="input-group full-width">
+                                <label for="employeeEmail">ئەمڕۆ کێ گرێبەستی کرێ دەکات ؟</label>
+                                <input type="email" id="employeeEmail" name="employee" readonly class="input-readonly" placeholder="ئیمەیڵی کارمەند...">
+                            </div>
+
+                            <!-- Owner/Tenant Section -->
+                            <div class="form-section">
+                                <h4>زانیاری خاوەن موڵک</h4>
+                                <div class="input-group">
+                                    <label for="ownerName">ناوی سیانی خاوەن موڵک</label>
+                                    <input type="text" id="ownerName" name="ownerName" required placeholder="ناوی خاوەن موڵک بنووسە">
+                                </div>
+                                <div class="input-group">
+                                    <label for="ownerID">ژمارەی ناسنامەی خاوەن موڵک</label>
+                                    <input type="text" id="ownerID" name="ownerID" required placeholder="ژمارەی ناسنامە">
+                                </div>
+                                <div class="input-group">
+                                    <label for="ownerMobile">ژمارەی مۆبایلی خاوەن موڵک</label>
+                                    <input type="tel" id="ownerMobile" name="ownerMobile" required placeholder="0750xxxxxxx">
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <h4>زانیاری کرێچی</h4>
+                                <div class="input-group">
+                                    <label for="tenantName">ناوی سیانی کرێچی</label>
+                                    <input type="text" id="tenantName" name="tenantName" required placeholder="ناوی کرێچی بنووسە">
+                                </div>
+                                <div class="input-group">
+                                    <label for="tenantID">ژمارەی ناسنامەی کرێچی</label>
+                                    <input type="text" id="tenantID" name="tenantID" required placeholder="ژمارەی ناسنامە">
+                                </div>
+                                <div class="input-group">
+                                    <label for="tenantMobile">ژمارەی مۆبایلی کرێچی</label>
+                                    <input type="tel" id="tenantMobile" name="tenantMobile" required placeholder="0750xxxxxxx">
+                                </div>
+                            </div>
+
+                            <!-- Property Info -->
+                            <div class="form-row full-width form-row-3-cols">
+                                <div class="input-group">
+                                    <label for="propertyType">جۆری موڵک</label>
+                                    <select name="propertyType" id="propertyType" required>
+                                    <option value="" disabled selected>هەڵبژێرە...</option>
+                                        <option value="خانوو">خانوو</option>
+                                        <option value="شووقە">شووقە</option>
+                                        <option value="دوکان">دوکان</option>
+                                        <option value="زەوی">زەوی</option>
+                                        <option value="باڵەخانە">باڵەخانە</option>
+                                        <option value="زەوی کشتوکاڵی">زەوی کشتوکاڵی</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label for="propertyNumber">ژمارەی موڵک</label>
+                                    <input type="text" id="propertyNumber" name="propertyNumber" required placeholder="ژمارەی موڵک">
+                                </div>
+                                <div class="input-group">
+                                    <label for="neighborhoodSelect">گەڕەک</label>
+                                    <select name="neighborhood" id="neighborhoodSelect" required>
+                                        <option value="" disabled selected>گەڕەک هەڵبژێرە...</option>
+                                        <option value="فەرمانبەران">فەرمانبەران</option>
+                                        <option value="فەرمانبەران ئامرلیوا">فەرمانبەران ئامرلیوا</option>
+                                        <option value="گەلاوێژ">گەلاوێژ</option>
+                                        <option value="باداوە">باداوە</option>
+                                        <option value="دارەتوو">دارەتوو</option>
+                                        <option value="ژین">ژین</option>
+                                        <option value="ژیان">ژیان</option>
+                                        <option value="بنەسڵاوە">بنەسڵاوە</option>
+                                        <option value="ئاوێنەی شار">ئاوێنەی شار</option>
+                                        <option value="زەیتوونە">زەیتوونە</option>
+                                        <option value="هیران ستی ئاڵا ستی">هیران ستی ئاڵا ستی</option>
+                                        <option value="ڕۆشنبیری">ڕۆشنبیری</option>
+                                        <option value="5ی حەسارۆك">5ی حەسارۆك</option>
+                                        <option value="8ی حەسارۆك">8ی حەسارۆك</option>
+                                        <option value="other">گەڕەکێکی تر (خۆت بینووسە)</option>
+                                    </select>
+                                    <input type="text" name="other_neighborhood" id="otherNeighborhoodInput" class="other-neighborhood-input hidden" placeholder="ناوی گەڕەکی تر بنووسە">
+                                </div>
+                            </div>
+
+                            <!-- Financial Info -->
+                            <div class="form-row full-width form-row-2-cols">
+                                <div class="input-group">
+                                    <label for="currencyType">جۆری دراو</label>
+                                    <select name="currencyType" id="currencyType" required>
+                                       <option value="دۆلاری ئەمریکی (USD)">دۆلاری ئەمریکی ($)</option>
+                                    <option value="دیناری عێڕاقی (IQD)">دیناری عێڕاقی (IQD)</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label for="monthlyRent">کرێی مانگانە (بە ژمارە)</label>
+                                    <input type="text" inputmode="numeric" id="monthlyRent" name="monthlyRent" required placeholder="بڕی کرێ">
+                                    <div id="monthlyRentWords" class="amount-words"></div>
+                                </div>
+                            </div>
+                            <div class="form-row full-width form-row-2-cols">
+                                <div class="input-group">
+                                    <label for="advancePayment">بڕی پێشەکی (بە ژمارە)</label>
+                                    <input type="text" inputmode="numeric" id="advancePayment" name="advancePayment" required placeholder="بڕی پێشەکی">
+                                    <div id="advancePaymentWords" class="amount-words"></div>
+                                </div>
+                                <div class="input-group">
+                                    <label for="assurance">بڕی دڵنیایی/تەئمینات (بە ژمارە)</label>
+                                    <input type="text" inputmode="numeric" id="assurance" name="assurance" required placeholder="بڕی تەئمینات">
+                                    <div id="assuranceWords" class="amount-words"></div>
+                                </div>
+                            </div>
+
+                            <!-- Contract Period -->
+                            <div class="form-row full-width form-row-3-cols">
+                                <div class="input-group">
+                                    <label for="leasePeriod">ماوەی گرێبەست</label>
+                                    <select name="leasePeriod" id="leasePeriod" required>
+                                        <option value="" disabled selected>ماوەکە هەڵبژێرە...</option>
+                                        <option value="6 مانگ">6 مانگ</option>
+                                        <option value="1 ساڵ">1 ساڵ</option>
+                                        <option value="1 ساڵ و 6 مانگ">1 ساڵ و 6 مانگ</option>
+                                        <option value="2 ساڵ">2 ساڵ</option>
+                                        <option value="3 ساڵ">3 ساڵ</option>
+                                        <option value="4 ساڵ">4 ساڵ</option>
+                                        <option value="5 ساڵ">5 ساڵ</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label for="dateFrom">بەرواری دەستپێکردن</label>
+                                    <input type="date" id="dateFrom" name="dateFrom" required>
+                                </div>
+                                <div class="input-group">
+                                    <label for="dateUntil">تا بەرواری</label>
+                                    <input type="date" id="dateUntil" name="dateUntil" required>
+                                </div>
+                            </div>
+
+                            <!-- Witnesses -->
+                            <div class="form-row full-width form-row-2-cols">
+                                <div class="input-group">
+                                    <label for="witness1">شایەدی یەکەم</label>
+                                    <input type="text" id="witness1" name="witness1" required placeholder="ناوی شایەدی یەکەم">
+                                </div>
+                                <div class="input-group">
+                                    <label for="witness2">شایەدی دووەم</label>
+                                    <input type="text" id="witness2" name="witness2" required placeholder="ناوی شایەدی دووەم">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-login form-submit-btn">
+                            <i class='bx bx-send'></i> تۆمارکردنی گرێبەست
+                        </button>
+                        <p id="msg" class="status-message"></p>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="../dashboard.js"></script>
+    <script>
+        const form = document.getElementById('rentForm');
+        const statusMessage = document.getElementById('statusMessage');
+        // تێبینی: لێرەدا دەبێت لینکی سکریپتی گوگڵ شیتەکەت دابنێیت
+        const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+
+        // کارکردنی درۆپداونی گەڕەک
+        const neighborhoodSelect = document.getElementById('neighborhoodSelect');
+        const otherNeighborhoodInput = document.getElementById('otherNeighborhoodInput');
+
+        neighborhoodSelect.addEventListener('change', function() {
+            if (this.value === 'other') {
+                otherNeighborhoodInput.classList.remove('hidden');
+                otherNeighborhoodInput.setAttribute('required', 'required');
+            } else {
+                otherNeighborhoodInput.classList.add('hidden');
+                otherNeighborhoodInput.removeAttribute('required');
+                otherNeighborhoodInput.value = ''; // سڕینەوەی ناوەکە ئەگەر گەڕەکێکی تر هەڵبژێردرا
+            }
+        });
+
+        // گۆڕینی ژمارە بۆ نووسین و دانانی فاریزە
+        const currencySelect = document.getElementById('currencyType');
+        const monthlyRentInput = document.getElementById('monthlyRent');
+        const advancePaymentInput = document.getElementById('advancePayment');
+        const assuranceInput = document.getElementById('assurance');
+        
+        const monthlyRentWords = document.getElementById('monthlyRentWords');
+        const advancePaymentWords = document.getElementById('advancePaymentWords');
+        const assuranceWords = document.getElementById('assuranceWords');
+
+        function numToKurdish(n) {
+            if (n == 0) return "سفر";
+            if (!n) return "";
+            
+            const ones = ["", "یەك", "دوو", "سێ", "چوار", "پێنج", "شەش", "حەوت", "هەشت", "نۆ"];
+            const teens = ["دە", "یازدە", "دوازدە", "سێزدە", "چواردە", "پانزدە", "شازدە", "حەڤدە", "هەژدە", "نۆزدە"];
+            const tens = ["", "", "بیست", "سی", "چل", "پەنجا", "شەست", "حەفتا", "هەشتا", "نەوەد"];
+            const hundreds = ["", "سەد", "دوو سەد", "سێ سەد", "چوار سەد", "پێنج سەد", "شەش سەد", "حەوت سەد", "هەشت سەد", "نۆ سەد"];
+
+            function convert(num) {
+                if (num === 0) return "";
+                if (num < 10) return ones[num];
+                if (num < 20) return teens[num - 10];
+                if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? " و " + ones[num % 10] : "");
+                if (num < 1000) return hundreds[Math.floor(num / 100)] + (num % 100 ? " و " + convert(num % 100) : "");
+                if (num < 1000000) {
+                    return (Math.floor(num / 1000) === 1 ? "هەزار" : convert(Math.floor(num / 1000)) + " هەزار") + (num % 1000 ? " و " + convert(num % 1000) : "");
+                }
+                if (num < 1000000000) {
+                    return convert(Math.floor(num / 1000000)) + " ملیۆن" + (num % 1000000 ? " و " + convert(num % 1000000) : "");
+                }
+                return convert(Math.floor(num / 1000000000)) + " ملیار" + (num % 1000000000 ? " و " + convert(num % 1000000000) : "");
+            }
+
+            return convert(n);
+        }
+
+        function updateWords(input, display) {
+            const rawValue = input.value.replace(/,/g, '');
+            const val = parseInt(rawValue, 10);
+            if (!isNaN(val) && rawValue.length > 0) {
+                let text = numToKurdish(val);
+                const currency = currencySelect.value;
+                if (currency === "دۆلاری ئەمریکی (USD)") {
+                    text += " دۆلار";
+                } else if (currency === "دیناری عێڕاقی (IQD)") {
+                    text += " دینار";
+                }
+                display.textContent = text;
+            } else {
+                display.textContent = "";
+            }
+        }
+
+        function formatAndDisplay(input, wordsDisplay) {
+            let value = input.value.replace(/[^0-9]/g, '');
+            if (value.trim() === '') {
+                input.value = '';
+                wordsDisplay.textContent = '';
+                return;
+            }
+            input.value = Number(value).toLocaleString('en-US');
+            updateWords(input, wordsDisplay);
+        }
+
+        // Event Listeners
+        monthlyRentInput.addEventListener('input', () => formatAndDisplay(monthlyRentInput, monthlyRentWords));
+        advancePaymentInput.addEventListener('input', () => formatAndDisplay(advancePaymentInput, advancePaymentWords));
+        assuranceInput.addEventListener('input', () => formatAndDisplay(assuranceInput, assuranceWords));
+
+        currencySelect.addEventListener('change', () => {
+            updateWords(monthlyRentInput, monthlyRentWords);
+            updateWords(advancePaymentInput, advancePaymentWords);
+            updateWords(assuranceInput, assuranceWords);
+        });
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            statusMessage.textContent = 'جارێک چاوەڕێ بکە...';
+            statusMessage.style.color = 'blue';
+            
+            const formData = new FormData(form);
+            
+            fetch(scriptURL, { method: 'POST', body: formData})
+                .then(response => {
+                    statusMessage.textContent = 'بە سەرکەوتوویی تۆمارکرا!';
+                    statusMessage.style.color = 'green';
+                    form.reset();
+                    // گەڕاندنەوەی ئیمەیڵی کارمەند چونکە reset دەیسڕێتەوە
+                    setTimeout(() => {
+                        const userEmailDisplay = document.getElementById('user-email');
+                        const employeeEmailInput = document.getElementById('employeeEmail');
+                        if(userEmailDisplay && employeeEmailInput) {
+                            employeeEmailInput.value = userEmailDisplay.textContent;
+                        }
+                    }, 100);
+                })
+                .catch(error => {
+                    statusMessage.textContent = 'هەڵەیەک ڕوویدا! تکایە دووبارە هەوڵبدەرەوە.';
+                    statusMessage.style.color = 'red';
+                    console.error('Error!', error.message);
+                });
+        });
+    </script>
+</body>
+</html>
