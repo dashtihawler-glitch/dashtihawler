@@ -134,65 +134,6 @@
             font-size: 1.2rem;
         }
 
-        /* ستایلی دوگمەکانی کۆنتڕۆڵی مۆبایل */
-        .mobile-controls {
-            display: none; /* لە لاپتۆپ شاراوەیە */
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .control-btn {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px;
-            background-color: #fff;
-            border: none;
-            border-radius: 15px;
-            font-size: 1rem;
-            font-weight: bold;
-            color: #333;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-        .control-btn:hover {
-            background-color: #f4f8fb;
-            transform: translateY(-2px);
-        }
-        .control-btn i {
-            font-size: 1.4rem;
-            color: inherit;
-            transition: transform 0.3s ease;
-        }
-        .control-btn.active i.bx-chevron-down { transform: rotate(180deg); }
-
-        /* ڕەنگی تایبەت بۆ دوگمەکانی مۆبایل */
-        #toggle-summary-btn {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
-        }
-        #toggle-list-btn {
-            background: linear-gradient(135deg, #e67e22, #d35400);
-            color: white;
-            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.3);
-        }
-        #mobile-add-btn {
-            background: linear-gradient(135deg, var(--primary-color), #2a4896);
-            color: white;
-            box-shadow: 0 8px 20px rgba(26, 42, 108, 0.3);
-        }
-
-        .control-btn.btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 12px 20px;
-        }
-        .control-btn.btn-primary i {
-            color: white;
-        }
-
         .page-header-actions {
             display: flex;
             justify-content: space-between;
@@ -220,6 +161,10 @@
             transition: all 0.3s ease;
             border: 1px solid #f0f0f0;
         }
+        .deposit-card:not(.collapsed) {
+            background-color: #f4f8fb;
+            border-color: #c5d7ef;
+        }
         .deposit-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 15px 35px rgba(0,0,0,0.08);
@@ -231,6 +176,11 @@
             align-items: center;
             padding: 15px 20px;
             border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            user-select: none;
+        }
+        .card-header:hover {
+            background-color: rgba(0,0,0,0.02);
         }
         .deposit-name {
             display: flex;
@@ -260,6 +210,7 @@
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             transition: all 0.3s ease;
+            pointer-events: none;
         }
         .toggle-details-btn:hover { background-color: #f0f0f0; color: var(--primary-color); }
 
@@ -335,26 +286,6 @@
 
         /* گونجاندن بۆ مۆبایل */
         @media (max-width: 768px) {
-            .page-header-actions { 
-                /* شاردنەوەی هێدەری لاپتۆپ و پیشاندانی کۆنتڕۆڵی مۆبایل */
-                display: none;
-            }
-            .mobile-controls { display: flex; }
-            
-            .mobile-controls + .summary-section + .page-header-actions {
-                display: block; /* پیشاندانەوەی هێدەر لە مۆبایل بۆ ئەوەی گەڕانەکە دەربکەوێت */
-                flex-direction: column;
-                gap: 15px;
-            }
-            .page-header-actions h2, .page-header-actions .control-btn { display: none; } /* شاردنەوەی ناونیشان و دوگمەی زیادکردن لەم بەشە بۆ مۆبایل */
-            .search-box { max-width: 100%; width: 100%; }
-            .mobile-controls { display: flex; }
-            .summary-section, .deposits-grid {
-                max-height: 0;
-                overflow: hidden;
-                transition: max-height 0.5s ease-out, margin-bottom 0.5s ease-out;
-                margin-bottom: 0;
-            }
         }
         @media (max-width: 768px) {
             .deposits-grid {
@@ -620,42 +551,63 @@
                 <h2 style="font-size: 1.5rem; margin-bottom: 10px;">بەڕێوەبردنی پارەی دڵنیایی</h2>
                 <p class="page-description">لێرەوە دەتوانیت تۆمارەکانی پارەی دڵنیایی بەڕێوەببەیت.</p>
 
-                <!-- دوگمەکانی کۆنتڕۆڵ بۆ مۆبایل -->
-                <div class="mobile-controls">
-                    <button id="toggle-summary-btn" class="control-btn">
-                        <span>کۆی پارەی هەڵگیراو</span>
-                        <i class='bx bx-chevron-down'></i>
+                <!-- مینیوی سەرەکی مۆبایل -->
+                <div class="mobile-dashboard-menu">
+                    <button class="mobile-menu-btn" onclick="toggleView('summary-view-wrapper')">
+                        <div class="btn-icon"><i class='bx bx-calculator'></i></div>
+                        <div class="btn-text">
+                            <h3>کۆی پارەی هەڵگیراو</h3>
+                            <p>بینینی ئاماری پارەکان</p>
+                        </div>
+                        <i class='bx bx-chevron-left'></i>
                     </button>
-                    <button id="toggle-list-btn" class="control-btn">
-                        <span>لیستی تۆمارەکان</span>
-                        <i class='bx bx-chevron-down'></i>
-                    </button>
-                    <button id="mobile-add-btn" class="control-btn">
-                        <span>زیادکردنی تۆماری نوێ</span>
-                        <i class='bx bx-plus'></i>
+                    <button class="mobile-menu-btn" onclick="toggleView('list-view-wrapper')">
+                        <div class="btn-icon"><i class='bx bx-list-ul'></i></div>
+                        <div class="btn-text">
+                            <h3>لیستی تۆمارەکان</h3>
+                            <p>گەڕان و زیادکردن</p>
+                        </div>
+                        <i class='bx bx-chevron-left'></i>
                     </button>
                 </div>
 
                 <!-- بەشی کۆی گشتی بڕەکان -->
-                <div id="summary-container" class="summary-section">
-                    <!-- کارتی کۆی گشتی لێرە دروست دەکرێت -->
-                </div>
-
-                <div class="page-header-actions">
-                    <h2>لیستی تۆمارەکان</h2>
-                    <div class="header-controls">
-                        <div class="search-box">
-                            <input type="text" id="search-deposit" placeholder="گەڕان (ناو، مۆبایل، موڵک)..." oninput="filterDeposits()">
-                            <i class='bx bx-search'></i>
-                        </div>
-                        <button onclick="openModal()" class="control-btn btn-primary">
-                            <span>زیادکردنی تۆماری نوێ</span><i class='bx bx-plus'></i></button>
+                <div id="summary-view-wrapper" class="view-wrapper">
+                    <div class="mobile-view-header">
+                        <button class="btn-back-mobile" onclick="closeView('summary-view-wrapper')">
+                            <i class='bx bx-right-arrow-alt'></i> گەڕانەوە
+                        </button>
+                        <h3>کۆی پارەی هەڵگیراو</h3>
+                    </div>
+                    <div id="summary-container" class="summary-section">
+                        <!-- کارتی کۆی گشتی لێرە دروست دەکرێت -->
                     </div>
                 </div>
 
-                <!-- خشتەی پیشاندانی داتاکان -->
-                <div id="deposits-container" class="deposits-grid">
-                    <!-- کاردەکانی تەئمینات لێرە دادەنرێن -->
+                <div id="list-view-wrapper" class="view-wrapper">
+                    <div class="mobile-view-header">
+                        <button class="btn-back-mobile" onclick="closeView('list-view-wrapper')">
+                            <i class='bx bx-right-arrow-alt'></i> گەڕانەوە
+                        </button>
+                        <h3>لیستی تۆمارەکان</h3>
+                    </div>
+
+                    <div class="page-header-actions">
+                        <h2>لیستی تۆمارەکان</h2>
+                        <div class="header-controls">
+                            <div class="search-box">
+                                <input type="text" id="search-deposit" placeholder="گەڕان (ناو، مۆبایل، موڵک)..." oninput="filterDeposits()">
+                                <i class='bx bx-search'></i>
+                            </div>
+                            <button onclick="openModal()" class="control-btn btn-primary">
+                                <span>زیادکردنی تۆماری نوێ</span><i class='bx bx-plus'></i></button>
+                        </div>
+                    </div>
+
+                    <!-- خشتەی پیشاندانی داتاکان -->
+                    <div id="deposits-container" class="deposits-grid">
+                        <!-- کاردەکانی تەئمینات لێرە دادەنرێن -->
+                    </div>
                 </div>
             </div>
         </main>
@@ -762,5 +714,30 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="../shared.js"></script>
     <script type="module" src="script.js"></script>
+    <script>
+        // سکریپتی تایبەت بە گۆڕینی دیمەنەکان لە مۆبایل
+        function toggleView(viewId) {
+            document.getElementById(viewId).classList.add('active');
+        }
+        function closeView(viewId) {
+            document.getElementById(viewId).classList.remove('active');
+        }
+
+        // سکریپت بۆ کردنەوە و داخستنی کاردەکان لە ڕێگەی هێدەرەوە
+        document.addEventListener('DOMContentLoaded', () => {
+            const depositsContainer = document.getElementById('deposits-container');
+            if (depositsContainer) {
+                depositsContainer.addEventListener('click', (e) => {
+                    const header = e.target.closest('.card-header');
+                    if (header) {
+                        const card = header.closest('.deposit-card');
+                        if (card) {
+                            card.classList.toggle('collapsed');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
