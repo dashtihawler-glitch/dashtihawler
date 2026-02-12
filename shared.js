@@ -19,7 +19,50 @@ async function checkUserSession() {
     } else {
         const userEmailDisplay = document.getElementById('user-email');
         if (userEmailDisplay) {
-            userEmailDisplay.textContent = session.user.email;
+            const fullName = session.user.user_metadata?.full_name;
+            userEmailDisplay.textContent = fullName || session.user.email;
+            
+            // زیادکردنی تایبەتمەندی گۆڕینی ناو بە کلیک کردن
+            userEmailDisplay.style.cursor = 'pointer';
+            userEmailDisplay.title = 'کلیک بکە بۆ گۆڕینی ناو';
+            userEmailDisplay.onclick = () => {
+                // دروستکردنی مۆداڵ بە شێوەی داینامیکی
+                const existingModal = document.getElementById('name-update-modal');
+                if(existingModal) existingModal.remove();
+
+                const modalHTML = `
+                    <div id="name-update-modal" class="modal visible">
+                        <div class="modal-content" style="max-width: 400px; text-align: center;">
+                            <span class="close-modal">&times;</span>
+                            <h3 style="margin-bottom: 20px; color: var(--primary-color);">گۆڕینی ناو</h3>
+                            <div class="input-group">
+                                <label style="text-align: right;">ناوی سیانی</label>
+                                <input type="text" id="new-name-input" value="${fullName || ''}" placeholder="ناوی سیانی بنووسە" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-family: inherit;">
+                            </div>
+                            <button id="save-name-btn" class="btn-login" style="margin-top: 20px;">تۆمارکردن</button>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+                const modal = document.getElementById('name-update-modal');
+                const closeBtn = modal.querySelector('.close-modal');
+                const saveBtn = document.getElementById('save-name-btn');
+                const input = document.getElementById('new-name-input');
+
+                const closeModal = () => modal.remove();
+                closeBtn.onclick = closeModal;
+                modal.onclick = (e) => { if(e.target === modal) closeModal(); };
+
+                saveBtn.onclick = async () => {
+                    const newName = input.value.trim();
+                    if (!newName) return;
+                    saveBtn.textContent = '...';
+                    const { error } = await supabase.auth.updateUser({ data: { full_name: newName } });
+                    if (!error) { userEmailDisplay.textContent = newName; closeModal(); }
+                    else { alert('هەڵە: ' + error.message); saveBtn.textContent = 'تۆمارکردن'; }
+                };
+            };
         }
     }
 }
