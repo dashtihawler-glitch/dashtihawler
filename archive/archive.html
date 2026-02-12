@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ئەرشیفی گرێبەستەکان</title>
+    <link rel="stylesheet" href="../style.css">
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        /* Copying relevant styles from taminat/index.html to ensure exact match */
+        * { -webkit-tap-highlight-color: transparent; outline: none; }
+        
+        .page-header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 300px;
+        }
+        .search-box input {
+            padding: 12px 40px 12px 15px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            outline: none;
+            width: 100%;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+        .search-box input:focus {
+            background-color: #fff;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(26, 42, 108, 0.1);
+        }
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 1.2rem;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            gap: 8px;
+        }
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(26, 42, 108, 0.2);
+        }
+
+        /* Grid and Card Styles */
+        .archives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            padding-top: 10px;
+        }
+
+        .archive-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f0;
+        }
+        .archive-card:not(.collapsed) {
+            background-color: #f4f8fb;
+            border-color: #c5d7ef;
+        }
+        @media (min-width: 769px) {
+            .archive-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            }
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .card-header:hover {
+            background-color: rgba(0,0,0,0.02);
+        }
+        
+        .contract-type {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+        .contract-type i { font-size: 1.4rem; }
+
+        .toggle-details-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: #999;
+            cursor: pointer;
+            width: 35px; height: 35px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex-grow: 1;
+            max-height: 1000px; /* Large enough */
+            opacity: 1;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .info-group {
+            background: rgba(255,255,255,0.5);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .info-group-title {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #555;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        .info-item:last-child { margin-bottom: 0; }
+        .info-item i {
+            font-size: 1.2rem;
+            color: #888;
+            width: 20px;
+            text-align: center;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #fafafa;
+            border-top: 1px solid #f0f0f0;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        /* Collapse logic */
+        .archive-card.collapsed .card-body {
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .archive-card.collapsed .card-footer { display: none; }
+        .archive-card.collapsed .toggle-details-btn { transform: rotate(180deg); }
+
+        /* Action Buttons */
+        .action-btn {
+            width: 36px; height: 36px;
+            border-radius: 10px; border: none;
+            cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center;
+            margin-left: 8px;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            text-decoration: none;
+        }
+        .btn-pdf { background-color: rgba(231, 76, 60, 0.1); color: #e74c3c; }
+        .btn-pdf:hover { background-color: #e74c3c; color: white; transform: translateY(-3px); }
+        
+        /* Modal Styles (copied) */
+        .modal {
+            display: flex; align-items: center; justify-content: center;
+            position: fixed; z-index: 1000; inset: 0;
+            background-color: rgba(0,0,0,0);
+            visibility: hidden; opacity: 0;
+            transition: 0.3s;
+        }
+        .modal.visible {
+            visibility: visible; opacity: 1;
+            background-color: rgba(0,0,0,0.6);
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 30px;
+            width: 100%; max-width: 650px;
+            position: relative;
+            max-height: 90vh; overflow-y: auto;
+            transform: scale(0.9); opacity: 0;
+            transition: 0.3s;
+        }
+        .modal.visible .modal-content { transform: scale(1); opacity: 1; }
+        .close-modal {
+            position: absolute; left: 25px; top: 25px;
+            font-size: 24px; background: #f1f2f6;
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; color: #333;
+        }
+        .close-modal:hover { background: #ff7675; color: white; }
+
+        /* Form Styles */
+        .form-row { display: grid; gap: 15px; margin-bottom: 15px; }
+        .form-row-2-cols { grid-template-columns: 1fr 1fr; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #444; }
+        .input-group input, .input-group select {
+            width: 100%; padding: 12px;
+            border: 1px solid #ddd; border-radius: 10px;
+            outline: none; font-family: inherit;
+        }
+        .btn-submit {
+            width: 100%; padding: 15px;
+            background: var(--primary-color); color: white;
+            border: none; border-radius: 15px;
+            font-weight: bold; cursor: pointer;
+            margin-top: 15px;
+        }
+
+        /* Header Actions for Card (PDF Button) */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-pdf-header {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: none;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.3s;
+            font-size: 1.2rem;
+            z-index: 2;
+        }
+        .btn-pdf-header:hover {
+            background: #e74c3c; color: white;
+        }
+
+        /* Confirmation Modal Styles */
+        .confirmation-modal .modal-content { text-align: center; max-width: 400px; }
+        .confirmation-modal .modal-icon { margin-bottom: 20px; font-size: 4rem; }
+        .confirmation-modal .modal-icon.icon-danger { color: #ff7675; }
+        .confirmation-modal h3 { margin-bottom: 10px; color: #333; }
+        .confirmation-modal p { color: #666; margin-bottom: 25px; line-height: 1.6; }
+        .confirmation-modal .modal-actions { display: flex; gap: 15px; justify-content: center; }
+        .confirmation-modal .modal-button {
+            padding: 12px 25px; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.3s;
+        }
+        .confirmation-modal .btn-cancel { border: 1px solid #ddd; background: white; color: #555; }
+        .confirmation-modal .btn-confirm-danger { border: none; background: #ff7675; color: white; box-shadow: 0 5px 15px rgba(255, 118, 117, 0.3); }
+
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid white; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* New classes to replace inline styles */
+        .date-filters-container { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .date-filter-input { padding: 10px; border-radius: 12px; border: 1px solid #ddd; outline: none; background: #f8f9fa; flex-grow: 1; }
+        .date-separator { color: #666; font-weight: bold; }
+        
+        .file-input-styled { padding: 10px; background: #f9f9f9; }
+        .file-hint-text { color: #666; display: none; }
+        
+        .pdf-modal-content { width: 90%; max-width: 900px; height: 90vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; }
+        .pdf-modal-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-bottom: 1px solid #eee; }
+        .pdf-modal-title { margin: 0; }
+        .pdf-actions-container { display: flex; gap: 10px; align-items: center; }
+        
+        .btn-print { background: rgba(0, 184, 148, 0.15); color: #00b894; }
+        .btn-print:hover { background: #00b894; color: white; }
+        
+        .btn-download { background: rgba(52, 152, 219, 0.15); color: #3498db; }
+        .btn-download:hover { background: #3498db; color: white; }
+        
+        .pdf-close-btn { position: static; transform: none; margin: 0; width: 36px; height: 36px; font-size: 1.5rem; }
+        .pdf-iframe { width: 100%; flex-grow: 1; border: none; }
+        
+        .btn-edit-action { background: rgba(253, 203, 110, 0.3); color: #e17055; }
+        .btn-edit-action:hover { background: #e17055; color: white; }
+        
+        .btn-delete-action { background: rgba(255, 118, 117, 0.3); color: #d63031; }
+        .btn-delete-action:hover { background: #d63031; color: white; }
+
+        @media (max-width: 768px) {
+            .archives-grid { grid-template-columns: 1fr; }
+            .form-row-2-cols { grid-template-columns: 1fr; }
+            .page-header-actions { flex-direction: column; align-items: stretch; }
+            .search-box { max-width: 100%; }
+            .header-controls { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <button id="sidebar-toggle" class="toggle-btn" aria-label="کردنەوەی لیست"><i class='bx bx-menu'></i></button>
+        <div class="header-brand">
+            <img src="../assets/icon.png" alt="لۆگۆ" class="header-logo">
+            <h3>نوسینگەی دەشتی هەولێر</h3>
+        </div>
+        <div class="user-info" id="user-display">
+            <span id="user-email">بارکردن...</span>
+            <i class='bx bxs-user-circle'></i>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="../dashboard.html"><i class='bx bxs-dashboard'></i><span>داشبۆردی سەرەکی</span></a></li>
+                    <li><a href="../contracts/index.html"><i class='bx bxs-file-blank'></i><span>گرێبەستەکان</span></a></li>
+                    <li class="active"><a href="#"><i class='bx bx-archive'></i><span>ئەرشیفی گرێبەستەکان</span></a></li>
+                    <li><a href="../taminat/index.html"><i class='bx bx-shield-quarter'></i><span>بەشی دڵنیایی (تەئمینات)</span></a></li>
+                    <li><a href="../krechi/index.html"><i class='bx bx-group'></i><span>کرێچییەکان</span></a></li>
+                    <li><a href="#"><i class='bx bx-cog'></i><span>ڕێکخستنی وێب</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logout-btn" class="logout-btn">چوونەدەرەوە</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-area">
+                <div class="page-header-actions">
+                    <h2>ئەرشیفی گرێبەستەکان</h2>
+                    <div class="header-controls">
+                        <div class="search-box">
+                            <input type="text" id="search-archive" placeholder="گەڕان (ناو، موڵک، جۆر)..." oninput="filterArchives()">
+                            <i class='bx bx-search'></i>
+                        </div>
+                        <div class="date-filters date-filters-container">
+                            <input type="date" id="date-from" onchange="filterArchives()" title="لە بەرواری" class="date-filter-input">
+                            <span class="date-separator">-</span>
+                            <input type="date" id="date-to" onchange="filterArchives()" title="بۆ بەرواری" class="date-filter-input">
+                        </div>
+                        <button onclick="openModal()" class="control-btn">
+                            <span>زیادکردنی ئەرشیف</span><i class='bx bx-plus'></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Grid -->
+                <div id="archives-container" class="archives-grid">
+                    <!-- Cards will be injected here via JS -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Modal -->
+    <div id="archiveModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title">زیادکردنی ئەرشیفی نوێ</h3>
+            <form id="archive-form">
+                <input type="hidden" id="archive-id">
+                <div class="form-row form-row-2-cols">
+                    <div class="input-group">
+                        <label>جۆری گرێبەست</label>
+                        <select id="contract_type" required>
+                            <option value="گرێبەستی فرۆشتن">گرێبەستی فرۆشتن</option>
+                            <option value="گرێبەستی بەکرێدان">گرێبەستی بەکرێدان</option>
+                            <option value="پسوولەی پارەدان">پسوولەی پارەدان</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>مێژووی گرێبەست</label>
+                        <input type="date" id="contract_date" required>
+                    </div>
+                </div>
+
+                <div class="form-row form-row-2-cols">
+                    <div class="input-group">
+                        <label>ناوی سیانی فرۆشیار/خاوەن موڵك</label>
+                        <input type="text" id="seller_name" placeholder="ناوی تەواو" required>
+                    </div>
+                    <div class="input-group">
+                        <label>ژمارەی مۆبایلی فرۆشیار/خاوەن موڵك</label>
+                        <input type="text" id="seller_phone" placeholder="0750xxxxxxx">
+                    </div>
+                </div>
+
+                <div class="form-row form-row-2-cols">
+                    <div class="input-group">
+                        <label>ناوی سیانی کڕیار/کرێچی</label>
+                        <input type="text" id="buyer_name" placeholder="ناوی تەواو" required>
+                    </div>
+                    <div class="input-group">
+                        <label>ژمارەی مۆبایلی کڕیار/کرێچی</label>
+                        <input type="text" id="buyer_phone" placeholder="0750xxxxxxx">
+                    </div>
+                </div>
+
+                <div class="form-row form-row-2-cols">
+                    <div class="input-group">
+                        <label>جۆری موڵك</label>
+                        <input type="text" id="property_type" placeholder="نم: خانوو">
+                    </div>
+                    <div class="input-group">
+                        <label>ژمارەی موڵك</label>
+                        <input type="text" id="property_number" placeholder="نم: 123">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>وێنەی گرێبەست (PDF)</label>
+                    <input type="file" id="contract_file" accept=".pdf" class="file-input-styled">
+                    <small id="file-hint" class="file-hint-text">ئەگەر ناتەوێت فایلەکە بگۆڕیت، ئەمە بە بەتاڵی جێبهێڵە.</small>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span id="btn-text">تۆمارکردن</span>
+                    <div class="loader" id="btn-loader"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div id="deleteModal" class="modal confirmation-modal">
+        <div class="modal-content">
+            <div class="modal-icon icon-danger"><i class='bx bx-error-circle'></i></div>
+            <h3>دڵنیایت لە سڕینەوە؟</h3>
+            <p>ئەم کردارە گەڕانەوەی نییە و فایلەکەش دەسڕدرێتەوە.</p>
+            <div class="modal-actions">
+                <button onclick="closeDeleteModal()" class="modal-button btn-cancel">پاشگەزبوونەوە</button>
+                <button onclick="confirmDelete()" class="modal-button btn-confirm-danger">بەڵێ، بیسڕەوە</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF Viewer Modal -->
+    <div id="pdfViewerModal" class="modal">
+        <div class="modal-content pdf-modal-content">
+            <div class="pdf-modal-header">
+                <h3 class="pdf-modal-title">پێداچوونەوەی فایل</h3>
+                <div class="pdf-actions-container">
+                    <button id="print-btn" class="action-btn btn-print" title="پرینتکردن"><i class='bx bx-printer'></i></button>
+                    <a id="download-btn" href="#" target="_blank" class="action-btn btn-download" title="داگرتن"><i class='bx bx-download'></i></a>
+                    <span class="close-modal pdf-close-btn" onclick="closePdfModal()">&times;</span>
+                </div>
+            </div>
+            <iframe id="pdfFrame" class="pdf-iframe" src=""></iframe>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module">
+        import { supabase } from '../shared.js';
+
+        let allArchives = [];
+        let archiveToDelete = null;
+
+        // Fetch Archives
+        async function fetchArchives() {
+            const { data, error } = await supabase
+                .from('archives')
+                .select('*')
+                .order('created_at', { ascending: false });
+            
+            if (error) console.error('Error:', error);
+            else {
+                allArchives = data;
+                renderArchives(allArchives);
+            }
+        }
+
+        // Render Archives
+        function renderArchives(archives) {
+            const container = document.getElementById('archives-container');
+            container.innerHTML = '';
+            
+            archives.forEach(archive => {
+                const card = document.createElement('div');
+                card.className = 'archive-card collapsed';
+                card.innerHTML = `
+                    <div class="card-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                        <div class="contract-type">
+                            <i class='bx bxs-file-doc'></i>
+                            <h4>${archive.contract_type}</h4>
+                        </div>
+                        <div class="header-actions" onclick="event.stopPropagation()">
+                            ${archive.file_url ? `
+                            <button onclick="openPdf('${archive.file_url}')" class="btn-pdf-header" title="بینینی فایل">
+                                <i class='bx bxs-file-pdf'></i>
+                            </button>` : ''}
+                            <button class="toggle-details-btn"><i class='bx bx-chevron-up'></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item"><i class='bx bx-calendar'></i><span>${archive.contract_date}</span></div>
+                        <div class="info-group">
+                            <div class="info-group-title">فرۆشیار / خاوەن موڵک</div>
+                            <div class="info-item"><i class='bx bx-user'></i><span>${archive.seller_name}</span></div>
+                            <div class="info-item"><i class='bx bx-phone'></i><span>${archive.seller_phone || '-'}</span></div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-group-title">کڕیار / کرێچی</div>
+                            <div class="info-item"><i class='bx bx-user'></i><span>${archive.buyer_name}</span></div>
+                            <div class="info-item"><i class='bx bx-phone'></i><span>${archive.buyer_phone || '-'}</span></div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-group-title">زانیاری موڵک</div>
+                            <div class="info-item"><i class='bx bx-building-house'></i><span>${archive.property_type || '-'}</span></div>
+                            <div class="info-item"><i class='bx bx-hash'></i><span>${archive.property_number || '-'}</span></div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button onclick="editArchive(${archive.id})" class="action-btn btn-pdf btn-edit-action"><i class='bx bx-edit'></i></button>
+                        <button onclick="deleteArchive(${archive.id})" class="action-btn btn-pdf btn-delete-action"><i class='bx bx-trash'></i></button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Add/Edit Archive
+        document.getElementById('archive-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.querySelector('.btn-submit');
+            const loader = document.getElementById('btn-loader');
+            const text = document.getElementById('btn-text');
+            
+            btn.disabled = true;
+            loader.style.display = 'block';
+            text.style.display = 'none';
+
+            const id = document.getElementById('archive-id').value;
+            const fileInput = document.getElementById('contract_file');
+            const file = fileInput.files[0];
+            
+            let fileData = null;
+
+            // Upload File if selected
+            if (file) {
+                const fileName = `${Date.now()}_${file.name}`;
+                const { data, error } = await supabase.storage.from('archive_files').upload(fileName, file);
+                if (error) { alert('هەڵە لە بارکردنی فایل'); console.error(error); return; }
+                
+                const { data: urlData } = supabase.storage.from('archive_files').getPublicUrl(fileName);
+                fileData = { file_url: urlData.publicUrl, file_path: fileName };
+            }
+
+            const formData = {
+                contract_type: document.getElementById('contract_type').value,
+                contract_date: document.getElementById('contract_date').value,
+                seller_name: document.getElementById('seller_name').value,
+                seller_phone: document.getElementById('seller_phone').value,
+                buyer_name: document.getElementById('buyer_name').value,
+                buyer_phone: document.getElementById('buyer_phone').value,
+                property_type: document.getElementById('property_type').value,
+                property_number: document.getElementById('property_number').value,
+                ...(fileData && fileData) // Only update file info if new file uploaded
+            };
+
+            let error;
+            if (id) {
+                // Update
+                const { error: updateError } = await supabase.from('archives').update(formData).eq('id', id);
+                error = updateError;
+            } else {
+                // Insert
+                if (!file) { alert('تکایە فایل هەڵبژێرە'); btn.disabled = false; loader.style.display = 'none'; text.style.display = 'block'; return; }
+                const { error: insertError } = await supabase.from('archives').insert([formData]);
+                error = insertError;
+            }
+
+            if (!error) {
+                closeModal();
+                fetchArchives();
+            } else {
+                alert('هەڵەیەک ڕوویدا: ' + error.message);
+            }
+
+            btn.disabled = false;
+            loader.style.display = 'none';
+            text.style.display = 'block';
+        });
+
+        // Expose functions to window
+        window.openModal = () => {
+            document.getElementById('archiveModal').classList.add('visible');
+            document.getElementById('archive-form').reset();
+            document.getElementById('archive-id').value = '';
+            document.getElementById('modal-title').textContent = 'زیادکردنی ئەرشیفی نوێ';
+            document.getElementById('file-hint').style.display = 'none';
+            document.getElementById('contract_file').required = true;
+        };
+        window.closeModal = () => document.getElementById('archiveModal').classList.remove('visible');
+        
+        window.editArchive = (id) => {
+            const archive = allArchives.find(a => a.id === id);
+            if (!archive) return;
+            
+            document.getElementById('archive-id').value = archive.id;
+            document.getElementById('contract_type').value = archive.contract_type;
+            document.getElementById('contract_date').value = archive.contract_date;
+            document.getElementById('seller_name').value = archive.seller_name;
+            document.getElementById('seller_phone').value = archive.seller_phone;
+            document.getElementById('buyer_name').value = archive.buyer_name;
+            document.getElementById('buyer_phone').value = archive.buyer_phone;
+            document.getElementById('property_type').value = archive.property_type;
+            document.getElementById('property_number').value = archive.property_number;
+            
+            document.getElementById('modal-title').textContent = 'دەستکاریکردنی ئەرشیف';
+            document.getElementById('file-hint').style.display = 'block';
+            document.getElementById('contract_file').required = false;
+            document.getElementById('archiveModal').classList.add('visible');
+        };
+
+        window.deleteArchive = (id) => {
+            archiveToDelete = allArchives.find(a => a.id === id);
+            document.getElementById('deleteModal').classList.add('visible');
+        };
+        window.closeDeleteModal = () => document.getElementById('deleteModal').classList.remove('visible');
+        
+        window.confirmDelete = async () => {
+            if (!archiveToDelete) return;
+            
+            // Delete file first
+            if (archiveToDelete.file_path) {
+                await supabase.storage.from('archive_files').remove([archiveToDelete.file_path]);
+            }
+            
+            // Delete record
+            const { error } = await supabase.from('archives').delete().eq('id', archiveToDelete.id);
+            
+            if (!error) {
+                closeDeleteModal();
+                fetchArchives();
+            } else {
+                alert('هەڵە: ' + error.message);
+            }
+        };
+
+        window.openPdf = (url) => {
+            document.getElementById('pdfFrame').src = url;
+            document.getElementById('download-btn').href = url;
+            
+            document.getElementById('print-btn').onclick = async () => {
+                const btn = document.getElementById('print-btn');
+                const originalContent = btn.innerHTML;
+                
+                try {
+                    // نیشاندانی لۆدینگ
+                    btn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i>";
+                    btn.disabled = true;
+
+                    // هێنانی فایلەکە وەک Blob بۆ چارەسەری کێشەی Cross-Origin
+                    const response = await fetch(url);
+                    const blob = await response.blob();
+                    const blobUrl = URL.createObjectURL(blob);
+                    
+                    const iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = blobUrl;
+                    document.body.appendChild(iframe);
+                    
+                    iframe.onload = () => {
+                        setTimeout(() => {
+                            iframe.contentWindow.focus();
+                            iframe.contentWindow.print();
+                            
+                            // گەڕاندنەوەی دوگمەکە
+                            btn.innerHTML = originalContent;
+                            btn.disabled = false;
+                            
+                            // پاککردنەوە دوای تەواوبوون
+                            setTimeout(() => {
+                                document.body.removeChild(iframe);
+                                URL.revokeObjectURL(blobUrl);
+                            }, 2000);
+                        }, 500);
+                    };
+                } catch (error) {
+                    console.error('Print error:', error);
+                    alert('نەتوانرا پرینت بکرێت، تکایە فایلەکە دابەزێنە.');
+                    btn.innerHTML = originalContent;
+                    btn.disabled = false;
+                }
+            };
+            document.getElementById('pdfViewerModal').classList.add('visible');
+        };
+        window.closePdfModal = () => {
+            document.getElementById('pdfViewerModal').classList.remove('visible');
+            document.getElementById('pdfFrame').src = '';
+        };
+
+        window.filterArchives = () => {
+            const term = document.getElementById('search-archive').value.toLowerCase();
+            const dateFrom = document.getElementById('date-from').value;
+            const dateTo = document.getElementById('date-to').value;
+
+            const filtered = allArchives.filter(a => {
+                const matchesTerm = a.seller_name.toLowerCase().includes(term) || 
+                                    a.buyer_name.toLowerCase().includes(term) ||
+                                    (a.property_number && a.property_number.toLowerCase().includes(term));
+                
+                let matchesDate = true;
+                if (dateFrom) matchesDate = matchesDate && (a.contract_date >= dateFrom);
+                if (dateTo) matchesDate = matchesDate && (a.contract_date <= dateTo);
+
+                return matchesTerm && matchesDate;
+            });
+            renderArchives(filtered);
+        };
+
+        // Init
+        fetchArchives();
+    </script>
+</body>
+</html>

@@ -545,6 +545,7 @@
             padding: 15px 20px; 
             background: rgba(255, 255, 255, 0.1); 
             border-bottom: 1px solid rgba(255, 255, 255, 0.2); 
+            position: relative;
         }
         .notification-header h4 { margin: 0; font-size: 1.1rem; color: #fff; font-weight: 800; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
         .notification-header h4 { margin: 0; font-size: 1.1rem; color: #333; font-weight: 800; text-shadow: none; }
@@ -592,8 +593,8 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
             z-index: 999;
             opacity: 0;
             visibility: hidden;
@@ -889,7 +890,7 @@
                 <ul>
                     <li><a href="../dashboard.html"><i class='bx bxs-dashboard'></i><span>داشبۆردی سەرەکی</span></a></li>
                     <li><a href="../contracts/index.html"><i class='bx bxs-file-blank'></i><span>گرێبەستەکان</span></a></li>
-                    <li><a href="#"><i class='bx bx-archive'></i><span>ئەرشیفی گرێبەستەکان</span></a></li>
+                    <li><a href="../archive/archive.html"><i class='bx bx-archive'></i><span>ئەرشیفی گرێبەستەکان</span></a></li>
                     <li><a href="../taminat/index.html"><i class='bx bx-shield-quarter'></i><span>بەشی دڵنیایی (تەئمینات)</span></a></li>
                     <li class="active"><a href="#"><i class='bx bx-group'></i><span>کرێچییەکان</span></a></li>
                     <li><a href="#"><i class='bx bx-cog'></i><span>ڕێکخستنی وێب</span></a></li>
@@ -914,7 +915,7 @@
                             <!-- لایەری تەڵخ -->
                             <div id="notification-overlay" class="notification-overlay"></div>
                             <div id="notification-dropdown" class="notification-dropdown">
-                                <div class="notification-header" style="position: relative;">
+                                <div class="notification-header">
                                     <h4>ئاگادارییەکان</h4>
                                     <span id="close-notification-btn" class="close-notifications">&times;</span>
                                 </div>
@@ -1037,7 +1038,7 @@
     <!-- مۆداڵی دڵنیابوونەوە لە نوێکردنەوەی مانگ -->
     <div id="renewModal" class="modal confirmation-modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="window.cancelRenew()" style="display: flex;">&times;</span>
+            <span class="close-modal" onclick="window.cancelRenew()">&times;</span>
             <div class="modal-icon icon-success">
                 <i class='bx bx-calendar-check'></i>
             </div>
