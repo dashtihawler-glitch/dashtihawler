@@ -217,6 +217,7 @@
             padding: 15px 20px;
             border-bottom: 1px solid #f0f0f0;
             cursor: pointer;
+            -webkit-user-select: none;
             user-select: none;
         }
         .card-header:hover {
@@ -514,6 +515,18 @@
         .confirmation-modal .btn-cancel { border: 1px solid #ddd; background: white; color: #555; }
         .confirmation-modal .btn-confirm-danger { border: none; background: #ff7675; color: white; box-shadow: 0 5px 15px rgba(255, 118, 117, 0.3); }
 
+        #submit-loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border-width: 2px;
+            margin: 0 10px 0 0;
+        }
+
+        #deleteModal .modal-content {
+            max-width: 400px;
+        }
+
         /* ستایلی نوێی فۆڕم و دوگمە */
         .input-group label {
             display: flex;
@@ -717,7 +730,7 @@
                 <button type="submit" class="btn-submit">
                     <span id="submit-btn-text">تۆمارکردن</span>
                     <i class='bx bx-check-circle'></i>
-                    <div id="submit-loader" class="loader" style="display: none; width: 20px; height: 20px; border-width: 2px; margin: 0 10px 0 0;"></div>
+                    <div id="submit-loader" class="loader"></div>
                 </button>
             </form>
         </div>
@@ -725,7 +738,7 @@
 
     <!-- مۆداڵی دڵنیابوونەوە لە سڕینەوە -->
     <div id="deleteModal" class="modal confirmation-modal">
-        <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-content">
             <div class="modal-icon icon-danger"><i class='bx bx-error-circle'></i></div>
             <h3>دڵنیایت لە سڕینەوە؟</h3>
             <p>ئەم کردارە گەڕانەوەی نییە و فایلە پەیوەستدارەکەش دەسڕدرێتەوە.</p>
@@ -771,6 +784,21 @@
         // سکریپت بۆ کردنەوە و داخستنی کاردەکان لە ڕێگەی هێدەرەوە
         document.addEventListener('DOMContentLoaded', () => {
             const depositsContainer = document.getElementById('deposits-container');
+            if (depositsContainer) {
+                depositsContainer.addEventListener('click', (e) => {
+                    const header = e.target.closest('.card-header');
+                    if (header) {
+                        const card = header.closest('.deposit-card');
+                        if (card) {
+                            card.classList.toggle('collapsed');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>     const depositsContainer = document.getElementById('deposits-container');
             if (depositsContainer) {
                 depositsContainer.addEventListener('click', (e) => {
                     const header = e.target.closest('.card-header');

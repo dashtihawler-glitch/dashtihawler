@@ -50,6 +50,7 @@
             padding: 15px 20px;
             border-bottom: 1px solid #f0f0f0;
             cursor: pointer;
+            -webkit-user-select: none;
             user-select: none;
         }
         .card-header:hover {
@@ -701,10 +702,15 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            justify-content: flex-start;
+            margin-top: 35px;
         }
 
         .is-paid-group label {
             margin: 0;
+        }
+        .is-paid-group label:first-child {
+            margin-left: 15px;
         }
 
         .confirmation-modal .modal-content {
@@ -952,8 +958,8 @@
                         <label><i class='bx bx-calendar'></i> مێژووی تۆمارکردن</label>
                         <input type="date" id="registration_date" required>
                     </div>
-                    <div class="input-group is-paid-group" style="justify-content: flex-start; margin-top: 35px;">
-                        <label style="margin-left: 15px;">پارەی داوە؟</label>
+                <div class="input-group is-paid-group">
+                    <label>پارەی داوە؟</label>
                         <label class="status-switch">
                             <input type="checkbox" id="is_paid">
                             <span class="slider"></span>

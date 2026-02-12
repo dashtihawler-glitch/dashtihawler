@@ -526,31 +526,36 @@ body.sidebar-closed .main-content {
 .contract-card {
     background: #ffffff;
     border-radius: 20px;
-    padding: 20px;
+    padding: 15px;
     text-align: center;
     position: relative;
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     border: 1px solid rgba(0,0,0,0.05);
+    border: 1px solid #e0e0e0;
     cursor: pointer;
     text-decoration: none;
     display: block;
 }
 
 /* ڕەنگەکان بۆ هەر کاردێک */
-.card-sales { border-top: 6px solid var(--primary-color); }
-.card-rent { border-top: 6px solid var(--accent-color); }
-.card-payment { border-top: 6px solid #27ae60; }
+.card-sales { border: 1px solid #bccfe7; border-top: 4px solid var(--primary-color); background-color: rgba(26, 42, 108, 0.03); }
+.card-rent { border: 1px solid #fadbd8; border-top: 4px solid var(--accent-color); background-color: rgba(178, 31, 31, 0.03); }
+.card-payment { border: 1px solid #abebc6; border-top: 4px solid #27ae60; background-color: rgba(39, 174, 96, 0.03); }
 
 .card-icon {
     font-size: 2.2rem;
     margin-bottom: 15px;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
     display: inline-flex;
     justify-content: center;
     align-items: center;
     width: 60px;
     height: 60px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     transition: all 0.5s ease;
 }
@@ -560,16 +565,23 @@ body.sidebar-closed .main-content {
 .card-payment .card-icon { background: rgba(39, 174, 96, 0.08); color: #27ae60; }
 
 /* ئەنیمەیشنی بریقە (Shine Effect) */
+@keyframes shine-continuous {
+    0% { left: -100%; }
+    40% { left: 200%; }
+    100% { left: 200%; }
+}
+
 .contract-card::before {
     content: '';
     position: absolute;
     top: 0;
     left: -100%;
-    width: 100%;
+    width: 50%;
     height: 100%;
-    background: linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent);
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
     transform: skewX(-25deg);
-    transition: 0s;
+    animation: shine-continuous 3s infinite;
+    pointer-events: none;
 }
 
 /* ئەنیمەیشن تەنها بۆ لاپتۆپ */
@@ -586,40 +598,19 @@ body.sidebar-closed .main-content {
         background: #ffffff;
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
-    .contract-card:hover::before {
-        left: 100%;
-        transition: 0.7s;
-    }
 }
 
 .contract-card h3 { color: #333; margin-bottom: 8px; font-size: 1.1rem; }
 .contract-card p { color: #777; font-size: 0.8rem; line-height: 1.5; }
+.contract-card h3 { color: #333; margin-bottom: 5px; font-size: 1rem; }
+.contract-card p { color: #777; font-size: 0.75rem; line-height: 1.4; }
 
 /* بچووککردنەوەی زیاتر بۆ مۆبایل */
 @media (max-width: 768px) {
     .contracts-grid {
-        grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+        grid-template-columns: 1fr;
         gap: 15px;
-        padding: 0;
-    }
-
-    .contract-card {
-        padding: 15px 10px;
-    }
-
-    .card-icon {
-        width: 50px;
-        height: 50px;
-        font-size: 1.8rem;
-        margin-bottom: 10px;
-    }
-
-    .contract-card h3 {
-        font-size: 1rem;
-    }
-
-    .contract-card p {
-        font-size: 0.75rem;
+        padding: 0 15px;
     }
 }
 
@@ -772,6 +763,36 @@ body.sidebar-closed .main-content {
         padding: 14px;
         font-size: 1.1rem;
     }
+
+    /* تایبەتمەندی بۆ فۆڕمی فرۆشتن لە مۆبایل */
+    .sales-form-container .form-section {
+        margin-bottom: 25px;
+        border-radius: 20px;
+        border: none;
+        border-top: 5px solid var(--primary-color);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        background: #ffffff;
+        padding: 25px 20px;
+    }
+
+    .sales-form-container .form-section h4 {
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+        text-align: center;
+        background: linear-gradient(to right, rgba(26, 42, 108, 0.05), rgba(26, 42, 108, 0.1), rgba(26, 42, 108, 0.05));
+        padding: 12px;
+        border-radius: 12px;
+        border-bottom: none;
+        color: var(--primary-color);
+        font-weight: 800;
+    }
+
+    .sales-form-container .input-group input,
+    .sales-form-container .input-group select {
+        background-color: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
 }
 
 /* ==================
@@ -843,6 +864,11 @@ body.sidebar-closed .main-content {
     opacity: 0;
     animation: fadeInUpStaggered 0.5s ease-out forwards;
 }
+
+/* Animation delays for contract cards */
+.contracts-grid .staggered-card:nth-child(1) { animation-delay: 0.1s; }
+.contracts-grid .staggered-card:nth-child(2) { animation-delay: 0.2s; }
+.contracts-grid .staggered-card:nth-child(3) { animation-delay: 0.3s; }
 
 /* ==================
    ستایلی تایبەت بە مۆبایلی بەشی تەئمینات
@@ -1080,22 +1106,6 @@ body.sidebar-closed .main-content {
     transform: scale(1);
 }
 .close-modal {
-    position: absolute;
-    left: 20px;
-    top: 20px;
-    font-size: 24px;
-    background: #f1f2f6;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.3s;
-    color: #333;
-}
-.close-modal:hover { background: #ff7675; color: white; }
     position: absolute;
     left: 20px;
     top: 20px;

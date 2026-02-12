@@ -160,6 +160,24 @@ function checkNotifications() {
         notificationBadge.classList.add('hidden');
         notificationBtn.classList.remove('has-notifications');
     }
+
+    // بەشی ناردنی ئیمەیڵ بۆ بەکارهێنەران (ئۆتۆماتیکی)
+    let emailData = JSON.parse(localStorage.getItem('sentEmails_DH') || '{}');
+    
+    // ئەگەر بەروارەکە هی ئەمڕۆ نەبوو، پاکی بکەرەوە (ڕۆژانە نوێ دەبێتەوە)
+    if (emailData.date !== todayDateString) {
+        emailData = { date: todayDateString, sentIds: [] };
+    }
+
+    const tenantsToEmail = dueTenants.filter(t => !emailData.sentIds.includes(t.id));
+
+    if (tenantsToEmail.length > 0) {
+        tenantsToEmail.forEach(tenant => {
+            sendEmailToUsers(tenant);
+            emailData.sentIds.push(tenant.id);
+        });
+        localStorage.setItem('sentEmails_DH', JSON.stringify(emailData));
+    }
 }
 
 // فەنکشن بۆ هەژمارکردنی ڕۆژە ماوەکان بۆ کۆتایی مانگ
@@ -181,6 +199,26 @@ function getDaysRemaining(dateStr) {
     
     const diffTime = Math.abs(nextDue - today);
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+// فەنکشن بۆ ناردنی ئیمەیڵ بۆ هەموو بەکارهێنەرانی سوپابەیس
+async function sendEmailToUsers(tenant) {
+    try {
+        // بانگکردنی Edge Function بۆ ناردنی ئیمەیڵ
+        // تێبینی: پێویستە لە سوپابەیس Edge Function ێک دروست بکەیت بە ناوی 'send-rent-notification'
+        const { data, error } = await supabase.functions.invoke('send-rent-notification', {
+            body: { 
+                tenant_name: tenant.full_name,
+                amount: tenant.monthly_rent,
+                currency: tenant.currency,
+                property: `${tenant.property_type} ${tenant.property_number}`
+            }
+        });
+        if (error) console.error('Error sending email:', error);
+        else console.log('Email notification sent for:', tenant.full_name);
+    } catch (err) {
+        console.error('Failed to invoke email function:', err);
+    }
 }
 
 // دروستکردنی کارتی کرێچی
