@@ -600,6 +600,17 @@ if (notificationBtn) {
     });
 }
 
+// داخستنی سایدبار کاتێک کلیک لە دەرەوە دەکرێت (بۆ مۆبایل)
+document.addEventListener('click', (e) => {
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile && document.body.classList.contains('sidebar-open')) {
+        // بەکارهێنانی closest بۆ دڵنیابوونەوە لەوەی کلیکەکە لەناو سایدبار یان دوگمەکە نییە
+        if (!e.target.closest('#sidebar') && !e.target.closest('#sidebar-toggle')) {
+            document.body.classList.remove('sidebar-open');
+        }
+    }
+});
+
 // دەستپێکردن
 checkUser();
 fetchTenants();
