@@ -101,4 +101,45 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sidebarToggle) {
         sidebarToggle.addEventListener('click', handleSidebarToggle);
     }
+
+    // داخستنی سایدبار کاتێک کلیک لە دەرەوە دەکرێت (بۆ مۆبایل)
+    document.addEventListener('click', (e) => {
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile && document.body.classList.contains('sidebar-open')) {
+            if (!e.target.closest('#sidebar') && !e.target.closest('#sidebar-toggle')) {
+                document.body.classList.remove('sidebar-open');
+            }
+        }
+    });
+
+    // زیادکردنی تایبەتمەندی Swipe بۆ کردنەوە و داخستنی سایدبار
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+        const isMobile = window.innerWidth <= 768;
+        if (!isMobile) return;
+
+        const swipeThreshold = 50; // کەمترین مەودا بۆ جوڵە
+        const edgeThreshold = 50; // مەودای لێوار بۆ کردنەوە (لە لای ڕاستەوە)
+
+        // کردنەوە: لە ڕاستەوە بۆ چەپ (چونکە سایدبار لە لای ڕاستە)
+        if (touchStartX - touchEndX > swipeThreshold && touchStartX > window.innerWidth - edgeThreshold) {
+            document.body.classList.add('sidebar-open');
+        }
+
+        // داخستن: لە چەپەوە بۆ ڕاست
+        if (touchEndX - touchStartX > swipeThreshold && document.body.classList.contains('sidebar-open')) {
+            document.body.classList.remove('sidebar-open');
+        }
+    }
 });

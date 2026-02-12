@@ -798,19 +798,4 @@
         });
     </script>
 </body>
-</html>     const depositsContainer = document.getElementById('deposits-container');
-            if (depositsContainer) {
-                depositsContainer.addEventListener('click', (e) => {
-                    const header = e.target.closest('.card-header');
-                    if (header) {
-                        const card = header.closest('.deposit-card');
-                        if (card) {
-                            card.classList.toggle('collapsed');
-                        }
-                    }
-                });
-            }
-        });
-    </script>
-</body>
 </html>

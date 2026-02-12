@@ -1105,12 +1105,12 @@ body.sidebar-closed .main-content {
     .view-wrapper {
         display: none;
         position: fixed;
-        top: 0;
+        top: 70px;
         right: 0;
         width: 100%;
-        height: 100%;
+        height: calc(100% - 70px);
         background: #f8f9fa;
-        z-index: 1000;
+        z-index: 90;
         overflow-y: auto;
         padding: 20px;
         padding-top: 20px;

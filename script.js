@@ -19,6 +19,8 @@ const notificationBtn = document.getElementById('notification-btn');
 const notificationBadge = document.getElementById('notification-badge');
 const notificationDropdown = document.getElementById('notification-dropdown');
 const notificationList = document.getElementById('notification-list');
+const notificationOverlay = document.getElementById('notification-overlay');
+const closeNotificationBtn = document.getElementById('close-notification-btn');
 const body = document.body;
 let tenantToDeleteId = null;
 let tenantToRenew = null;
@@ -387,6 +389,12 @@ window.closeRenewModal = () => {
     tenantToRenew = null;
 };
 
+// داخستنی مۆداڵی نوێکردنەوە و گەڕاندنەوەی دۆخەکە
+window.cancelRenew = () => {
+    closeRenewModal();
+    fetchTenants(); // گەڕاندنەوەی سویچەکە بۆ دۆخی پێشوو
+};
+
 // کاتێک بەکارهێنەر دوگمەی "بەڵێ، نوێی بکەرەوە" دادەگرێت
 window.confirmRenew = async () => {
     if (!tenantToRenew) return;
@@ -569,6 +577,7 @@ if (notificationBtn) {
     notificationBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         notificationDropdown.classList.toggle('visible');
+        if (notificationOverlay) notificationOverlay.classList.toggle('visible');
 
         // ئەگەر لیستەکە کرایەوە، ئاگادارییەکان وەک بینراو تۆمار بکە
         if (notificationDropdown.classList.contains('visible')) {
@@ -594,8 +603,13 @@ if (notificationBtn) {
     });
 
     document.addEventListener('click', (e) => {
-        if (!notificationDropdown.contains(e.target) && !notificationBtn.contains(e.target)) {
+        // داخستن ئەگەر کلیک لە دەرەوە کرا یان لەسەر دوگمەی داخستن یان لایەرەکە
+        const isCloseBtn = closeNotificationBtn && closeNotificationBtn.contains(e.target);
+        const isOverlay = e.target === notificationOverlay;
+        
+        if ((!notificationDropdown.contains(e.target) && !notificationBtn.contains(e.target)) || isCloseBtn || isOverlay) {
             notificationDropdown.classList.remove('visible');
+            if (notificationOverlay) notificationOverlay.classList.remove('visible');
         }
     });
 }
