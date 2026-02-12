@@ -201,8 +201,10 @@ function createTenantCard(tenant) {
 // پیشاندانی داتاکان
 function renderTenants(tenants) {
     tenantsContainer.innerHTML = '';
-    tenants.forEach(tenant => {
+    tenants.forEach((tenant, index) => {
         const card = createTenantCard(tenant);
+        card.classList.add('staggered-card');
+        card.style.animationDelay = `${index * 0.1}s`;
         tenantsContainer.appendChild(card);
     });
 }
