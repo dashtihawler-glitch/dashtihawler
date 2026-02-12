@@ -337,6 +337,12 @@
     100% { box-shadow: 0 0 0 0 rgba(0, 184, 148, 0); }
 }
 
+/* شاردنەوەی خاڵی سەوز کاتێک ئینتەرنێت نییە */
+.user-info.offline::before {
+    display: none;
+    animation: none;
+}
+
 .user-info:hover {
     background: rgba(255, 255, 255, 0.25);
     transform: translateY(-2px);
@@ -1423,4 +1429,141 @@ body.sidebar-closed .main-content {
     .quick-access-card {
         padding: 20px;
     }
+}
+/* ==================
+   PWA Install Banner
+   ================== */
+#install-banner {
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    background: rgba(0, 0, 0, 0.6);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.3s ease-out;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+}
+
+@keyframes popIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.install-banner-card {
+    background: white;
+    padding: 30px;
+    border-radius: 25px;
+    width: 90%;
+    max-width: 350px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+}
+
+.install-banner-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.install-banner-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(26, 42, 108, 0.2);
+    margin-bottom: 10px;
+}
+
+.install-banner-text h4 {
+    margin: 0 0 8px 0;
+    font-size: 1.3rem;
+    color: #333;
+    font-weight: 800;
+}
+
+.install-banner-text p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+.install-banner-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+#install-btn {
+    background: linear-gradient(135deg, var(--primary-color), #2a4896);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: inherit;
+    transition: 0.3s;
+    width: 100%;
+    font-size: 1rem;
+    box-shadow: 0 8px 20px rgba(26, 42, 108, 0.25);
+}
+#install-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(26, 42, 108, 0.35);
+}
+
+#dismiss-install-btn {
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    color: #888;
+    cursor: pointer;
+    padding: 10px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+#dismiss-install-btn:hover {
+    color: #333;
+    background: #f5f6fa;
+    border-radius: 10px;
+}
+
+/* ستایلی ڕێنماییەکانی ئایفۆن */
+.ios-guide {
+    display: none; /* لە سەرەتادا شاراوەیە */
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+}
+
+.ios-guide p {
+    font-weight: 800;
+    color: #2d3436;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.ios-step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #636e72;
+}
+
+.ios-step i {
+    font-size: 1.4rem;
+    vertical-align: middle;
 }

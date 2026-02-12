@@ -1,4 +1,5 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+import { saveOfflineAction } from '../shared.js';
 
 const supabaseUrl = 'https://nfrebhlhndgfxbqxoxzx.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5mcmViaGxobmRnZnhicXhveHp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3MzE0MTIsImV4cCI6MjA4NjMwNzQxMn0.QnSC5bN_k8vy71_xmaTMWFQGM2PY9qZCpJyLStdDcbs'
@@ -218,6 +219,12 @@ form.addEventListener('submit', async (e) => {
     const file = fileInput.files[0];
     let receiptUrl = document.getElementById('file-info').dataset.existingUrl || null;
 
+    if (!navigator.onLine && file) {
+        alert('ببورە، لەکاتی نەبوونی ئینتەرنێت ناتوانیت فایل بار بکەیت. تکایە فایلەکە لاببە یان چاوەڕێی ئینتەرنێت بکە.');
+        showSubmitLoader(false);
+        return;
+    }
+
     // 1. Upload file if a new one is selected
     if (file) {
         const filePath = `public/${Date.now()}-${file.name}`;
@@ -255,6 +262,29 @@ form.addEventListener('submit', async (e) => {
         deposit_date: document.getElementById('deposit_date').value,
         receipt_url: receiptUrl,
     };
+
+    // Offline Handling
+    if (!navigator.onLine) {
+        const action = id ? 'update' : 'insert';
+        saveOfflineAction('deposits', action, depositData, id);
+        
+        // Optimistic UI
+        const fakeData = { ...depositData, id: id || Date.now(), deposit_holders: { name: '...' } }; // Holder name is tricky offline
+        if (id) {
+            const index = allDeposits.findIndex(d => d.id === Number(id));
+            if (index !== -1) allDeposits[index] = fakeData;
+            const oldCard = document.getElementById(`deposit-card-${id}`);
+            const newCard = createDepositCard(fakeData);
+            if (oldCard) oldCard.replaceWith(newCard);
+        } else {
+            allDeposits.unshift(fakeData);
+            depositsContainer.prepend(createDepositCard(fakeData));
+        }
+        showSubmitLoader(false);
+        closeModal();
+        form.reset();
+        return;
+    }
 
     // 3. Insert or Update in DB
     let result;
@@ -341,6 +371,18 @@ window.closeDeleteModal = () => {
 
 window.confirmDelete = async () => {
     if (!depositToDelete) return;
+
+    if (!navigator.onLine) {
+        saveOfflineAction('deposits', 'delete', {}, depositToDelete.id);
+        allDeposits = allDeposits.filter(d => d.id !== depositToDelete.id);
+        const cardToRemove = document.getElementById(`deposit-card-${depositToDelete.id}`);
+        if (cardToRemove) {
+            cardToRemove.classList.add('card-exit-active');
+            setTimeout(() => cardToRemove.remove(), 400);
+        }
+        closeDeleteModal();
+        return;
+    }
 
     // 1. Delete from DB
     const { error: dbError } = await supabase

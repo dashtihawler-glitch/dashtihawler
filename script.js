@@ -1,4 +1,5 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+import { saveOfflineAction } from './shared.js';
 
 // زانیارییەکانی سوپابەیس (هەمان زانیاری پڕۆژەکەت)
 const supabaseUrl = 'https://nfrebhlhndgfxbqxoxzx.supabase.co'
@@ -311,6 +312,29 @@ form.addEventListener('submit', async (e) => {
         is_paid: document.getElementById('is_paid').checked
     };
 
+    // پشکنینی ئۆفلاین
+    if (!navigator.onLine) {
+        const action = id ? 'update' : 'insert';
+        saveOfflineAction('tenants', action, tenantData, id);
+        
+        // نوێکردنەوەی ڕووکەش (Optimistic UI)
+        const fakeData = { ...tenantData, id: id || Date.now(), created_at: new Date().toISOString() };
+        if (id) {
+            const index = allTenants.findIndex(t => t.id == id);
+            if (index !== -1) allTenants[index] = fakeData;
+            const oldCard = document.getElementById(`tenant-card-${id}`);
+            const newCard = createTenantCard(fakeData);
+            if (oldCard) oldCard.replaceWith(newCard);
+        } else {
+            allTenants.unshift(fakeData);
+            const newCard = createTenantCard(fakeData);
+            tenantsContainer.prepend(newCard);
+        }
+        closeModal();
+        form.reset();
+        return;
+    }
+
     let result;
     if (id) {
         // نوێکردنەوە (Update)
@@ -411,6 +435,22 @@ window.confirmRenew = async () => {
     }
     const nextDateStr = currentDate.toISOString().split('T')[0];
 
+    // پشکنینی ئۆفلاین
+    if (!navigator.onLine) {
+        const updateData = { is_paid: false, registration_date: nextDateStr };
+        saveOfflineAction('tenants', 'update', updateData, id);
+        
+        // UI Update
+        tenant.is_paid = false;
+        tenant.registration_date = nextDateStr;
+        const oldCard = document.getElementById(`tenant-card-${id}`);
+        const newCard = createTenantCard(tenant);
+        if (oldCard) oldCard.replaceWith(newCard);
+        
+        closeRenewModal();
+        return;
+    }
+
     // نوێکردنەوەی داتا: بەرواری نوێ + گەڕانەوە بۆ دۆخی پارەنەدان (سوور)
     const { data, error } = await supabase
         .from('tenants')
@@ -449,6 +489,20 @@ window.justRecordPayment = async () => {
 
 // فەنکشنێکی یارمەتیدەر بۆ نوێکردنەوەی دۆخی پارەدان
 async function updatePaymentStatus(id, status) {
+    if (!navigator.onLine) {
+        saveOfflineAction('tenants', 'update', { is_paid: status }, id);
+        const tenant = allTenants.find(t => t.id === id);
+        if (tenant) tenant.is_paid = status;
+        
+        // UI Update logic for filter
+        const showUnpaidOnly = document.getElementById('filter-unpaid').checked;
+        if (showUnpaidOnly && status === true) {
+            const card = document.getElementById(`tenant-card-${id}`);
+            if (card) card.remove();
+        }
+        return;
+    }
+
     const { error } = await supabase
         .from('tenants')
         .update({ is_paid: status })
@@ -495,6 +549,18 @@ window.closeDeleteModal = () => {
 
 window.confirmDelete = async () => {
     if (tenantToDeleteId) {
+        if (!navigator.onLine) {
+            saveOfflineAction('tenants', 'delete', {}, tenantToDeleteId);
+            allTenants = allTenants.filter(t => t.id !== tenantToDeleteId);
+            const cardToRemove = document.getElementById(`tenant-card-${tenantToDeleteId}`);
+            if (cardToRemove) {
+                cardToRemove.classList.add('card-exit-active');
+                setTimeout(() => cardToRemove.remove(), 400);
+            }
+            closeDeleteModal();
+            return;
+        }
+
         const { error } = await supabase
             .from('tenants')
             .delete()
