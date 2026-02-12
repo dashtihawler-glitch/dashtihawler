@@ -110,8 +110,10 @@ function checkNotifications() {
     // پیشاندان یان شاردنەوەی نیشانەی ئاگاداری
     if (newNotifications.length > 0) {
         notificationBadge.classList.remove('hidden');
+        notificationBtn.classList.add('has-notifications');
     } else {
         notificationBadge.classList.add('hidden');
+        notificationBtn.classList.remove('has-notifications');
     }
 }
 
@@ -146,12 +148,12 @@ function createTenantCard(tenant) {
     card.className = 'tenant-card collapsed';
     card.id = `tenant-card-${tenant.id}`; // زیادکردنی ID بۆ دۆزینەوەی ئاسان
     card.innerHTML = `
-            <div class="card-header">
+            <div class="card-header" onclick="toggleCardDetails(${tenant.id})">
                 <div class="tenant-name">
                     <i class='bx bxs-user-circle'></i>
                     <h4>${tenant.full_name}</h4>
                 </div>
-                <button class="toggle-details-btn" onclick="toggleCardDetails(${tenant.id})" title="پیشاندان/شاردنەوە">
+                <button class="toggle-details-btn" title="پیشاندان/شاردنەوە">
                     <i class='bx bx-chevron-up'></i>
                 </button>
             </div>
@@ -184,11 +186,11 @@ function createTenantCard(tenant) {
                         <input type="checkbox" ${isPaid ? 'checked' : ''} onchange="toggleStatus(${tenant.id}, this.checked)">
                         <span class="slider"></span>
                     </label>
-                    <!-- کاتی ماوە (تەنها کاتێک کارتەکە داخراوە دەردەکەوێت) -->
-                    <span class="collapsed-info ${dueSoonClass}">
-                        <i class='bx bx-timer'></i> ${daysRemaining} ڕۆژ
-                    </span>
                 </div>
+                <!-- کاتی ماوە (تەنها کاتێک کارتەکە داخراوە دەردەکەوێت) -->
+                <span class="collapsed-info ${dueSoonClass}">
+                    <i class='bx bx-timer'></i> ${daysRemaining} ڕۆژ
+                </span>
                 <div class="card-actions">
                     <button class="action-btn btn-edit" onclick="editTenant(${tenant.id})"><i class='bx bx-edit-alt'></i></button>
                     <button class="action-btn btn-delete" onclick="deleteTenant(${tenant.id})"><i class='bx bxs-trash-alt'></i></button>
@@ -504,6 +506,7 @@ if (notificationBtn) {
 
             // شاردنەوەی نیشانەکە
             notificationBadge.classList.add('hidden');
+            notificationBtn.classList.remove('has-notifications');
         }
     });
 

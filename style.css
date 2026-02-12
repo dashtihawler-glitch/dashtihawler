@@ -452,6 +452,15 @@ body.sidebar-closed .main-content {
         padding: 0;
     }
 
+    /* زیادکردنی بۆشایی بۆ تێکست و ناونیشانەکان لە مۆبایل */
+    .content-area > h2,
+    .content-area > p,
+    .content-area > .page-header-actions,
+    .content-area > .page-header-flex {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
     .dashboard-container {
         flex-direction: column;
         padding-top: 130px; /* گونجاندن لەگەڵ بەرزی نوێی هێدەر */
@@ -503,15 +512,6 @@ body.sidebar-closed .main-content {
     display: block;
 }
 
-.contract-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-}
-
-.card-rent:hover {
-    box-shadow: 0 20px 40px rgba(178, 31, 31, 0.15);
-}
-
 /* ڕەنگەکان بۆ هەر کاردێک */
 .card-sales { border-top: 6px solid var(--primary-color); }
 .card-rent { border-top: 6px solid var(--accent-color); }
@@ -533,12 +533,6 @@ body.sidebar-closed .main-content {
 .card-rent .card-icon { background: rgba(178, 31, 31, 0.08); color: var(--accent-color); }
 .card-payment .card-icon { background: rgba(39, 174, 96, 0.08); color: #27ae60; }
 
-.contract-card:hover .card-icon {
-    transform: scale(1.1) rotate(10deg);
-    background: #ffffff;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
 /* ئەنیمەیشنی بریقە (Shine Effect) */
 .contract-card::before {
     content: '';
@@ -552,9 +546,24 @@ body.sidebar-closed .main-content {
     transition: 0s;
 }
 
-.contract-card:hover::before {
-    left: 100%;
-    transition: 0.7s;
+/* ئەنیمەیشن تەنها بۆ لاپتۆپ */
+@media (min-width: 769px) {
+    .contract-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    }
+    .card-rent:hover {
+        box-shadow: 0 20px 40px rgba(178, 31, 31, 0.15);
+    }
+    .contract-card:hover .card-icon {
+        transform: scale(1.1) rotate(10deg);
+        background: #ffffff;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .contract-card:hover::before {
+        left: 100%;
+        transition: 0.7s;
+    }
 }
 
 .contract-card h3 { color: #333; margin-bottom: 8px; font-size: 1.1rem; }
@@ -936,6 +945,15 @@ body.sidebar-closed .main-content {
     @keyframes slideIn {
         from { transform: translateX(100%); opacity: 0; }
         to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+
+    .view-wrapper.closing {
+        animation: slideOut 0.3s ease-in forwards;
     }
 
     .mobile-view-header {

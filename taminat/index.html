@@ -16,88 +16,126 @@
         /* ستایلی تایبەت بەم لاپەڕەیە - دیزاینی نوێ */
         .summary-section {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
             margin-bottom: 30px;
         }
         .summary-card {
-            background: #ffffff;
-            border-radius: 15px;
-            padding: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.05);
+            /* دیزاینی ڕەنگاوڕەنگ بە کەمترین سپی */
+            background: linear-gradient(135deg, var(--card-color), #2d3436);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border: none;
             transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            border-top: 5px solid var(--card-color, var(--primary-color));
+            color: white;
         }
-        .summary-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        /* شێوەی جوانکاری لە باکگراوند */
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        /* ئەنیمەیشنی بریقە */
+        .summary-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+            transform: skewX(-25deg);
+            transition: 0.5s;
+            pointer-events: none;
+        }
+        @media (min-width: 769px) {
+            .summary-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            }
+            .summary-card:hover::after {
+                left: 100%;
+            }
         }
         .summary-card h4 {
-            margin-bottom: 15px;
-            color: #2d3436;
+            margin-bottom: 20px;
+            color: white;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 1rem;
+            gap: 12px;
+            font-size: 1.1rem;
             font-weight: 700;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed #e0e0e0;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            z-index: 1;
         }
         .summary-card h4 i {
-            font-size: 1.2rem;
-            color: var(--card-color, var(--primary-color));
-            background: rgba(0, 0, 0, 0.05);
+            font-size: 1.4rem;
+            color: var(--card-color);
+            background: white;
             padding: 8px;
-            border-radius: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .total-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
-            padding: 10px 12px;
-            background-color: #f8f9fa;
-            border-radius: 10px;
+            margin-bottom: 12px;
+            padding: 12px 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
             transition: background-color 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 1;
+            color: white;
         }
         .total-row:last-child { margin-bottom: 0; }
-        .total-row:hover { background-color: #f1f2f6; }
+        .total-row:hover { background-color: rgba(255, 255, 255, 0.2); }
         
         .currency-info {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         .currency-icon {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
         }
-        .iqd-icon { background-color: rgba(26, 42, 108, 0.1); color: #1a2a6c; }
-        .usd-icon { background-color: rgba(39, 174, 96, 0.1); color: #27ae60; }
+        .iqd-icon, .usd-icon { background-color: rgba(255, 255, 255, 0.2); color: white; }
         
         .currency-name {
-            font-weight: 600;
-            color: #636e72;
-            font-size: 0.85rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
         }
         
         .amount {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 800;
             letter-spacing: 0.5px;
+            color: white;
+            text-shadow: none;
         }
-        .amount.iqd { color: #1a2a6c; }
-        .amount.usd { color: #27ae60; }
+        .amount.iqd, .amount.usd { color: white; }
 
         /* ستایلی خانەی گەڕان */
         .search-box {
@@ -165,9 +203,11 @@
             background-color: #f4f8fb;
             border-color: #c5d7ef;
         }
-        .deposit-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        @media (min-width: 769px) {
+            .deposit-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            }
         }
 
         .card-header {
@@ -548,7 +588,7 @@
 
         <main class="main-content" id="main-content">
             <div class="content-area">
-                <h2 style="font-size: 1.5rem; margin-bottom: 10px;">بەڕێوەبردنی پارەی دڵنیایی</h2>
+                <h2>بەڕێوەبردنی پارەی دڵنیایی</h2>
                 <p class="page-description">لێرەوە دەتوانیت تۆمارەکانی پارەی دڵنیایی بەڕێوەببەیت.</p>
 
                 <!-- مینیوی سەرەکی مۆبایل -->
@@ -720,7 +760,12 @@
             document.getElementById(viewId).classList.add('active');
         }
         function closeView(viewId) {
-            document.getElementById(viewId).classList.remove('active');
+            const view = document.getElementById(viewId);
+            view.classList.add('closing');
+            setTimeout(() => {
+                view.classList.remove('active');
+                view.classList.remove('closing');
+            }, 300); // کاتی ئەنیمەیشنەکە 0.3 چرکەیە
         }
 
         // سکریپت بۆ کردنەوە و داخستنی کاردەکان لە ڕێگەی هێدەرەوە
