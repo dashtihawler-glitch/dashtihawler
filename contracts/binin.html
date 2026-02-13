@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بینینی گرێبەستەکان - Google Drive</title>
+    <link rel="stylesheet" href="../style.css">
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <style>
+        /* Custom styles for this page */
+        .folder-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+            padding: 10px;
+        }
+        
+        .folder-card {
+            background: white;
+            border-radius: 25px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .folder-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .folder-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            width: 70px;
+            height: 70px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px auto;
+            transition: 0.3s;
+        }
+        
+        .folder-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .file-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: 0.3s;
+            border: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .file-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        /* Highlight for today's files */
+        .file-card.today-highlight {
+            border: 2px solid #27ae60;
+            background-color: #f0fff4;
+            position: relative;
+        }
+        
+        .new-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background-color: #27ae60;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            z-index: 2;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .file-thumbnail {
+            height: 100px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .file-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .file-thumbnail i {
+            font-size: 3.5rem;
+            color: #e74c3c; /* PDF color */
+        }
+        
+        .file-info {
+            padding: 10px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .file-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .file-date {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 10px;
+        }
+        
+        .file-actions {
+            margin-top: auto;
+        }
+        
+        .btn-view-drive {
+            width: 100%;
+            padding: 8px;
+            background-color: rgba(26, 42, 108, 0.1);
+            color: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .btn-view-drive:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .back-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            color: #666;
+            font-weight: bold;
+            width: fit-content;
+            margin-right: auto; /* Move to left in RTL */
+        }
+        .back-bar:hover { color: var(--primary-color); }
+
+        .back-btn-inside {
+            font-size: 0.85rem;
+            background: #f8f9fa;
+            padding: 8px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.3s;
+            border: 1px solid #eee;
+            font-weight: bold;
+        }
+        .back-btn-inside:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            padding: 50px;
+        }
+
+        /* Specific Folder Colors */
+        .folder-sales { border-top: none; background: linear-gradient(145deg, #ffffff, #f0f4f8); border-bottom: 4px solid var(--primary-color); }
+        .folder-sales .folder-icon { color: var(--primary-color); background: rgba(26, 42, 108, 0.1); }
+        
+        .folder-rent { border-top: none; background: linear-gradient(145deg, #ffffff, #fff0f0); border-bottom: 4px solid #e74c3c; }
+        .folder-rent .folder-icon { color: #e74c3c; background: rgba(231, 76, 60, 0.1); }
+        
+        .folder-payment { border-top: none; background: linear-gradient(145deg, #ffffff, #f0fff4); border-bottom: 4px solid #27ae60; }
+        .folder-payment .folder-icon { color: #27ae60; background: rgba(39, 174, 96, 0.1); }
+
+        /* Folder Title Styling */
+        #current-folder-title {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 25px !important;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid rgba(0,0,0,0.05);
+            border-right: 6px solid var(--primary-color);
+            justify-content: space-between;
+        }
+
+        /* Mobile Responsive Adjustments */
+        @media (max-width: 768px) {
+            .folder-selection-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 0 25px; /* Added padding to move away from edges */
+            }
+            .folder-card { 
+                padding: 20px; 
+                border-radius: 20px;
+            }
+            .folder-icon { 
+                font-size: 2rem; 
+                width: 60px;
+                height: 60px;
+                margin-bottom: 10px; 
+            }
+            .folder-title { font-size: 1rem; }
+            .folder-card p { display: block; font-size: 0.85rem; opacity: 0.8; margin-top: 5px; }
+
+            .files-grid {
+                grid-template-columns: repeat(2, 1fr); /* Two columns on mobile */
+                gap: 10px;
+            }
+
+            .file-thumbnail {
+                height: 90px;
+            }
+
+            .file-thumbnail i {
+                font-size: 3rem;
+            }
+
+            .file-info {
+                padding: 8px;
+            }
+
+            .file-name {
+                font-size: 0.8rem;
+            }
+
+            .btn-view-drive {
+                padding: 6px;
+                font-size: 0.85rem;
+            }
+
+            /* Header & Back Button Styling */
+            .page-header-flex {
+                background: white;
+                padding: 15px;
+                border-radius: 15px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+                margin-bottom: 20px;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .page-header-flex h2 {
+                font-size: 1rem;
+                margin: 0;
+                color: var(--primary-color);
+            }
+
+            .btn-back {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+                background-color: #f8f9fa;
+                color: #555;
+                border: 1px solid #eee;
+                border-radius: 10px;
+                box-shadow: none;
+                white-space: nowrap;
+            }
+
+            #current-folder-title {
+                font-size: 1.1rem;
+                padding: 15px;
+                margin-bottom: 20px !important;
+            }
+
+            .back-btn-inside {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Dynamic Folder Colors for Files */
+        .files-grid.type-sales .file-card { background: #f0f4f8; border: 1px solid #dbeafe; }
+        .files-grid.type-sales .file-thumbnail { background: rgba(26, 42, 108, 0.05); }
+        .files-grid.type-sales .file-thumbnail i { color: var(--primary-color); }
+        .files-grid.type-sales .btn-view-drive { color: var(--primary-color); background: rgba(26, 42, 108, 0.1); }
+        .files-grid.type-sales .btn-view-drive:hover { background: var(--primary-color); color: white; }
+        
+        .files-grid.type-rent .file-card { background: #fff5f5; border: 1px solid #fadbd8; }
+        .files-grid.type-rent .file-thumbnail { background: rgba(231, 76, 60, 0.05); }
+        .files-grid.type-rent .file-thumbnail i { color: #e74c3c; }
+        .files-grid.type-rent .btn-view-drive { color: #e74c3c; background: rgba(231, 76, 60, 0.1); }
+        .files-grid.type-rent .btn-view-drive:hover { background: #e74c3c; color: white; }
+
+        .files-grid.type-payment .file-card { background: #f0fff4; border: 1px solid #d4efdf; }
+        .files-grid.type-payment .file-thumbnail { background: rgba(39, 174, 96, 0.05); }
+        .files-grid.type-payment .file-thumbnail i { color: #27ae60; }
+        .files-grid.type-payment .btn-view-drive { color: #27ae60; background: rgba(39, 174, 96, 0.1); }
+        .files-grid.type-payment .btn-view-drive:hover { background: #27ae60; color: white; }
+
+        /* Dynamic Folder Title Colors */
+        #current-folder-title.type-sales {
+            background: linear-gradient(to left, rgba(26, 42, 108, 0.1), #ffffff);
+            border-right-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        #current-folder-title.type-rent {
+            background: linear-gradient(to left, rgba(231, 76, 60, 0.1), #ffffff);
+            border-right-color: #e74c3c;
+            color: #e74c3c;
+        }
+        
+        #current-folder-title.type-payment {
+            background: linear-gradient(to left, rgba(39, 174, 96, 0.1), #ffffff);
+            border-right-color: #27ae60;
+            color: #27ae60;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-view {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        .staggered-card {
+            opacity: 0;
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Sidebar -->
+    <header class="main-header">
+        <button id="sidebar-toggle" class="toggle-btn" aria-label="کردنەوەی لیست"><i class='bx bx-menu'></i></button>
+        <div class="header-brand">
+            <img src="../assets/icon.png" alt="لۆگۆ" class="header-logo">
+            <h3>نوسینگەی دەشتی هەولێر</h3>
+        </div>
+        <div class="user-info" id="user-display">
+            <span id="user-email">بارکردن...</span>
+            <i class='bx bxs-user-circle'></i>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="../dashboard.html"><i class='bx bxs-dashboard'></i><span>داشبۆردی سەرەکی</span></a></li>
+                    <li class="active"><a href="index.html"><i class='bx bxs-file-blank'></i><span>گرێبەستەکان</span></a></li>
+                    <li><a href="../archive/archive.html"><i class='bx bx-archive'></i><span>ئەرشیفی گرێبەستەکان</span></a></li>
+                    <li><a href="../taminat/index.html"><i class='bx bx-shield-quarter'></i><span>بەشی دڵنیایی (تەئمینات)</span></a></li>
+                    <li><a href="../krechi/index.html"><i class='bx bx-group'></i><span>کرێچییەکان</span></a></li>
+                    <li><a href="#"><i class='bx bx-cog'></i><span>ڕێکخستنی وێب</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logout-btn" class="logout-btn">چوونەدەرەوە</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="content-area">
+                <div class="page-header-flex">
+                    <h2>گرێبەستە دروستکراوەکان</h2>
+                    <a href="index.html" class="btn-login btn-back" style="width: auto;">
+                        <i class='bx bx-arrow-back'></i> گەڕانەوە
+                    </a>
+                </div>
+
+                <!-- بەشی هەڵبژاردنی فۆڵدەر -->
+                <div id="folder-selection" class="folder-selection-grid">
+                    <!-- Sales -->
+                    <div class="folder-card folder-sales" onclick="loadFolder('sales')">
+                        <div class="folder-icon"><i class='bx bxs-file-pdf'></i></div>
+                        <div class="folder-title">گرێبەستەکانی فرۆشتن</div>
+                        <p style="color:#666; font-size:0.75rem;">بینینی هەموو گرێبەستەکانی کڕین و فرۆشتن</p>
+                    </div>
+                    
+                    <!-- Rent -->
+                    <div class="folder-card folder-rent" onclick="loadFolder('rent')">
+                        <div class="folder-icon"><i class='bx bxs-file-doc'></i></div>
+                        <div class="folder-title">گرێبەستەکانی بەکرێدان</div>
+                        <p style="color:#666; font-size:0.75rem;">بینینی هەموو گرێبەستەکانی کرێ</p>
+                    </div>
+                    
+                    <!-- Payment -->
+                    <div class="folder-card folder-payment" onclick="loadFolder('payment')">
+                        <div class="folder-icon"><i class='bx bxs-receipt'></i></div>
+                        <div class="folder-title">پسوولەکانی پارەدان</div>
+                        <p style="color:#666; font-size:0.75rem;">بینینی هەموو پسوولەکان</p>
+                    </div>
+                </div>
+
+                <!-- بەشی پیشاندانی فایلەکان -->
+                <div id="files-view" style="display: none;">
+                    <div id="current-folder-title">
+                        <div id="folder-text-content" style="display: flex; align-items: center; gap: 10px;"></div>
+                        <div class="back-btn-inside" onclick="showFolders()">
+                            <i class='bx bx-arrow-back'></i> گەڕانەوە
+                        </div>
+                    </div>
+                    
+                    <div id="loader" class="loader-container" style="display: none;">
+                        <div class="loader" style="display:block;"></div>
+                    </div>
+                    
+                    <div id="files-grid" class="files-grid">
+                        <!-- Files will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="../dashboard.js"></script>
+    
+    <!-- Google API Script -->
+    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+
+    <script>
+        // ==========================================
+        // ڕێکخستنەکانی گوگڵ دڕایڤ (Google Drive Config)
+        // ==========================================
+        
+        // تێبینی گرنگ: دەبێت فۆڵدەرەکان لە گوگڵ دڕایڤ بکرێن بە Public (Anyone with the link)
+        const API_KEY = 'AIzaSyAtASyepqCoS65ytIJ46Cqy9qdzd9rU8No';
+
+        // ئایدی فۆڵدەرەکان لێرە دابنێ (Folder IDs)
+        // دەتوانیت ئایدی فۆڵدەر لە لینکی فۆڵدەرەکە وەربگریت لە گوگڵ دڕایڤ
+        // نموونە: drive.google.com/drive/folders/123456789... (ئەو کۆدە درێژە ئایدیەکەیە)
+        const FOLDERS = {
+            'sales': '1NtqejVPoZzBhTS-xhw1Fhf12Wgr4ddB_',    // ئایدی فۆڵدەری گرێبەستی فرۆشتن
+            'rent': '1K8GeZ1xflZUcpgiSWma19Scu5zMRY4jE',      // ئایدی فۆڵدەری گرێبەستی بەکرێدان
+            'payment': '1sWPAA1qWNF5zltnZZ2o6sdpE1i4eGubf' // ئایدی فۆڵدەری پسوولەکان
+        };
+
+        // ==========================================
+
+        const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
+
+        let gapiInited = false;
+
+        function gapiLoaded() {
+            gapi.load('client', initializeGapiClient);
+        }
+
+        async function initializeGapiClient() {
+            await gapi.client.init({
+                apiKey: API_KEY,
+                discoveryDocs: DISCOVERY_DOCS,
+            });
+            gapiInited = true;
+        }
+
+        // UI Logic
+        let currentFolderType = null;
+
+        function showFolders() {
+            const folderSelection = document.getElementById('folder-selection');
+            folderSelection.style.display = 'grid';
+            folderSelection.classList.remove('animate-view');
+            void folderSelection.offsetWidth; // Trigger reflow
+            folderSelection.classList.add('animate-view');
+
+            document.getElementById('files-view').style.display = 'none';
+            currentFolderType = null;
+        }
+
+        async function loadFolder(type) {
+            currentFolderType = type;
+            const folderId = FOLDERS[type];
+            const titles = {
+                'sales': "<i class='bx bxs-file-pdf'></i> گرێبەستەکانی فرۆشتن",
+                'rent': "<i class='bx bxs-file-doc'></i> گرێبەستەکانی بەکرێدان",
+                'payment': "<i class='bx bxs-receipt'></i> پسوولەکانی پارەدان"
+            };
+
+            document.getElementById('folder-selection').style.display = 'none';
+            
+            const filesView = document.getElementById('files-view');
+            filesView.style.display = 'block';
+            filesView.classList.remove('animate-view');
+            void filesView.offsetWidth; // Trigger reflow
+            filesView.classList.add('animate-view');
+
+            document.getElementById('folder-text-content').innerHTML = titles[type];
+            document.getElementById('files-grid').className = `files-grid type-${type}`;
+            
+            // Update title box color based on type
+            const titleBox = document.getElementById('current-folder-title');
+            titleBox.className = ''; // Reset classes
+            titleBox.classList.add(`type-${type}`);
+            
+            document.getElementById('files-grid').innerHTML = '';
+            document.getElementById('loader').style.display = 'flex';
+
+            // Check Auth
+            if (!gapiInited) {
+                alert('خزمەتگوزاری گوگڵ هێشتا ئامادە نییە، تکایە کەمێک چاوەڕێ بکە یان ڕیفرێش بکە.');
+                return;
+            }
+
+            try {
+                // هێنانی فایلەکان لە گوگڵ دڕایڤ
+                const response = await gapi.client.drive.files.list({
+                    'pageSize': 100,
+                    'fields': "nextPageToken, files(id, name, webViewLink, webContentLink, thumbnailLink, createdTime)",
+                    'q': `'${folderId}' in parents and trashed = false and mimeType = 'application/pdf'`,
+                    'orderBy': 'createdTime desc'
+                });
+
+                const files = response.result.files;
+                renderFiles(files);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('files-grid').innerHTML = '<p>هەڵەیەک ڕوویدا. دڵنیابە فۆڵدەرەکان Public کراون (Anyone with the link).</p>';
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+            }
+        }
+
+        function renderFiles(files) {
+            const container = document.getElementById('files-grid');
+            container.innerHTML = '';
+
+            if (!files || files.length === 0) {
+                container.innerHTML = '<p>هیچ فایلێک لەم فۆڵدەرەدا نەدۆزرایەوە.</p>';
+                return;
+            }
+
+            files.forEach((file, index) => {
+                const card = document.createElement('div');
+                card.className = 'file-card';
+                card.classList.add('staggered-card');
+                card.style.animationDelay = `${index * 0.1}s`; // Stagger animation
+                card.style.cursor = 'pointer';
+                
+                // کردنەوەی فایلەکە کاتێک کلیک لە کاردەکە دەکرێت
+                card.onclick = (e) => {
+                    // ئەگەر کلیک لەسەر دوگمەی داگرتن نەکرابوو
+                    if (!e.target.closest('.btn-download-action')) {
+                        window.open(file.webViewLink, '_blank');
+                    }
+                };
+                
+                // پشکنین ئەگەر ئەمڕۆ دروست کرابێت
+                const fileDate = new Date(file.createdTime);
+                const today = new Date();
+                const isToday = fileDate.getDate() === today.getDate() &&
+                                fileDate.getMonth() === today.getMonth() &&
+                                fileDate.getFullYear() === today.getFullYear();
+
+                let badgeHtml = '';
+                if (isToday) {
+                    card.classList.add('today-highlight');
+                    badgeHtml = '<div class="new-badge">نوێ</div>';
+                }
+
+                // بەکارهێنانی ئایکۆن بۆ خێرایی و جوانی
+                let thumbContent = `<i class='bx bxs-file-pdf'></i>`;
+
+                const date = new Date(file.createdTime).toLocaleDateString('ckb');
+
+                card.innerHTML = `
+                    ${badgeHtml}
+                    <div class="file-thumbnail">
+                        ${thumbContent}
+                    </div>
+                    <div class="file-info">
+                        <div class="file-name" title="${file.name}">${file.name}</div>
+                        <div class="file-date">${date}</div>
+                        <div class="file-actions">
+                            <a href="${file.webContentLink}" class="btn-view-drive btn-download-action" onclick="event.stopPropagation()">
+                                <i class='bx bx-download'></i> داگرتن
+                            </a>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
