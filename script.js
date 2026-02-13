@@ -621,23 +621,6 @@ window.closeModal = () => {
     document.getElementById('tenant-id').value = '';
 };
 
-// کارکردنی دوگمەی چوونەدەرەوە
-if (logoutButton) {
-    logoutButton.addEventListener('click', async (event) => {
-        event.preventDefault();
-        const { error } = await supabase.auth.signOut();
-        window.location.href = '../index.html';
-    });
-}
-
-// کارکردنی دوگمەی سایدبار
-if (sidebarToggle) {
-    sidebarToggle.addEventListener('click', () => {
-        const isMobile = window.innerWidth <= 768;
-        body.classList.toggle(isMobile ? 'sidebar-open' : 'sidebar-closed');
-    });
-}
-
 // کارکردنی دوگمەی ئاگادارییەکان
 if (notificationBtn) {
     notificationBtn.addEventListener('click', (e) => {
@@ -679,17 +662,6 @@ if (notificationBtn) {
         }
     });
 }
-
-// داخستنی سایدبار کاتێک کلیک لە دەرەوە دەکرێت (بۆ مۆبایل)
-document.addEventListener('click', (e) => {
-    const isMobile = window.innerWidth <= 768;
-    if (isMobile && document.body.classList.contains('sidebar-open')) {
-        // بەکارهێنانی closest بۆ دڵنیابوونەوە لەوەی کلیکەکە لەناو سایدبار یان دوگمەکە نییە
-        if (!e.target.closest('#sidebar') && !e.target.closest('#sidebar-toggle')) {
-            document.body.classList.remove('sidebar-open');
-        }
-    }
-});
 
 // دەستپێکردن
 checkUser();

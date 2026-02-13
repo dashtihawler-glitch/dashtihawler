@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- PWA Manifest & iOS Support -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1a2a6c">
@@ -19,30 +18,36 @@
 </head>
 <body>
     <div class="login-page">
+        <!-- Decorative Background Elements -->
+        <div class="decoration-circle circle-1"></div>
+        <div class="decoration-circle circle-2"></div>
+
         <div class="login-card">
             <div class="login-header">
                 <div class="logo-box">
                     <img src="assets/icon.png" alt="لۆگۆ">
                 </div>
                 <h1>نوسینگەی دەشتی هەولێر</h1>
-                <p>تکایە بۆ بەردەوامبوون بچۆ ژوورەوە</p>
+                <p>بەخێربێیتەوە، تکایە زانیارییەکانت بنووسە</p>
             </div>
             
             <form id="login-form">
-                <div class="input-group">
-                    <label>ئیمەیڵ</label>
-                    <input type="email" name="email" required placeholder="example@email.com">
+                <div class="input-group login-input">
+                    <span class="input-icon"><i class='bx bx-envelope'></i></span>
+                    <input type="email" name="email" required placeholder="ئیمەیڵ">
                 </div>
                 
-                <div class="input-group">
-                    <label>وشەی نهێنی</label>
-                    <input type="password" name="password" id="password" required placeholder="••••••••">
-                    <i class="far fa-eye" id="togglePassword"></i>
+                <div class="input-group login-input">
+                    <span class="input-icon"><i class='bx bx-lock-alt'></i></span>
+                    <input type="password" name="password" id="password" required placeholder="وشەی نهێنی">
+                    <i class='bx bx-show toggle-password-icon' id="togglePassword"></i>
                 </div>
 
                 <p id="error-message" class="error-msg hidden"></p>
                 
-                <button type="submit" class="btn-login">چوونەژوورەوە</button>
+                <button type="submit" class="btn-login">
+                    چوونەژوورەوە <i class='bx bx-log-in-circle'></i>
+                </button>
             </form>
         </div>
     </div>
@@ -50,5 +55,19 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="app.js"></script>
     <script type="module" src="shared.js"></script>
+    <script>
+        // Toggle Password Visibility
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+
+        if(togglePassword) {
+            togglePassword.addEventListener('click', function (e) {
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                this.classList.toggle('bx-show');
+                this.classList.toggle('bx-hide');
+            });
+        }
+    </script>
 </body>
 </html>
