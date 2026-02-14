@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>چوونەژوورەوە - نوسینگەی دەشتی هەولێر</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <!-- PWA Manifest & iOS Support -->
     <link rel="manifest" href="manifest.json">
@@ -15,6 +15,141 @@
     <meta name="apple-mobile-web-app-title" content="دەشتی هەولێر">
     <link rel="apple-touch-icon" href="assets/icon-192.png">
     <!-- End PWA -->
+    <style>
+        /* Custom Styles for Login Page Overhaul */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 100%);
+            --glass-bg: rgba(255, 255, 255, 0.92);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        body {
+            font-family: 'IBM Plex Sans Arabic', sans-serif !important;
+        }
+
+        .login-page {
+            background: linear-gradient(-45deg, #1a2a6c, #b21f1f, #2a4896, #1a2a6c);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        
+        /* Override style.css background image for a cleaner look */
+        .login-page::before {
+            background: linear-gradient(135deg, rgba(26, 42, 108, 0.9), rgba(178, 31, 31, 0.8)) !important;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .login-card {
+            background: var(--glass-bg);
+            border: var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            border-radius: 28px;
+            padding: 40px 35px;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(0);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+        }
+
+        .login-header h1 {
+            font-weight: 700;
+            color: #1a2a6c;
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+
+        .login-header p {
+            font-weight: 400;
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+        }
+
+        .input-group.login-input input {
+            background: #f5f6fa;
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 14px 50px 14px 20px;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
+            box-shadow: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group.login-input input:focus {
+            background: #fff;
+            border-color: #1a2a6c;
+            box-shadow: 0 5px 20px rgba(26, 42, 108, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-login {
+            background: var(--primary-gradient);
+            border-radius: 16px;
+            font-weight: 700;
+            padding: 16px;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 20px rgba(26, 42, 108, 0.2);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(26, 42, 108, 0.3);
+        }
+
+        /* Mobile Specific Adjustments */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 30px 25px;
+                max-width: 320px; /* Smaller card for mobile */
+                width: 85%;
+                border-radius: 24px;
+            }
+            
+            .login-header .logo-box {
+                width: 70px;
+                height: 70px;
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+
+            .login-header h1 {
+                font-size: 1.3rem;
+            }
+            
+            .login-header p {
+                font-size: 0.85rem;
+                margin-bottom: 25px;
+            }
+
+            .input-group.login-input {
+                margin-bottom: 15px;
+            }
+
+            .input-group.login-input input {
+                padding: 12px 45px 12px 15px;
+                font-size: 0.95rem;
+            }
+
+            .btn-login {
+                padding: 14px;
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="login-page">
@@ -28,7 +163,7 @@
                     <img src="assets/icon.png" alt="لۆگۆ">
                 </div>
                 <h1>نوسینگەی دەشتی هەولێر</h1>
-                <p>بەخێربێیتەوە، تکایە زانیارییەکانت بنووسە</p>
+                <p>Dashti Hawler Office for Real Estate</p>
             </div>
             
             <form id="login-form">

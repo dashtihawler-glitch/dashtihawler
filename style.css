@@ -987,27 +987,36 @@ body.sidebar-closed .main-content {
 
     /* ڕێکخستنی دوگمەی گەڕانەوە بۆ مۆبایل */
     .page-header-flex {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
         align-items: center;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
+        background: white;
+        padding: 15px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.03);
     }
 
     .page-header-flex h2 {
-        font-size: 1.2rem;
+        font-size: 1rem;
+        margin: 0;
     }
 
     .btn-back {
-        padding: 8px 14px;
+        padding: 8px 12px;
         font-size: 0.85rem;
-        border-radius: 12px;
-        background-color: #f1f2f6;
+        border-radius: 10px;
+        background: #f8f9fa;
         color: #555;
         box-shadow: none;
-        border: 1px solid #e0e0e0;
+        border: 1px solid #eee;
         width: auto !important;
+        white-space: nowrap;
     }
     
     .btn-back:hover, .btn-back:active {
-        background-color: #e4e6eb;
+        background: #e4e6eb;
         transform: none;
         color: #333;
     }

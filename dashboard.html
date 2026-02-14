@@ -152,6 +152,59 @@
             transform: scale(1.1) rotate(5deg);
             box-shadow: 0 10px 20px rgba(26, 42, 108, 0.2);
         }
+
+        /* Animation Classes for Page Transition */
+        .quick-access-grid {
+            display: none; /* Initially hidden */
+        }
+
+        .slide-out-top {
+            animation: slideOutTop 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+        }
+        
+        .slide-in-bottom {
+            animation: slideInBottom 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+        
+        @keyframes slideOutTop {
+            0% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
+            100% { transform: translateY(-50px) scale(0.9); opacity: 0; filter: blur(10px); }
+        }
+        
+        @keyframes slideInBottom {
+            0% { transform: translateY(50px) scale(0.95); opacity: 0; filter: blur(10px); }
+            100% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
+        }
+
+        /* Start Button for Mobile */
+        .start-btn {
+            display: none;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            color: white;
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(26, 42, 108, 0.2);
+            transition: all 0.3s ease;
+            font-family: inherit;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .start-btn:active {
+            transform: scale(0.95);
+        }
+
+        @media (max-width: 768px) {
+            .start-btn {
+                display: inline-flex;
+            }
+        }
     </style>
 </head>
 <body>
@@ -193,7 +246,8 @@
                         <img src="assets/icon.png" alt="لۆگۆی نوسینگە" class="hero-logo">
                     </div>
                     <h1 class="welcome-title">نوسینگەی دەشتی هەولێر</h1>
-                    <p class="welcome-subtitle">لێرەوە دەتوانیت بە ئاسانی کارەکانت بەڕێوەببەیت.</p>
+                    <p class="welcome-subtitle">لێرە کارەکانت ئاسانترن.</p>
+                    <button id="start-dashboard-btn" class="start-btn">دەستپێکردن <i class='bx bx-down-arrow-alt'></i></button>
                 </div>
 
                 <div class="quick-access-grid">
@@ -201,15 +255,15 @@
                         <div class="card-icon"><i class='bx bxs-file-blank'></i></div>
                         <div class="card-text">
                             <h3>گرێبەستەکان</h3>
-                            <p>دروستکردنی گرێبەستی نوێ</p>
+                            <p>دروستکردنی گرێبەست</p>
                         </div>
                         <i class='bx bx-chevron-left arrow-icon'></i>
                     </a>
                     <a href="archive\archive.html" class="quick-access-card">
                         <div class="card-icon"><i class='bx bx-archive'></i></div>
                         <div class="card-text">
-                            <h3>ئەرشیفی گریبەستەکان</h3>
-                            <p>هەڵگرتن و پاراستنی گریبەستەکان</p>
+                            <h3>ئەرشیف</h3>
+                            <p>هەڵگرتن و پاراستن</p>
                         </div>
                         <i class='bx bx-chevron-left arrow-icon'></i>
                     </a>
@@ -217,7 +271,7 @@
                         <div class="card-icon"><i class='bx bxs-group'></i></div>
                         <div class="card-text">
                             <h3>کرێچییەکان</h3>
-                            <p>بەڕێوەبردنی لیستی کرێچییەکان</p>
+                            <p>بەڕێوەبردنی کرێەکان</p>
                         </div>
                         <i class='bx bx-chevron-left arrow-icon'></i>
                     </a>
@@ -236,5 +290,23 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="shared.js"></script>
+    <script>
+        const startBtn = document.getElementById('start-dashboard-btn');
+        if(startBtn) {
+            startBtn.addEventListener('click', () => {
+                const hero = document.querySelector('.welcome-hero');
+                const grid = document.querySelector('.quick-access-grid');
+                
+                // Animate Hero Out
+                hero.classList.add('slide-out-top');
+                
+                setTimeout(() => {
+                    hero.style.display = 'none';
+                    grid.style.display = 'grid';
+                    grid.classList.add('slide-in-bottom');
+                }, 500);
+            });
+        }
+    </script>
 </body>
 </html>
