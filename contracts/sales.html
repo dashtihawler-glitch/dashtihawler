@@ -57,7 +57,7 @@
                             <!-- Employee Email (Auto-filled) -->
                             <div class="input-group full-width">
                                 <label for="employeeEmail">ئەمڕۆ کێ گرێبەستەکە دەکات ؟</label>
-                                <input type="email" id="employeeEmail" name="employee" readonly class="input-readonly" placeholder="ئیمەیڵی کارمەند...">
+                                <input type="email" id="employeeEmail" name="farmanbar" readonly class="input-readonly" placeholder="ئیمەیڵی کارمەند...">
                             </div>
 
                             <!-- Seller/Customer Section -->
@@ -65,30 +65,30 @@
                                 <h4>زانیاری فرۆشیار</h4>
                                 <div class="input-group">
                                     <label for="sellerName">ناوی سیانی فرۆشیار</label>
-                                    <input type="text" id="sellerName" name="sellerName" required placeholder="ناوی فرۆشیار بنووسە">
+                                    <input type="text" id="sellerName" name="Third name of the seller" required placeholder="ناوی فرۆشیار بنووسە">
                                 </div>
                                 <div class="input-group">
                                     <label for="sellerID">ژمارەی ناسنامەی فرۆشیار</label>
-                                    <input type="text" id="sellerID" name="sellerID" required placeholder="ژمارەی ناسنامە">
+                                    <input type="text" id="sellerID" name="Seller ID number" required placeholder="ژمارەی ناسنامە">
                                 </div>
                                 <div class="input-group">
                                     <label for="sellerMobile">ژمارەی مۆبایلی فرۆشیار</label>
-                                    <input type="tel" id="sellerMobile" name="sellerMobile" required placeholder="0750xxxxxxx">
+                                    <input type="tel" id="sellerMobile" name="Seller mobile number" required placeholder="0750xxxxxxx">
                                 </div>
                             </div>
                             <div class="form-section">
                                 <h4>زانیاری کڕیار</h4>
                                 <div class="input-group">
                                     <label for="customerName">ناوی سیانی کڕیار</label>
-                                    <input type="text" id="customerName" name="customerName" required placeholder="ناوی کڕیار بنووسە">
+                                    <input type="text" id="customerName" name="Third name of the customer" required placeholder="ناوی کڕیار بنووسە">
                                 </div>
                                 <div class="input-group">
                                     <label for="customerID">ژمارەی ناسنامەی کڕیار</label>
-                                    <input type="text" id="customerID" name="customerID" required placeholder="ژمارەی ناسنامە">
+                                    <input type="text" id="customerID" name="Customer ID number" required placeholder="ژمارەی ناسنامە">
                                 </div>
                                 <div class="input-group">
                                     <label for="customerMobile">ژمارەی مۆبایلی کڕیار</label>
-                                    <input type="tel" id="customerMobile" name="customerMobile" required placeholder="0750xxxxxxx">
+                                    <input type="tel" id="customerMobile" name="Customer mobile number" required placeholder="0750xxxxxxx">
                                 </div>
                             </div>
 
@@ -96,7 +96,7 @@
                             <div class="form-row full-width form-row-3-cols">
                                 <div class="input-group">
                                     <label for="propertyType">جۆری موڵک</label>
-                                    <select name="propertyType" id="propertyType" required>
+                                    <select name="Property type" id="propertyType" required>
                                         <option value="" disabled selected>هەڵبژێرە...</option>
                                         <option value="خانوو">خانوو</option>
                                         <option value="شووقە">شووقە</option>
@@ -108,21 +108,21 @@
                                 </div>
                                 <div class="input-group">
                                     <label for="propertyNumber">ژمارەی موڵک</label>
-                                    <input type="text" id="propertyNumber" name="propertyNumber" required placeholder="ژمارەی موڵک">
+                                    <input type="text" id="propertyNumber" name="Property number" required placeholder="ژمارەی موڵک">
                                 </div>
                                 <div class="input-group">
                                     <label for="areaSelect">ڕووبەر</label>
-                                    <select name="area" id="areaSelect" required>
+                                    <select name="Area" id="areaSelect" required>
                                         <option value="" disabled selected>ڕووبەر هەڵبژێرە...</option>
-                                        <option value="100م">100م</option>
-                                        <option value="125م">125م</option>
-                                        <option value="150م">150م</option>
-                                        <option value="200م">200م</option>
-                                        <option value="250م">250م</option>
-                                        <option value="300م">300م</option>
-                                        <option value="400م">400م</option>
-                                        <option value="500م">500م</option>
-                                        <option value="600م">600م</option>
+                                        <option value="100">100م²</option>
+                                        <option value="125">125م²</option>
+                                        <option value="150">150م²</option>
+                                        <option value="200">200م²</option>
+                                        <option value="250">250م²</option>
+                                        <option value="300">300م²</option>
+                                        <option value="400">400م²</option>
+                                        <option value="500">500م²</option>
+                                        <option value="600">600م²</option>
                                         <option value="other">ڕووبەرێکی تر (خۆت بینووسە)</option>
                                     </select>
                                     <input type="text" name="other_area" id="otherAreaInput" class="other-neighborhood-input hidden" placeholder="ڕووبەری تر بنووسە">
@@ -131,7 +131,7 @@
                              <div class="form-row full-width form-row-2-cols">
                                 <div class="input-group">
                                     <label for="neighborhoodSelect">گەڕەک</label>
-                                    <select name="neighborhood" id="neighborhoodSelect" required>
+                                    <select name="Neighborhood" id="neighborhoodSelect" required>
                                         <option value="" disabled selected>گەڕەک هەڵبژێرە...</option>
                                         <option value="فەرمانبەران">فەرمانبەران</option>
                                         <option value="فەرمانبەران ئامرلیوا">فەرمانبەران ئامرلیوا</option>
@@ -158,32 +158,32 @@
                                 <div class="input-group">
                                     <label for="currencyType">جۆری دراو</label>
                                     <select name="currencyType" id="currencyType" required>
-                                        <option value="دۆلاری ئەمریکی (USD)">دۆلاری ئەمریکی ($)</option>
-                                    <option value="دیناری عێڕاقی (IQD)">دیناری عێڕاقی (IQD)</option>
+                                        <option value="دۆلاری ئەمریکی">دۆلاری ئەمریکی ($)</option>
+                                    <option value="دیناری عێڕاقی">دیناری عێڕاقی (IQD)</option>
                                     </select>
                                 </div>
                                 <div class="input-group">
                                     <label for="salePrice">نرخی فرۆشتن (بە ژمارە)</label>
-                                    <input type="text" inputmode="numeric" id="salePrice" name="salePrice" required placeholder="نرخی گشتی">
+                                    <input type="text" inputmode="numeric" id="salePrice" name="Sale price in number" required placeholder="نرخی گشتی">
                                     <div id="salePriceWords" class="amount-words"></div>
                                 </div>
                             </div>
                             <div class="form-row full-width form-row-2-cols">
                                 <div class="input-group">
                                     <label for="depositAmount">بڕی پێشەکی (بە ژمارە)</label>
-                                    <input type="text" inputmode="numeric" id="depositAmount" name="depositAmount" required placeholder="بڕی پێشەکی">
+                                    <input type="text" inputmode="numeric" id="depositAmount" name="Amount of deposit in number" required placeholder="بڕی پێشەکی">
                                     <div id="depositAmountWords" class="amount-words"></div>
                                 </div>
                                 <div class="input-group">
                                     <label for="remainingAmount">بڕی پارەی ماوە (بە ژمارە)</label>
-                                    <input type="text" inputmode="numeric" id="remainingAmount" name="remainingAmount" required placeholder="بڕی ماوە">
+                                    <input type="text" inputmode="numeric" id="remainingAmount" name="The amount of money remaining in number" required placeholder="بڕی ماوە">
                                     <div id="remainingAmountWords" class="amount-words"></div>
                                 </div>
                             </div>
                              <div class="form-row full-width form-row-2-cols">
                                 <div class="input-group">
                                     <label for="penaltyAmount">سزای پەشیمانبوونەوە (بە ژمارە)</label>
-                                    <input type="text" inputmode="numeric" id="penaltyAmount" name="penaltyAmount" required placeholder="بڕی سزا">
+                                    <input type="text" inputmode="numeric" id="penaltyAmount" name="penalty for repentance in number" required placeholder="بڕی سزا">
                                     <div id="penaltyAmountWords" class="amount-words"></div>
                                 </div>
                             </div>
@@ -192,21 +192,21 @@
                             <div class="form-row full-width form-row-2-cols">
                                 <div class="input-group">
                                     <label for="lawyerName">ناوی پارێزەر</label>
-                                    <input type="text" id="lawyerName" name="lawyerName" required placeholder="ناوی پارێزەر بنووسە">
+                                    <input type="text" id="lawyerName" name="Name of lawyer" required placeholder="ناوی پارێزەر بنووسە">
                                 </div>
                                 <div class="input-group">
                                     <label for="lawyerMobile">ژمارەی مۆبایلی پارێزەر</label>
-                                    <input type="tel" id="lawyerMobile" name="lawyerMobile" required placeholder="0750xxxxxxx">
+                                    <input type="tel" id="lawyerMobile" name="Lawyer mobile number" required placeholder="0750xxxxxxx">
                                 </div>
                             </div>
                             <div class="form-row full-width form-row-2-cols">
                                 <div class="input-group">
                                     <label for="witness1">شایەدی یەکەم</label>
-                                    <input type="text" id="witness1" name="witness1" required placeholder="ناوی شایەدی یەکەم">
+                                    <input type="text" id="witness1" name="The first witness" required placeholder="ناوی شایەدی یەکەم">
                                 </div>
                                 <div class="input-group">
                                     <label for="witness2">شایەدی دووەم</label>
-                                    <input type="text" id="witness2" name="witness2" required placeholder="ناوی شایەدی دووەم">
+                                    <input type="text" id="witness2" name="The second witness" required placeholder="ناوی شایەدی دووەم">
                                 </div>
                             </div>
                         </div>
@@ -300,9 +300,9 @@
             if (!isNaN(val) && rawValue.length > 0) {
                 let text = numToKurdish(val);
                 const currency = currencySelect.value;
-                 if (currency === "دۆلاری ئەمریکی (USD)") {
+                 if (currency === "دۆلاری ئەمریکی") {
                     text += " دۆلار";
-                } else if (currency === "دیناری عێڕاقی (IQD)") {
+                } else if (currency === "دیناری عێڕاقی") {
                     text += " دینار";
                 }
                 display.textContent = text;
@@ -356,6 +356,31 @@
             statusMessage.style.color = 'blue';
             
             const formData = new FormData(form);
+
+            // لابردنی فاریزەکان لەناو FormData ڕاستەوخۆ
+            // ئەمە باشترین ڕێگایە بۆ ئەوەی دڵنیابین ژمارەکان بەبێ فاریزە دەچن
+            const numericFields = [
+                'Sale price in number', 
+                'Amount of deposit in number', 
+                'The amount of money remaining in number', 
+                'penalty for repentance in number'
+            ];
+
+            numericFields.forEach(fieldName => {
+                const val = formData.get(fieldName);
+                if (val) {
+                    formData.set(fieldName, val.toString().replace(/,/g, ''));
+                }
+            });
+
+            if (formData.get('Area') === 'other') {
+                formData.set('Area', formData.get('other_area'));
+            }
+            if (formData.get('Neighborhood') === 'other') {
+                formData.set('Neighborhood', formData.get('other_neighborhood'));
+            }
+            formData.delete('other_area');
+            formData.delete('other_neighborhood');
             
             fetch(scriptURL, { method: 'POST', body: formData})
                 .then(response => {
