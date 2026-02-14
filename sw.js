@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dashti-hewler-cache-v4.5';
+const CACHE_NAME = 'dashti-hewler-cache-v4.8';
 const urlsToCache = [
   './',
   './index.html',

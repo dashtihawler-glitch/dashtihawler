@@ -57,7 +57,7 @@
                             <!-- Employee Email (Auto-filled) -->
                             <div class="input-group full-width">
                                 <label for="employeeEmail">ئەمڕۆ کێ گرێبەستی کرێ دەکات ؟</label>
-                                <input type="email" id="employeeEmail" name="employee" readonly class="input-readonly" placeholder="ئیمەیڵی کارمەند...">
+                                <input type="email" id="employeeEmail" name="ئەمڕۆ کێ گرێبەستی کرێ دەکات ؟" readonly class="input-readonly" placeholder="ئیمەیڵی کارمەند...">
                             </div>
 
                             <!-- Owner/Tenant Section -->
@@ -65,30 +65,30 @@
                                 <h4>زانیاری خاوەن موڵک</h4>
                                 <div class="input-group">
                                     <label for="ownerName">ناوی سیانی خاوەن موڵک</label>
-                                    <input type="text" id="ownerName" name="ownerName" required placeholder="ناوی خاوەن موڵک بنووسە">
+                                    <input type="text" id="ownerName" name="Third name of the owner" required placeholder="ناوی خاوەن موڵک بنووسە">
                                 </div>
                                 <div class="input-group">
                                     <label for="ownerID">ژمارەی ناسنامەی خاوەن موڵک</label>
-                                    <input type="text" id="ownerID" name="ownerID" required placeholder="ژمارەی ناسنامە">
+                                    <input type="text" id="ownerID" name="Owner ID number" required placeholder="ژمارەی ناسنامە">
                                 </div>
                                 <div class="input-group">
                                     <label for="ownerMobile">ژمارەی مۆبایلی خاوەن موڵک</label>
-                                    <input type="tel" id="ownerMobile" name="ownerMobile" required placeholder="0750xxxxxxx">
+                                    <input type="tel" id="ownerMobile" name="Owner mobile number" required placeholder="0750xxxxxxx">
                                 </div>
                             </div>
                             <div class="form-section">
                                 <h4>زانیاری کرێچی</h4>
                                 <div class="input-group">
                                     <label for="tenantName">ناوی سیانی کرێچی</label>
-                                    <input type="text" id="tenantName" name="tenantName" required placeholder="ناوی کرێچی بنووسە">
+                                    <input type="text" id="tenantName" name="Third name of tenant" required placeholder="ناوی کرێچی بنووسە">
                                 </div>
                                 <div class="input-group">
                                     <label for="tenantID">ژمارەی ناسنامەی کرێچی</label>
-                                    <input type="text" id="tenantID" name="tenantID" required placeholder="ژمارەی ناسنامە">
+                                    <input type="text" id="tenantID" name="Tenant ID Number" required placeholder="ژمارەی ناسنامە">
                                 </div>
                                 <div class="input-group">
                                     <label for="tenantMobile">ژمارەی مۆبایلی کرێچی</label>
-                                    <input type="tel" id="tenantMobile" name="tenantMobile" required placeholder="0750xxxxxxx">
+                                    <input type="tel" id="tenantMobile" name="Tenant mobile number" required placeholder="0750xxxxxxx">
                                 </div>
                             </div>
 
@@ -98,7 +98,7 @@
                                 <div class="form-row form-row-3-cols">
                                     <div class="input-group">
                                         <label for="propertyType">جۆری موڵک</label>
-                                        <select name="propertyType" id="propertyType" required>
+                                        <select name="Type of Property" id="propertyType" required>
                                         <option value="" disabled selected>هەڵبژێرە...</option>
                                             <option value="خانوو">خانوو</option>
                                             <option value="شووقە">شووقە</option>
@@ -110,7 +110,7 @@
                                     </div>
                                     <div class="input-group">
                                         <label for="propertyNumber">ژمارەی موڵک</label>
-                                        <input type="text" id="propertyNumber" name="propertyNumber" required placeholder="ژمارەی موڵک">
+                                        <input type="text" id="propertyNumber" name="Property Number" required placeholder="ژمارەی موڵک">
                                     </div>
                                     <div class="input-group">
                                         <label for="neighborhoodSelect">گەڕەک</label>
@@ -144,25 +144,25 @@
                                     <div class="input-group">
                                         <label for="currencyType">جۆری دراو</label>
                                         <select name="currencyType" id="currencyType" required>
-                                           <option value="دۆلاری ئەمریکی (USD)">دۆلاری ئەمریکی ($)</option>
-                                        <option value="دیناری عێڕاقی (IQD)">دیناری عێڕاقی (IQD)</option>
+                                           <option value="دۆلاری ئەمریکی">دۆلاری ئەمریکی ($)</option>
+                                        <option value="دیناری عێڕاقی">دیناری عێڕاقی (IQD)</option>
                                         </select>
                                     </div>
                                     <div class="input-group">
                                         <label for="monthlyRent">کرێی مانگانە (بە ژمارە)</label>
-                                        <input type="text" inputmode="numeric" id="monthlyRent" name="monthlyRent" required placeholder="بڕی کرێ">
+                                        <input type="text" inputmode="numeric" id="monthlyRent" name="Monthly rent in number" required placeholder="بڕی کرێ">
                                         <div id="monthlyRentWords" class="amount-words"></div>
                                     </div>
                                 </div>
                                 <div class="form-row form-row-2-cols">
                                     <div class="input-group">
                                         <label for="advancePayment">بڕی پێشەکی (بە ژمارە)</label>
-                                        <input type="text" inputmode="numeric" id="advancePayment" name="advancePayment" required placeholder="بڕی پێشەکی">
+                                        <input type="text" inputmode="numeric" id="advancePayment" name="Amount of rent in advance in number" required placeholder="بڕی پێشەکی">
                                         <div id="advancePaymentWords" class="amount-words"></div>
                                     </div>
                                     <div class="input-group">
                                         <label for="assurance">بڕی دڵنیایی/تەئمینات (بە ژمارە)</label>
-                                        <input type="text" inputmode="numeric" id="assurance" name="assurance" required placeholder="بڕی تەئمینات">
+                                        <input type="text" inputmode="numeric" id="assurance" name="Assurance in number" required placeholder="بڕی تەئمینات">
                                         <div id="assuranceWords" class="amount-words"></div>
                                     </div>
                                 </div>
@@ -174,7 +174,7 @@
                                 <div class="form-row form-row-3-cols">
                                     <div class="input-group">
                                         <label for="leasePeriod">ماوەی گرێبەست</label>
-                                        <select name="leasePeriod" id="leasePeriod" required>
+                                        <select name="Period of lease" id="leasePeriod" required>
                                             <option value="" disabled selected>ماوەکە هەڵبژێرە...</option>
                                             <option value="6 مانگ">6 مانگ</option>
                                             <option value="1 ساڵ">1 ساڵ</option>
@@ -187,11 +187,11 @@
                                     </div>
                                     <div class="input-group">
                                         <label for="dateFrom">بەرواری دەستپێکردن</label>
-                                        <input type="date" id="dateFrom" name="dateFrom" required>
+                                        <input type="date" id="dateFrom" name="Date of rental from" required>
                                     </div>
                                     <div class="input-group">
                                         <label for="dateUntil">تا بەرواری</label>
-                                        <input type="date" id="dateUntil" name="dateUntil" required>
+                                        <input type="date" id="dateUntil" name="until" required>
                                     </div>
                                 </div>
                             </div>
@@ -202,11 +202,11 @@
                                 <div class="form-row form-row-2-cols">
                                     <div class="input-group">
                                         <label for="witness1">شایەدی یەکەم</label>
-                                        <input type="text" id="witness1" name="witness1" required placeholder="ناوی شایەدی یەکەم">
+                                        <input type="text" id="witness1" name="The first witness" required placeholder="ناوی شایەدی یەکەم">
                                     </div>
                                     <div class="input-group">
                                         <label for="witness2">شایەدی دووەم</label>
-                                        <input type="text" id="witness2" name="witness2" required placeholder="ناوی شایەدی دووەم">
+                                        <input type="text" id="witness2" name="The second witness" required placeholder="ناوی شایەدی دووەم">
                                     </div>
                                 </div>
                             </div>
@@ -326,6 +326,11 @@
             statusMessage.style.color = 'blue';
             
             const formData = new FormData(form);
+            
+            // ئەگەر گەڕەک "other" بوو، ناوی گەڕەکە نووسراوەکە بنێرە لەجیاتی وشەی "other"
+            if (neighborhoodSelect.value === 'other') {
+                formData.set('neighborhood', otherNeighborhoodInput.value);
+            }
             
             fetch(scriptURL, { method: 'POST', body: formData})
                 .then(response => {
