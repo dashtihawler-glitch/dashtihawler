@@ -38,7 +38,7 @@ if (togglePassword) {
     togglePassword.addEventListener('click', () => {
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
-        togglePassword.classList.toggle('fa-eye');
-        togglePassword.classList.toggle('fa-eye-slash');
+        togglePassword.classList.toggle('bx-show');
+        togglePassword.classList.toggle('bx-hide');
     });
 }

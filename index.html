@@ -174,14 +174,14 @@
                 
                 <div class="input-group login-input">
                     <span class="input-icon"><i class='bx bx-lock-alt'></i></span>
-                    <input type="password" name="password" id="password" required placeholder="وشەی نهێنی">
+                    <input type="password" name="password" id="password" required placeholder="ووشەی نهێنی">
                     <i class='bx bx-show toggle-password-icon' id="togglePassword"></i>
                 </div>
 
                 <p id="error-message" class="error-msg hidden"></p>
                 
                 <button type="submit" class="btn-login">
-                    چوونەژوورەوە <i class='bx bx-log-in-circle'></i>
+                    چوونە ژوورەوە <i class='bx bx-log-in-circle'></i>
                 </button>
             </form>
         </div>
@@ -190,19 +190,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="app.js"></script>
     <script type="module" src="shared.js"></script>
-    <script>
-        // Toggle Password Visibility
-        const togglePassword = document.querySelector('#togglePassword');
-        const password = document.querySelector('#password');
-
-        if(togglePassword) {
-            togglePassword.addEventListener('click', function (e) {
-                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-                password.setAttribute('type', type);
-                this.classList.toggle('bx-show');
-                this.classList.toggle('bx-hide');
-            });
-        }
-    </script>
 </body>
 </html>
