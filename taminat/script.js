@@ -36,9 +36,18 @@ const showSubmitLoader = (isLoading) => {
 };
 
 async function fetchDeposits() {
-    depositsContainer.innerHTML = `
-        <div class="loader" style="margin: 50px auto; grid-column: 1 / -1;"></div>
-    `;
+    // پشکنینی داتای پاشەکەوتکراو
+    const cachedData = localStorage.getItem('cached_deposits');
+    if (cachedData) {
+        allDeposits = JSON.parse(cachedData);
+        renderDeposits(allDeposits);
+        calculateAndRenderTotals();
+    } else {
+        depositsContainer.innerHTML = `<div class="loader" style="margin: 50px auto; grid-column: 1 / -1;"></div>`;
+    }
+
+    if (!navigator.onLine) return;
+
     const { data, error } = await supabase
         .from('deposits')
         .select(`
@@ -54,16 +63,30 @@ async function fetchDeposits() {
         return;
     }
     allDeposits = data;
+    localStorage.setItem('cached_deposits', JSON.stringify(data)); // پاشەکەوتکردن
     renderDeposits(allDeposits);
     calculateAndRenderTotals();
 }
 
 async function fetchDepositHolders() {
+    // پشکنینی داتای پاشەکەوتکراو بۆ خاوەن پارەکان
+    const cachedHolders = localStorage.getItem('cached_deposit_holders');
+    if (cachedHolders) {
+        renderHoldersList(JSON.parse(cachedHolders));
+    }
+
+    if (!navigator.onLine) return;
+
     const { data, error } = await supabase.from('deposit_holders').select('*');
     if (error) {
         console.error('Error fetching holders:', error);
         return;
     }
+    localStorage.setItem('cached_deposit_holders', JSON.stringify(data));
+    renderHoldersList(data);
+}
+
+function renderHoldersList(data) {
     const holderSelect = document.getElementById('holder_id');
     holderSelect.innerHTML = '<option value="">هەڵبژێرە...</option>';
     data.forEach(holder => {
@@ -520,6 +543,12 @@ if (mobileAddBtn) {
 // --- Initialization ---
 
 document.addEventListener('DOMContentLoaded', () => {
+    fetchDeposits();
+    fetchDepositHolders();
+});
+
+// نوێکردنەوەی داتاکان کاتێک ئینتەرنێت دەگەڕێتەوە
+window.addEventListener('online', () => {
     fetchDeposits();
     fetchDepositHolders();
 });

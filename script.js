@@ -84,6 +84,16 @@ async function checkUser() {
 
 // هێنانی داتاکان لە سوپابەیس
 async function fetchTenants() {
+    // سەرەتا داتای پاشەکەوتکراو (Cache) پیشان بدە ئەگەر هەبوو
+    const cachedData = localStorage.getItem('cached_tenants');
+    if (cachedData) {
+        allTenants = JSON.parse(cachedData);
+        checkNotifications();
+        filterTenants();
+    }
+
+    if (!navigator.onLine) return;
+
     const { data, error } = await supabase
         .from('tenants')
         .select('*')
@@ -94,6 +104,7 @@ async function fetchTenants() {
         return;
     }
     allTenants = data;
+    localStorage.setItem('cached_tenants', JSON.stringify(data)); // پاشەکەوتکردنی داتا
     checkNotifications();
     filterTenants();
 }
@@ -666,3 +677,8 @@ if (notificationBtn) {
 // دەستپێکردن
 checkUser();
 fetchTenants();
+
+// نوێکردنەوەی داتاکان کاتێک ئینتەرنێت دەگەڕێتەوە
+window.addEventListener('online', () => {
+    fetchTenants();
+});
