@@ -19,45 +19,94 @@
             padding: 10px;
         }
         
+        /* Folder Card Design */
         .folder-card {
-            background: white;
-            border-radius: 25px;
-            padding: 25px;
+            position: relative;
+            padding: 45px 25px 30px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.05);
-            position: relative;
-            overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin-top: 35px;
+            background: transparent;
+            z-index: 1;
         }
         
+        /* The Back Sheet (Tab Layer) */
+        .folder-card::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            z-index: -2;
+            /* Tab Shape on the Right for RTL */
+            clip-path: polygon(0 15px, 60% 15px, 65% 0, 100% 0, 100% 100%, 0 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+        }
+        
+        /* The Front Sheet (Pocket) */
+        .folder-card::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 15px);
+            border-radius: 0 0 20px 20px;
+            z-index: -1;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+
         .folder-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transform: translateY(-10px);
+        }
+        
+        .folder-card:hover::after {
+            transform: scaleX(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
         
         .folder-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            width: 70px;
-            height: 70px;
-            background: rgba(255,255,255,0.5);
-            border-radius: 50%;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 15px auto;
-            transition: 0.3s;
+            margin: 0 auto 20px auto;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 2;
         }
         
+        .folder-card:hover .folder-icon {
+            transform: scale(1.1) rotate(-5deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
         .folder-title {
-            font-size: 1.1rem;
+            font-size: 1.3rem;
             font-weight: 800;
-            color: #333;
             margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
         }
         
+        .folder-card p {
+            font-size: 0.9rem;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+            color: #ffffff;
+        }
+
         .files-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -211,14 +260,29 @@
         }
 
         /* Specific Folder Colors */
-        .folder-sales { border-top: none; background: linear-gradient(145deg, #ffffff, #f0f4f8); border-bottom: 4px solid var(--primary-color); }
-        .folder-sales .folder-icon { color: var(--primary-color); background: rgba(26, 42, 108, 0.1); }
+        /* Sales - Blue Folder */
+        .folder-sales::before { background: #2d3436; } /* Dark Grey Back */
+        .folder-sales::after { background: linear-gradient(135deg, #636e72, #2d3436); border-top: 1px solid rgba(255,255,255,0.1); }
+        .folder-sales .folder-icon { color: #1565c0; }
+        .folder-sales .folder-title { color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .folder-sales p { color: rgba(255,255,255,0.8); }
+        .folder-sales p { color: #ffffff; }
         
-        .folder-rent { border-top: none; background: linear-gradient(145deg, #ffffff, #fff0f0); border-bottom: 4px solid #e74c3c; }
-        .folder-rent .folder-icon { color: #e74c3c; background: rgba(231, 76, 60, 0.1); }
+        /* Rent - Red/Pink Folder */
+        .folder-rent::before { background: #2d3436; } /* Dark Grey Back */
+        .folder-rent::after { background: linear-gradient(135deg, #636e72, #2d3436); border-top: 1px solid rgba(255,255,255,0.1); }
+        .folder-rent .folder-icon { color: #c62828; }
+        .folder-rent .folder-title { color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .folder-rent p { color: rgba(255,255,255,0.8); }
+        .folder-rent p { color: #ffffff; }
         
-        .folder-payment { border-top: none; background: linear-gradient(145deg, #ffffff, #f0fff4); border-bottom: 4px solid #27ae60; }
-        .folder-payment .folder-icon { color: #27ae60; background: rgba(39, 174, 96, 0.1); }
+        /* Payment - Green Folder */
+        .folder-payment::before { background: #2d3436; } /* Dark Grey Back */
+        .folder-payment::after { background: linear-gradient(135deg, #636e72, #2d3436); border-top: 1px solid rgba(255,255,255,0.1); }
+        .folder-payment .folder-icon { color: #2e7d32; }
+        .folder-payment .folder-title { color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .folder-payment p { color: rgba(255,255,255,0.8); }
+        .folder-payment p { color: #ffffff; }
 
         /* Folder Title Styling */
         #current-folder-title {
@@ -243,20 +307,30 @@
             .folder-selection-grid {
                 grid-template-columns: 1fr;
                 gap: 20px;
-                padding: 0 25px; /* Added padding to move away from edges */
+                padding: 15px;
             }
             .folder-card { 
-                padding: 20px; 
-                border-radius: 20px;
+                padding: 25px 10px 20px; 
+                margin-top: 20px;
+            }
+            .folder-card::before {
+                top: -10px;
+                height: 10px;
+                clip-path: polygon(0 10px, 50% 10px, 55% 0, 100% 0, 100% 100%, 0 100%);
+            }
+            .folder-card::after {
+                top: 10px;
+                height: calc(100% - 10px);
             }
             .folder-icon { 
-                font-size: 2rem; 
-                width: 60px;
-                height: 60px;
-                margin-bottom: 10px; 
+                font-size: 1.6rem; 
+                width: 50px;
+                height: 50px;
+                margin-bottom: 8px; 
+                border-radius: 14px;
             }
-            .folder-title { font-size: 1rem; }
-            .folder-card p { display: block; font-size: 0.85rem; opacity: 0.8; margin-top: 5px; }
+            .folder-title { font-size: 0.9rem; margin-bottom: 4px; }
+            .folder-card p { display: block; font-size: 0.7rem; opacity: 0.9; margin-top: 2px; line-height: 1.2; }
 
             .files-grid {
                 grid-template-columns: repeat(2, 1fr); /* Two columns on mobile */
@@ -425,21 +499,21 @@
                     <div class="folder-card folder-sales" onclick="loadFolder('sales')">
                         <div class="folder-icon"><i class='bx bxs-file-pdf'></i></div>
                         <div class="folder-title">گرێبەستەکانی فرۆشتن</div>
-                        <p style="color:#666; font-size:0.75rem;">بینینی هەموو گرێبەستەکانی کڕین و فرۆشتن</p>
+                        <p style="color:#ffffff; font-size:0.75rem;">بینینی هەموو گرێبەستەکانی کڕین و فرۆشتن</p>
                     </div>
                     
                     <!-- Rent -->
                     <div class="folder-card folder-rent" onclick="loadFolder('rent')">
                         <div class="folder-icon"><i class='bx bxs-file-doc'></i></div>
                         <div class="folder-title">گرێبەستەکانی بەکرێدان</div>
-                        <p style="color:#666; font-size:0.75rem;">بینینی هەموو گرێبەستەکانی کرێ</p>
+                        <p style="color:#ffffff; font-size:0.75rem;">بینینی هەموو گرێبەستەکانی کرێ</p>
                     </div>
                     
                     <!-- Payment -->
                     <div class="folder-card folder-payment" onclick="loadFolder('payment')">
                         <div class="folder-icon"><i class='bx bxs-receipt'></i></div>
                         <div class="folder-title">پسوولەکانی پارەدان</div>
-                        <p style="color:#666; font-size:0.75rem;">بینینی هەموو پسوولەکان</p>
+                        <p style="color:#ffffff; font-size:0.75rem;">بینینی هەموو پسوولەکان</p>
                     </div>
                 </div>
 
