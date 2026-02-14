@@ -103,10 +103,14 @@ async function fetchTenants() {
         console.error('Error fetching tenants:', error);
         return;
     }
-    allTenants = data;
-    localStorage.setItem('cached_tenants', JSON.stringify(data)); // پاشەکەوتکردنی داتا
-    checkNotifications();
-    filterTenants();
+    
+    // بەراوردکردنی داتای نوێ لەگەڵ داتای کۆن بۆ ڕێگری لە دووبارەبوونەوەی ئەنیمەیشن
+    if (JSON.stringify(data) !== JSON.stringify(allTenants)) {
+        allTenants = data;
+        localStorage.setItem('cached_tenants', JSON.stringify(data)); // پاشەکەوتکردنی داتا
+        checkNotifications();
+        filterTenants();
+    }
 }
 
 // فلتەرکردنی کرێچییەکان
@@ -170,6 +174,15 @@ function checkNotifications() {
     if (newNotifications.length > 0) {
         notificationBadge.classList.remove('hidden');
         notificationBtn.classList.add('has-notifications');
+        
+        // ناردنی ئاگاداری سیستەم (System Notification)
+        if ('Notification' in window && Notification.permission === 'granted') {
+            if (newNotifications.length === 1) {
+                sendSystemNotification('کاتی کرێدان', `ئەمڕۆ کاتی کرێدانی ${newNotifications[0].full_name} هاتووە.`);
+            } else {
+                sendSystemNotification('ئاگاداری کرێچییەکان', `ئەمڕۆ کاتی کرێدانی ${newNotifications.length} کرێچی هاتووە.`);
+            }
+        }
     } else {
         notificationBadge.classList.add('hidden');
         notificationBtn.classList.remove('has-notifications');
@@ -232,6 +245,25 @@ async function sendEmailToUsers(tenant) {
         else console.log('Email notification sent for:', tenant.full_name);
     } catch (err) {
         console.error('Failed to invoke email function:', err);
+    }
+}
+
+// فەنکشن بۆ ناردنی ئاگاداری سیستەم
+function sendSystemNotification(title, bodyText) {
+    const options = {
+        body: bodyText,
+        icon: '../assets/icon.png',
+        badge: '../assets/icon.png',
+        vibrate: [200, 100, 200], // لەرزین بۆ مۆبایل
+        tag: 'rent-notification'
+    };
+
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.ready.then(registration => {
+            registration.showNotification(title, options);
+        });
+    } else {
+        new Notification(title, options);
     }
 }
 
@@ -635,6 +667,11 @@ window.closeModal = () => {
 // کارکردنی دوگمەی ئاگادارییەکان
 if (notificationBtn) {
     notificationBtn.addEventListener('click', (e) => {
+        // داواکردنی مۆڵەت بۆ ئاگادارییەکان کاتێک دوگمەکە دادەگیرێت
+        if ('Notification' in window && Notification.permission !== 'granted') {
+            Notification.requestPermission();
+        }
+
         e.stopPropagation();
         notificationDropdown.classList.toggle('visible');
         if (notificationOverlay) notificationOverlay.classList.toggle('visible');

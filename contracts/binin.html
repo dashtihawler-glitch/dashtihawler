@@ -186,6 +186,7 @@
             font-size: 0.85rem;
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -465,6 +466,17 @@
             opacity: 0; /* Start hidden */
         }
 
+        /* Utility Classes to replace inline styles */
+        .hidden { display: none; }
+        .folder-header-content { display: flex; align-items: center; gap: 10px; }
+        .folder-card p { color: #ffffff; font-size: 0.75rem; }
+        .loader {
+            border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-color);
+            border-radius: 50%; width: 40px; height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         @keyframes fadeOutAndScaleDown {
             to {
                 opacity: 0;
@@ -519,7 +531,7 @@
             <div class="content-area">
                 <div class="page-header-flex">
                     <h2>گرێبەستە دروستکراوەکان</h2>
-                    <a href="index.html" class="btn-login btn-back" style="width: auto;">
+                    <a href="index.html" class="btn-login btn-back">
                         <i class='bx bx-arrow-back'></i> گەڕانەوە
                     </a>
                 </div>
@@ -530,35 +542,35 @@
                     <div class="folder-card folder-sales" onclick="loadFolder('sales')">
                         <div class="folder-icon"><i class='bx bxs-file-pdf'></i></div>
                         <div class="folder-title">گرێبەستەکانی فرۆشتن</div>
-                        <p style="color:#ffffff; font-size:0.75rem;">بینینی هەموو گرێبەستەکانی کڕین و فرۆشتن</p>
+                        <p>بینینی هەموو گرێبەستەکانی کڕین و فرۆشتن</p>
                     </div>
                     
                     <!-- Rent -->
                     <div class="folder-card folder-rent" onclick="loadFolder('rent')">
                         <div class="folder-icon"><i class='bx bxs-file-doc'></i></div>
                         <div class="folder-title">گرێبەستەکانی بەکرێدان</div>
-                        <p style="color:#ffffff; font-size:0.75rem;">بینینی هەموو گرێبەستەکانی کرێ</p>
+                        <p>بینینی هەموو گرێبەستەکانی کرێ</p>
                     </div>
                     
                     <!-- Payment -->
                     <div class="folder-card folder-payment" onclick="loadFolder('payment')">
                         <div class="folder-icon"><i class='bx bxs-receipt'></i></div>
                         <div class="folder-title">پسوولەکانی پارەدان</div>
-                        <p style="color:#ffffff; font-size:0.75rem;">بینینی هەموو پسوولەکان</p>
+                        <p>بینینی هەموو پسوولەکان</p>
                     </div>
                 </div>
 
                 <!-- بەشی پیشاندانی فایلەکان -->
-                <div id="files-view" style="display: none;">
+                <div id="files-view" class="hidden">
                     <div id="current-folder-title">
-                        <div id="folder-text-content" style="display: flex; align-items: center; gap: 10px;"></div>
+                        <div id="folder-text-content" class="folder-header-content"></div>
                         <div class="back-btn-inside" onclick="showFolders()">
                             <i class='bx bx-arrow-back'></i> گەڕانەوە
                         </div>
                     </div>
                     
-                    <div id="loader" class="loader-container" style="display: none;">
-                        <div class="loader" style="display:block;"></div>
+                    <div id="loader" class="loader-container hidden">
+                        <div class="loader"></div>
                     </div>
                     
                     <div id="files-grid" class="files-grid">
@@ -616,15 +628,8 @@
 
         function showFolders() {
             const folderSelection = document.getElementById('folder-selection');
-            folderSelection.style.display = 'grid';
-            folderSelection.classList.remove('animate-view');
-            void folderSelection.offsetWidth; // Trigger reflow
-            folderSelection.classList.add('animate-view');
             const filesView = document.getElementById('files-view');
 
-            document.getElementById('files-view').style.display = 'none';
-            currentFolderType = null;
-            // 1. Start fade out for files view
             filesView.classList.remove('view-transition-in');
             filesView.classList.add('view-transition-out');
 

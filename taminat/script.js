@@ -62,10 +62,14 @@ async function fetchDeposits() {
         alert('هەڵەیەک لەکاتی هێنانی داتاکان ڕوویدا: ' + error.message);
         return;
     }
-    allDeposits = data;
-    localStorage.setItem('cached_deposits', JSON.stringify(data)); // پاشەکەوتکردن
-    renderDeposits(allDeposits);
-    calculateAndRenderTotals();
+    
+    // بەراوردکردنی داتای نوێ لەگەڵ داتای کۆن بۆ ڕێگری لە دووبارەبوونەوەی ئەنیمەیشن
+    if (JSON.stringify(data) !== JSON.stringify(allDeposits)) {
+        allDeposits = data;
+        localStorage.setItem('cached_deposits', JSON.stringify(data)); // پاشەکەوتکردن
+        renderDeposits(allDeposits);
+        calculateAndRenderTotals();
+    }
 }
 
 async function fetchDepositHolders() {

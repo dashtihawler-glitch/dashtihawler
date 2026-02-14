@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dashti-hewler-cache-v6.7';
+const CACHE_NAME = 'dashti-hewler-cache-v6.8';
 const urlsToCache = [
   './',
   './index.html',
@@ -56,5 +56,47 @@ self.addEventListener('activate', event => {
     caches.keys().then(cacheNames => Promise.all(
       cacheNames.map(cacheName => cacheWhitelist.indexOf(cacheName) === -1 ? caches.delete(cacheName) : null)
     ))
+  );
+});
+
+// Handle Push Notification - وەرگرتنی ئاگاداری لە سێرڤەرەوە (کاتێک ئەپەکە داخراوە)
+self.addEventListener('push', event => {
+  const data = event.data ? event.data.json() : {};
+  
+  const title = data.title || 'ئاگاداری نوێ';
+  const options = {
+    body: data.body || 'کرێچییەک کاتی کرێدانی هاتووە',
+    icon: './assets/icon.png',
+    badge: './assets/icon.png',
+    vibrate: [200, 100, 200],
+    tag: 'rent-notification',
+    data: {
+      url: data.url || './krechi/index.html'
+    }
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
+});
+
+// Handle Notification Click - کردنەوەی ئەپەکە کاتێک کلیک لە ئاگاداری دەکرێت
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  
+  const urlToOpen = event.notification.data && event.notification.data.url ? event.notification.data.url : './krechi/index.html';
+
+  event.waitUntil(
+    clients.matchAll({type: 'window', includeUncontrolled: true}).then(windowClients => {
+      for (let i = 0; i < windowClients.length; i++) {
+        const client = windowClients[i];
+        if (client.url.includes('/krechi/') && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen);
+      }
+    })
   );
 });
