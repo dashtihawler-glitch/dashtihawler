@@ -341,13 +341,57 @@
         .btn-delete-action { background: rgba(255, 118, 117, 0.3); color: #d63031; }
         .btn-delete-action:hover { background: #d63031; color: white; }
 
+        .parties-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
         @media (max-width: 768px) {
             .archives-grid { grid-template-columns: 1fr; }
             .form-row-2-cols { grid-template-columns: 1fr; }
             .page-header-actions { flex-direction: column; align-items: stretch; }
             .search-box { max-width: 100%; }
-            .header-controls { flex-direction: column; }
+            .header-controls { 
+                display: grid;
+                grid-template-columns: 1fr auto;
+                gap: 10px;
+            }
+            .header-controls > button { grid-column: 1 / -1; }
+
+            /* Compact Card Design for Mobile */
+            .archive-card .card-header { padding: 12px 15px; }
+            .archive-card .card-body { padding: 15px; gap: 10px; }
+            .info-group { padding: 8px; margin-bottom: 5px; }
+            .info-group-title { font-size: 0.75rem; margin-bottom: 4px; }
+            .info-item { font-size: 0.8rem; gap: 8px; margin-bottom: 3px; }
+            .contract-type { font-size: 0.9rem; }
+            .contract-type i { font-size: 1.2rem; }
         }
+
+        /* Filter Dropdown Styles */
+        .filter-wrapper { position: relative; }
+        .filter-dropdown {
+            position: absolute;
+            top: 115%;
+            left: 0; 
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            width: 300px;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            border: 1px solid #eee;
+            animation: fadeIn 0.2s ease-out;
+        }
+        .filter-dropdown.active { display: flex; }
+        .filter-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: #444; font-weight: bold; }
+        .filter-group select, .filter-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 10px; outline: none; background: #f9f9f9; }
+        .btn-reset { background: #ffeaa7; color: #d35400; border: none; padding: 10px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; transition: 0.3s; }
+        .btn-reset:hover { background: #fdcb6e; }
     </style>
 </head>
 <body>
@@ -392,11 +436,33 @@
                             <input type="text" id="search-archive" placeholder="گەڕان (ناو، موڵک، جۆر)..." oninput="filterArchives()">
                             <i class='bx bx-search'></i>
                         </div>
-                        <div class="date-filters date-filters-container">
-                            <input type="date" id="date-from" onchange="filterArchives()" title="لە بەرواری" class="date-filter-input">
-                            <span class="date-separator">-</span>
-                            <input type="date" id="date-to" onchange="filterArchives()" title="بۆ بەرواری" class="date-filter-input">
+                        
+                        <div class="filter-wrapper">
+                            <button id="toggle-filter-btn" class="control-btn" style="background-color: #fff; color: #555; border: 1px solid #e0e0e0;">
+                                <i class='bx bx-filter-alt'></i> فلتەر
+                            </button>
+                            <div id="filter-dropdown" class="filter-dropdown">
+                                <div class="filter-group">
+                                    <label>جۆری گرێبەست</label>
+                                    <select id="filter-type" onchange="filterArchives()">
+                                        <option value="">هەمووی</option>
+                                        <option value="گرێبەستی فرۆشتن">گرێبەستی فرۆشتن</option>
+                                        <option value="گرێبەستی بەکرێدان">گرێبەستی بەکرێدان</option>
+                                        <option value="پسوولەی پارەدان">پسوولەی پارەدان</option>
+                                    </select>
+                                </div>
+                                <div class="filter-group">
+                                    <label>لە بەرواری</label>
+                                    <input type="date" id="date-from" onchange="filterArchives()">
+                                </div>
+                                <div class="filter-group">
+                                    <label>تا بەرواری</label>
+                                    <input type="date" id="date-to" onchange="filterArchives()">
+                                </div>
+                                <button onclick="resetFilters()" class="btn-reset">پاککردنەوەی فلتەر</button>
+                            </div>
                         </div>
+
                         <button onclick="openModal()" class="control-btn">
                             <span>زیادکردنی ئەرشیف</span><i class='bx bx-plus'></i>
                         </button>
@@ -553,20 +619,24 @@
                     </div>
                     <div class="card-body">
                         <div class="info-item"><i class='bx bx-calendar'></i><span>${archive.contract_date}</span></div>
-                        <div class="info-group">
-                            <div class="info-group-title">فرۆشیار / خاوەن موڵک</div>
-                            <div class="info-item"><i class='bx bx-user'></i><span>${archive.seller_name}</span></div>
-                            <div class="info-item"><i class='bx bx-phone'></i><span>${archive.seller_phone || '-'}</span></div>
-                        </div>
-                        <div class="info-group">
-                            <div class="info-group-title">کڕیار / کرێچی</div>
-                            <div class="info-item"><i class='bx bx-user'></i><span>${archive.buyer_name}</span></div>
-                            <div class="info-item"><i class='bx bx-phone'></i><span>${archive.buyer_phone || '-'}</span></div>
+                        <div class="parties-row">
+                            <div class="info-group">
+                                <div class="info-group-title">فرۆشیار / خاوەن موڵک</div>
+                                <div class="info-item"><i class='bx bx-user'></i><span>${archive.seller_name}</span></div>
+                                <div class="info-item"><i class='bx bx-phone'></i><span>${archive.seller_phone || '-'}</span></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-group-title">کڕیار / کرێچی</div>
+                                <div class="info-item"><i class='bx bx-user'></i><span>${archive.buyer_name}</span></div>
+                                <div class="info-item"><i class='bx bx-phone'></i><span>${archive.buyer_phone || '-'}</span></div>
+                            </div>
                         </div>
                         <div class="info-group">
                             <div class="info-group-title">زانیاری موڵک</div>
-                            <div class="info-item"><i class='bx bx-building-house'></i><span>${archive.property_type || '-'}</span></div>
-                            <div class="info-item"><i class='bx bx-hash'></i><span>${archive.property_number || '-'}</span></div>
+                            <div class="parties-row">
+                                <div class="info-item"><i class='bx bx-building-house'></i><span>${archive.property_type || '-'}</span></div>
+                                <div class="info-item"><i class='bx bx-hash'></i><span>${archive.property_number || '-'}</span></div>
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -750,8 +820,32 @@
             document.getElementById('pdfFrame').src = '';
         };
 
+        // Filter Logic
+        const filterDropdown = document.getElementById('filter-dropdown');
+        const toggleFilterBtn = document.getElementById('toggle-filter-btn');
+
+        toggleFilterBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            filterDropdown.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!filterDropdown.contains(e.target) && e.target !== toggleFilterBtn) {
+                filterDropdown.classList.remove('active');
+            }
+        });
+
+        window.resetFilters = () => {
+            document.getElementById('search-archive').value = '';
+            document.getElementById('filter-type').value = '';
+            document.getElementById('date-from').value = '';
+            document.getElementById('date-to').value = '';
+            filterArchives();
+        };
+
         window.filterArchives = () => {
             const term = document.getElementById('search-archive').value.toLowerCase();
+            const type = document.getElementById('filter-type').value;
             const dateFrom = document.getElementById('date-from').value;
             const dateTo = document.getElementById('date-to').value;
 
@@ -760,11 +854,13 @@
                                     a.buyer_name.toLowerCase().includes(term) ||
                                     (a.property_number && a.property_number.toLowerCase().includes(term));
                 
+                const matchesType = type ? a.contract_type === type : true;
+
                 let matchesDate = true;
                 if (dateFrom) matchesDate = matchesDate && (a.contract_date >= dateFrom);
                 if (dateTo) matchesDate = matchesDate && (a.contract_date <= dateTo);
 
-                return matchesTerm && matchesDate;
+                return matchesTerm && matchesDate && matchesType;
             });
             renderArchives(filtered);
         };
