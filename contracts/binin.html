@@ -442,14 +442,45 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .staggered-card {
+            opacity: 0;
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
 
         .animate-view {
             animation: fadeInUp 0.5s ease-out forwards;
+        }
+        /* View Transition Animations */
+        .view-transition-out {
+            animation: fadeOutAndScaleDown 0.4s forwards cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
         }
 
         .staggered-card {
             opacity: 0;
             animation: fadeInUp 0.5s ease-out forwards;
+        }
+        .view-transition-in {
+            animation: fadeInAndScaleUp 0.5s 0.2s forwards cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0; /* Start hidden */
+        }
+
+        @keyframes fadeOutAndScaleDown {
+            to {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
+
+        @keyframes fadeInAndScaleUp {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
     </style>
 </head>
@@ -589,9 +620,29 @@
             folderSelection.classList.remove('animate-view');
             void folderSelection.offsetWidth; // Trigger reflow
             folderSelection.classList.add('animate-view');
+            const filesView = document.getElementById('files-view');
 
             document.getElementById('files-view').style.display = 'none';
             currentFolderType = null;
+            // 1. Start fade out for files view
+            filesView.classList.remove('view-transition-in');
+            filesView.classList.add('view-transition-out');
+
+            // 2. After animation, hide files view and show folder grid
+            setTimeout(() => {
+                filesView.style.display = 'none';
+                filesView.classList.remove('view-transition-out');
+
+                folderSelection.style.display = 'grid';
+                folderSelection.classList.add('view-transition-in');
+                
+                // Reset class after animation
+                setTimeout(() => {
+                    folderSelection.classList.remove('view-transition-in');
+                }, 500);
+
+                currentFolderType = null;
+            }, 400); // Match animation duration
         }
 
         async function loadFolder(type) {
@@ -603,48 +654,52 @@
                 'payment': "<i class='bx bxs-receipt'></i> پسوولەکانی پارەدان"
             };
 
-            document.getElementById('folder-selection').style.display = 'none';
-            
+            const folderSelection = document.getElementById('folder-selection');
             const filesView = document.getElementById('files-view');
-            filesView.style.display = 'block';
-            filesView.classList.remove('animate-view');
-            void filesView.offsetWidth; // Trigger reflow
-            filesView.classList.add('animate-view');
+            const loader = document.getElementById('loader');
 
-            document.getElementById('folder-text-content').innerHTML = titles[type];
-            document.getElementById('files-grid').className = `files-grid type-${type}`;
-            
-            // Update title box color based on type
-            const titleBox = document.getElementById('current-folder-title');
-            titleBox.className = ''; // Reset classes
-            titleBox.classList.add(`type-${type}`);
-            
-            document.getElementById('files-grid').innerHTML = '';
-            document.getElementById('loader').style.display = 'flex';
-
-            // Check Auth
             if (!gapiInited) {
                 alert('خزمەتگوزاری گوگڵ هێشتا ئامادە نییە، تکایە کەمێک چاوەڕێ بکە یان ڕیفرێش بکە.');
                 return;
             }
 
-            try {
-                // هێنانی فایلەکان لە گوگڵ دڕایڤ
-                const response = await gapi.client.drive.files.list({
-                    'pageSize': 100,
-                    'fields': "nextPageToken, files(id, name, webViewLink, webContentLink, thumbnailLink, createdTime)",
-                    'q': `'${folderId}' in parents and trashed = false and mimeType = 'application/pdf'`,
-                    'orderBy': 'createdTime desc'
-                });
+            // 1. Start fade out animation for folder grid
+            folderSelection.classList.add('view-transition-out');
 
-                const files = response.result.files;
-                renderFiles(files);
-            } catch (err) {
-                console.error(err);
-                document.getElementById('files-grid').innerHTML = '<p>هەڵەیەک ڕوویدا. دڵنیابە فۆڵدەرەکان Public کراون (Anyone with the link).</p>';
-            } finally {
-                document.getElementById('loader').style.display = 'none';
-            }
+            // 2. Prepare UI
+            document.getElementById('folder-text-content').innerHTML = titles[type];
+            document.getElementById('files-grid').className = `files-grid type-${type}`;
+            const titleBox = document.getElementById('current-folder-title');
+            titleBox.className = '';
+            titleBox.classList.add(`type-${type}`);
+            document.getElementById('files-grid').innerHTML = '';
+            loader.style.display = 'flex';
+
+            // 3. Start Fetching IMMEDIATELY (Parallel with animation)
+            const fetchPromise = gapi.client.drive.files.list({
+                'pageSize': 100,
+                'fields': "nextPageToken, files(id, name, webViewLink, webContentLink, createdTime)", // Removed thumbnailLink for speed
+                'q': `'${folderId}' in parents and trashed = false and mimeType = 'application/pdf'`,
+                'orderBy': 'createdTime desc'
+            });
+
+            // 4. After animation, switch views and wait for data
+            setTimeout(async () => {
+                folderSelection.style.display = 'none';
+                folderSelection.classList.remove('view-transition-out'); // Reset for next time
+                filesView.style.display = 'block';
+                filesView.classList.add('view-transition-in');
+                
+                try {
+                    const response = await fetchPromise;
+                    renderFiles(response.result.files);
+                } catch (err) {
+                    console.error(err);
+                    document.getElementById('files-grid').innerHTML = '<p>هەڵەیەک ڕوویدا. دڵنیابە فۆڵدەرەکان Public کراون (Anyone with the link).</p>';
+                } finally {
+                    document.getElementById('loader').style.display = 'none';
+                }
+            }, 400); // Match animation duration
         }
 
         function renderFiles(files) {
