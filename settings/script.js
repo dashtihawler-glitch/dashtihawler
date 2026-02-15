@@ -11,6 +11,18 @@ const confirmPassInput = document.getElementById('confirm-password');
 const showPassCheckbox = document.getElementById('show-pass-checkbox');
 const updatePassBtn = document.getElementById('update-pass-btn');
 const rentNotifyToggle = document.getElementById('rent-notify-toggle');
+const exportDataBtn = document.getElementById('export-data-btn');
+const exportModal = document.getElementById('exportModal');
+const closeExportModalBtn = document.getElementById('close-export-modal');
+const confirmExportBtn = document.getElementById('confirm-export-btn');
+const formatOptions = document.querySelectorAll('.radio-card');
+const importDataBtn = document.getElementById('import-data-btn');
+const importModal = document.getElementById('importModal');
+const closeImportModalBtn = document.getElementById('close-import-modal');
+const confirmImportBtn = document.getElementById('confirm-import-btn');
+const importFileInput = document.getElementById('import-file-input');
+const fileDropArea = document.getElementById('file-drop-area');
+const importFileInfo = document.getElementById('import-file-info');
 
 // Load User Data
 async function loadUserData() {
@@ -136,6 +148,275 @@ if (rentNotifyToggle) {
 
     rentNotifyToggle.addEventListener('change', () => {
         localStorage.setItem('rent_notifications_enabled', rentNotifyToggle.checked);
+    });
+}
+
+// Export Data Logic
+let selectedFormat = 'excel';
+
+// Handle Format Selection UI
+formatOptions.forEach(opt => {
+    opt.addEventListener('click', () => {
+        formatOptions.forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        selectedFormat = opt.dataset.format;
+    });
+});
+
+// Open Modal
+if (exportDataBtn) {
+    exportDataBtn.addEventListener('click', () => {
+        if (exportModal) {
+            exportModal.classList.add('visible');
+        }
+    });
+}
+
+// Close Modal
+if (closeExportModalBtn) {
+    closeExportModalBtn.addEventListener('click', () => {
+        exportModal.classList.remove('visible');
+    });
+}
+
+// Confirm Export
+if (confirmExportBtn) {
+    confirmExportBtn.addEventListener('click', async () => {
+        const source = document.getElementById('export-source').value;
+        const originalText = confirmExportBtn.innerHTML;
+        
+        confirmExportBtn.textContent = '...ئامادەکردن';
+        confirmExportBtn.disabled = true;
+
+        try {
+            let rawData = [];
+            let headers = [];
+            let fileName = `${source}_export`;
+
+            // Fetch Data based on source
+            if (source === 'tenants') {
+                const { data: res, error } = await supabase.from('tenants').select('*');
+                if (error) throw error;
+                rawData = res;
+                headers = ['ID', 'Name', 'Phone', 'Property Type', 'Property Number', 'Rent', 'Currency', 'Date', 'Paid'];
+            } 
+            else if (source === 'deposits') {
+                const { data: res, error } = await supabase.from('deposits').select('*, deposit_holders(name)');
+                if (error) throw error;
+                rawData = res;
+                headers = ['ID', 'Name', 'Phone', 'Property Type', 'Property Number', 'Amount', 'Currency', 'Holder', 'Date'];
+            }
+            else if (source === 'archives') {
+                const { data: res, error } = await supabase.from('archives').select('*');
+                if (error) throw error;
+                rawData = res;
+                headers = ['ID', 'Type', 'Date', 'Seller Name', 'Seller Phone', 'Buyer Name', 'Buyer Phone', 'Property Type', 'Property Number'];
+            }
+
+            if (!rawData || rawData.length === 0) {
+                alert('هیچ داتایەک نییە بۆ هەناردەکردن');
+                confirmExportBtn.innerHTML = originalText;
+                confirmExportBtn.disabled = false;
+                return;
+            }
+
+            if (selectedFormat === 'excel') {
+                // Prepare data for XLSX (without quotes)
+                const dataForXlsx = rawData.map(item => {
+                    if (source === 'tenants') return [item.id, item.full_name, item.phone_number, item.property_type, item.property_number, item.monthly_rent, item.currency, item.registration_date, item.is_paid ? 'Yes' : 'No'];
+                    if (source === 'deposits') return [item.id, item.full_name, item.phone_number, item.property_type, item.property_number, item.amount, item.currency, item.deposit_holders?.name, item.deposit_date];
+                    if (source === 'archives') return [item.id, item.contract_type, item.contract_date, item.seller_name, item.seller_phone, item.buyer_name, item.buyer_phone, item.property_type, item.property_number];
+                    return [];
+                });
+
+                const worksheet = XLSX.utils.aoa_to_sheet([headers, ...dataForXlsx]);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+                
+                const fileNameXLSX = `${fileName}_${new Date().toISOString().split('T')[0]}.xlsx`;
+                XLSX.writeFile(workbook, fileNameXLSX);
+
+            } else { // CSV format
+                // Prepare data for CSV (with quotes for names/phones)
+                const dataForCsv = rawData.map(item => {
+                    if (source === 'tenants') return [item.id, `"${item.full_name || ''}"`, `"${item.phone_number || ''}"`, item.property_type, item.property_number, item.monthly_rent, item.currency, item.registration_date, item.is_paid ? 'Yes' : 'No'];
+                    if (source === 'deposits') return [item.id, `"${item.full_name || ''}"`, `"${item.phone_number || ''}"`, item.property_type, item.property_number, item.amount, item.currency, `"${item.deposit_holders?.name || ''}"`, item.deposit_date];
+                    if (source === 'archives') return [item.id, item.contract_type, item.contract_date, `"${item.seller_name || ''}"`, `"${item.seller_phone || ''}"`, `"${item.buyer_name || ''}"`, `"${item.buyer_phone || ''}"`, item.property_type, item.property_number];
+                    return [];
+                });
+
+                const csvContent = [
+                    headers.join(','),
+                    ...dataForCsv.map(row => row.join(','))
+                ].join('\n');
+
+                // Create Blob (Add BOM for Excel support)
+                const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                
+                const extension = 'csv';
+                link.setAttribute('download', `${fileName}_${new Date().toISOString().split('T')[0]}.${extension}`);
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+            
+            exportModal.classList.remove('visible');
+
+        } catch (error) {
+            alert('هەڵە: ' + error.message);
+        } finally {
+            confirmExportBtn.innerHTML = originalText;
+            confirmExportBtn.disabled = false;
+        }
+    });
+}
+
+// --- Import Logic ---
+let selectedFile = null;
+
+// Open Import Modal
+if (importDataBtn) {
+    importDataBtn.addEventListener('click', () => {
+        if (importModal) {
+            importModal.classList.add('visible');
+            // Reset state
+            selectedFile = null;
+            importFileInput.value = '';
+            importFileInfo.textContent = '';
+            confirmImportBtn.disabled = true;
+        }
+    });
+}
+
+// Close Import Modal
+if (closeImportModalBtn) {
+    closeImportModalBtn.addEventListener('click', () => {
+        if (importModal) importModal.classList.remove('visible');
+    });
+}
+
+// Handle File Selection
+if (importFileInput) {
+    importFileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            selectedFile = e.target.files[0];
+            importFileInfo.textContent = `فایلی هەڵبژێردراو: ${selectedFile.name}`;
+            confirmImportBtn.disabled = false;
+        }
+    });
+}
+
+// Handle Drag and Drop
+if (fileDropArea) {
+    fileDropArea.addEventListener('click', () => importFileInput.click());
+    fileDropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileDropArea.classList.add('dragover');
+    });
+    fileDropArea.addEventListener('dragleave', () => {
+        fileDropArea.classList.remove('dragover');
+    });
+    fileDropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileDropArea.classList.remove('dragover');
+        if (e.dataTransfer.files.length > 0) {
+            importFileInput.files = e.dataTransfer.files;
+            const changeEvent = new Event('change');
+            importFileInput.dispatchEvent(changeEvent);
+        }
+    });
+}
+
+// Confirm Import
+if (confirmImportBtn) {
+    confirmImportBtn.addEventListener('click', async () => {
+        if (!selectedFile) {
+            alert('تکایە فایلێک هەڵبژێرە');
+            return;
+        }
+
+        const source = document.getElementById('import-source').value;
+        const originalText = confirmImportBtn.innerHTML;
+        confirmImportBtn.innerHTML = `<span>...بارکردن</span>`;
+        confirmImportBtn.disabled = true;
+
+        try {
+            const data = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const workbook = XLSX.read(e.target.result, { type: 'binary', cellDates: true });
+                        const sheetName = workbook.SheetNames[0];
+                        const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+                        resolve(jsonData);
+                    } catch (err) {
+                        reject(new Error('نەتوانرا فایلەکە بخوێنرێتەوە. دڵنیابە فایلی Excel یان CSV یە.'));
+                    }
+                };
+                reader.onerror = () => reject(new Error('هەڵە لە خوێندنەوەی فایل.'));
+                reader.readAsBinaryString(selectedFile);
+            });
+
+            if (!data || data.length === 0) throw new Error('فایلەکە بەتاڵە یان داتای تێدا نییە.');
+
+            let mappedData = [];
+            let holderMap = {};
+
+            if (source === 'deposits') {
+                const { data: holders, error } = await supabase.from('deposit_holders').select('id, name');
+                if (error) throw error;
+                holders.forEach(h => { holderMap[h.name.trim().toLowerCase()] = h.id; });
+            }
+
+            mappedData = data.map(row => {
+                delete row.ID; // Ignore ID column for insertion
+
+                if (source === 'tenants') {
+                    return {
+                        full_name: row.Name, phone_number: row.Phone, property_type: row['Property Type'],
+                        property_number: row['Property Number'], monthly_rent: parseFloat(row.Rent) || 0, currency: row.Currency,
+                        registration_date: row.Date instanceof Date ? row.Date.toISOString().split('T')[0] : row.Date,
+                        is_paid: ['yes', 'true', 'بەڵێ'].includes(String(row.Paid).toLowerCase())
+                    };
+                }
+                if (source === 'deposits') {
+                    const holderId = holderMap[(row.Holder || '').trim().toLowerCase()];
+                    if (!holderId) { console.warn(`Holder not found for row: ${row.Name}. Skipping.`); return null; }
+                    return {
+                        full_name: row.Name, phone_number: row.Phone, property_type: row['Property Type'],
+                        property_number: row['Property Number'], amount: parseFloat(row.Amount) || 0, currency: row.Currency,
+                        deposit_date: row.Date instanceof Date ? row.Date.toISOString().split('T')[0] : row.Date,
+                        holder_id: holderId
+                    };
+                }
+                if (source === 'archives') {
+                    return {
+                        contract_type: row.Type, contract_date: row.Date instanceof Date ? row.Date.toISOString().split('T')[0] : row.Date,
+                        seller_name: row['Seller Name'], seller_phone: row['Seller Phone'], buyer_name: row['Buyer Name'],
+                        buyer_phone: row['Buyer Phone'], property_type: row['Property Type'], property_number: row['Property Number']
+                    };
+                }
+                return null;
+            }).filter(Boolean);
+
+            if (mappedData.length === 0) throw new Error('هیچ داتایەکی گونجاو نەدۆزرایەوە بۆ بارکردن.');
+
+            const { error } = await supabase.from(source).insert(mappedData);
+            if (error) throw error;
+
+            alert(`${mappedData.length} تۆمار بە سەرکەوتوویی بارکرا. تکایە لاپەڕەکە نوێ بکەرەوە بۆ بینینی گۆڕانکارییەکان.`);
+            if (importModal) importModal.classList.remove('visible');
+
+        } catch (error) {
+            alert('هەڵە لە کاتی بارکردن: ' + error.message);
+        } finally {
+            confirmImportBtn.innerHTML = originalText;
+            confirmImportBtn.disabled = false;
+        }
     });
 }
 

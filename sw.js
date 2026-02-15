@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dashti-hewler-cache-v6.9';
+const CACHE_NAME = 'dashti-hewler-cache-v7.4';
 const urlsToCache = [
   './',
   './index.html',
@@ -18,6 +18,8 @@ const urlsToCache = [
   './taminat/index.html',
   './taminat/script.js',
   './archive/archive.html',
+  './settings/settings.html',
+  './settings/script.js',
   'https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;700&display=swap',
   'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'
 ];

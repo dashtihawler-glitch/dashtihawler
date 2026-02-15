@@ -26,7 +26,7 @@
             border-radius: 16px;
             padding: 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            border: 1px solid rgba(0, 0, 0, 0.08);
+            border: 1px solid #94b5d6;
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             overflow: hidden;
@@ -209,6 +209,32 @@
             transform: translateY(-3px) scale(1.05);
             box-shadow: 0 10px 20px rgba(37, 211, 102, 0.25);
         }
+
+        .btn-export {
+            color: #27ae60; /* Green */
+            background: rgba(39, 174, 96, 0.1);
+        }
+        .btn-export:hover {
+            background: #27ae60;
+            color: white;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(39, 174, 96, 0.25);
+        }
+
+        .btn-import {
+            color: #8e44ad; /* Purple */
+            background: rgba(142, 68, 173, 0.1);
+        }
+        .btn-import:hover {
+            background: #8e44ad;
+            color: white;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(142, 68, 173, 0.25);
+        }
+        .btn-import i {
+            font-size: 1.2rem;
+            vertical-align: middle;
+        }
         
         #save-profile-btn {
             background: linear-gradient(135deg, var(--primary-color), #0984e3);
@@ -336,6 +362,91 @@
             box-shadow: none !important;
         }
 
+        /* Modal Styles */
+        .modal-step-title {
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: bold;
+        }
+        .modal-header-title {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        .modal-select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+        }
+        .modal-file-info {
+            margin-top: 10px;
+            text-align: center;
+            color: #00b894;
+            font-weight: bold;
+        }
+        .modal-confirm-btn {
+            margin-top: 25px;
+        }
+        .modal-content-sm { max-width: 450px; }
+        .modal-content-md { max-width: 500px; }
+
+        .radio-card {
+            flex: 1;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .radio-card:hover { border-color: var(--primary-color); background: #f9f9f9; }
+        .radio-card.selected { border-color: var(--primary-color); background: rgba(26, 42, 108, 0.05); }
+        .radio-card i { font-size: 1.8rem; }
+        #format-excel i { color: #27ae60; }
+        #format-csv i { color: #3498db; }
+        .format-selection {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .radio-card span { font-weight: bold; font-size: 0.9rem; color: #555; }
+        
+        /* Import Modal Styles */
+        .import-steps .input-group {
+            margin-bottom: 20px;
+        }
+        .file-upload-wrapper {
+            border: 2px dashed #ddd;
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .file-upload-wrapper.dragover {
+            border-color: var(--primary-color);
+            background-color: #f4f8fb;
+        }
+        .file-upload-wrapper i {
+            font-size: 2.5rem;
+            color: #aab;
+            transition: color 0.3s;
+        }
+        .file-upload-wrapper:hover i, .file-upload-wrapper.dragover i { color: var(--primary-color); }
+        .file-upload-wrapper p { margin: 10px 0 0 0; color: #555; }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .settings-container {
@@ -346,7 +457,7 @@
                 padding: 15px;
                 border-radius: 16px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-                border: 1px solid rgba(0,0,0,0.05);
+                border: 1px solid #94b5d6;
             }
             
             .settings-section h3 {
@@ -397,6 +508,18 @@
                 background: #25D366;
                 color: white;
                 box-shadow: 0 5px 15px rgba(37, 211, 102, 0.25);
+            }
+
+            .btn-export {
+                background: #27ae60;
+                color: white;
+                box-shadow: 0 5px 15px rgba(39, 174, 96, 0.25);
+            }
+
+            .btn-import {
+                background: #8e44ad;
+                color: white;
+                box-shadow: 0 5px 15px rgba(142, 68, 173, 0.25);
             }
 
             /* Remove Hover Effects on Mobile */
@@ -524,7 +647,7 @@
                     <li><a href="../archive/archive.html"><i class='bx bx-archive'></i><span>ئەرشیفی گرێبەستەکان</span></a></li>
                     <li><a href="../taminat/index.html"><i class='bx bx-shield-quarter'></i><span>بەشی دڵنیایی (تەئمینات)</span></a></li>
                     <li><a href="../krechi/index.html"><i class='bx bx-group'></i><span>کرێچییەکان</span></a></li>
-                    <li class="active"><a href="#"><i class='bx bx-cog'></i><span>ڕێکخستن</span></a></li>
+                    <li class="active"><a href="#"><i class='bx bx-cog'></i><span>ڕێکخستنەکان</span></a></li>
                 </ul>
             </nav>
             <div class="sidebar-footer">
@@ -555,13 +678,13 @@
                                 <span class="version-badge" id="app-version-display">بارکردن...</span>
                             </div>
                             <div class="info-row">
-                                <span class="info-label">مافی لەبەرگرتنەوە</span>
-                                <span>&copy; 2026</span>
+                                <span class="info-label">پەرەپێدەر</span>
+                                <span><i class='bx bxs-heart heart-icon'></i>Mabas Wrya</i></span>
                             </div>
                         </div>
                         
                         <div class="dev-credit">
-                            Developed with <i class='bx bxs-heart heart-icon'></i> by Mabast Wrya
+                            &copy; 2026 هەموو مافەکان پارێزراون.
                         </div>
                     </div>
 
@@ -590,6 +713,20 @@
                                 <p>ئەگەر کێشەت هەیە لە نوێبوونەوەی داتاکان، ئەمە بەکاربهێنە.</p>
                             </div>
                             <button class="btn-action btn-danger" id="clear-cache-btn"><i class='bx bx-trash'></i> پاککردنەوە</button>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>دەکردنی داتا (Export)</h4>
+                                <p>داگرتنی  لیستی کرێچی، تەئمینات، یان ئەرشیفەکان (Excel/CSV)</p>
+                            </div>
+                            <button class="btn-action btn-export" id="export-data-btn"><i class='bx bxs-download'></i> داگرتن</button>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>هاوردەکردنی داتا (Import)</h4>
+                                <p>بارکردنی لیستی کرێچی، تەئمینات، یان ئەرشیف لە فایلەوە</p>
+                            </div>
+                            <button class="btn-action btn-import" id="import-data-btn"><i class='bx bxs-upload'></i> بارکردن</button>
                         </div>
                     </div>
                     
@@ -653,9 +790,75 @@
         </main>
     </div>
 
+    <!-- Export Modal -->
+    <div id="exportModal" class="modal">
+        <div class="modal-content modal-content-sm">
+            <span class="close-modal" id="close-export-modal">&times;</span>
+            <h3 class="modal-header-title">هەناردەکردنی داتا (Export)</h3>
+            
+            <div class="export-options">
+                <div class="modal-step-title">١. جۆر (Format) هەڵبژێرە:</div>
+                <div class="format-selection">
+                    <div class="radio-card selected" id="format-excel" data-format="excel">
+                        <i class='bx bxs-spreadsheet'></i>
+                        <span>Excel</span>
+                    </div>
+                    <div class="radio-card" id="format-csv" data-format="csv">
+                        <i class='bx bxs-file-txt'></i>
+                        <span>CSV</span>
+                    </div>
+                </div>
+
+                <div class="modal-step-title" id="export-source-label">٢. بەش (Section) هەڵبژێرە:</div>
+                <div class="input-group">
+                    <select id="export-source" class="modal-select" aria-labelledby="export-source-label">
+                        <option value="tenants">کرێچییەکان (Tenants)</option>
+                        <option value="deposits">پارەی دڵنیایی (Deposits)</option>
+                        <option value="archives">ئەرشیف (Archives)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="confirm-export-btn" class="btn-login modal-confirm-btn">
+                <i class='bx bxs-download'></i> دابەزاندن
+            </button>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div id="importModal" class="modal">
+        <div class="modal-content modal-content-md">
+            <span class="close-modal" id="close-import-modal">&times;</span>
+            <h3 class="modal-header-title">هاوردەکردنی داتا (Import)</h3>
+            
+            <div class="import-steps">
+                <div class="modal-step-title" id="import-source-label">١. بەش (Section) هەڵبژێرە:</div>
+                <div class="input-group">
+                    <select id="import-source" class="modal-select" aria-labelledby="import-source-label">
+                        <option value="tenants">کرێچییەکان (Tenants)</option>
+                        <option value="deposits">پارەی دڵنیایی (Deposits)</option>
+                        <option value="archives">ئەرشیف (Archives)</option>
+                    </select>
+                </div>
+
+                <div class="modal-step-title">٢. فایلەکە هەڵبژێرە (Excel/CSV):</div>
+                <label for="import-file-input" class="file-upload-wrapper" id="file-drop-area">
+                    <i class='bx bx-cloud-upload'></i>
+                    <p>کرتە بکە یان فایلەکە ڕابکێشە بۆ ئێرە</p>
+                </label>
+                <input type="file" id="import-file-input" accept=".xlsx, .xls, .csv" class="hidden">
+                <div id="import-file-info" class="modal-file-info"></div>
+            </div>
+
+            <button id="confirm-import-btn" class="btn-login modal-confirm-btn" disabled>
+                <i class='bx bxs-upload'></i> دەستپێکردنی بارکردن
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="../shared.js"></script>
     <script type="module" src="script.js"></script>
 </body>
-</html>
 </html>
