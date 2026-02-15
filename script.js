@@ -128,6 +128,15 @@ window.filterTenants = () => {
 
 // پشکنینی ئاگادارییەکان
 function checkNotifications() {
+    // پشکنین بۆ ئەوەی بزانین ئایا ئاگادارییەکان چالاکن یان نا لە ڕێکخستنەکان
+    const isEnabled = localStorage.getItem('rent_notifications_enabled') !== 'false';
+    if (!isEnabled) {
+        notificationBadge.classList.add('hidden');
+        notificationBtn.classList.remove('has-notifications');
+        notificationList.innerHTML = '<p class="no-notification">ئاگادارییەکان لە بەشی ڕێکخستن ڕاگیراون.</p>';
+        return;
+    }
+
     const today = new Date();
     const todayDay = today.getDate();
     const todayDateString = today.toISOString().split('T')[0]; // 'YYYY-MM-DD'
