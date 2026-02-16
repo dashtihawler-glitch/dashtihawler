@@ -8,6 +8,11 @@
     <!-- Fonts and Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- jsPDF Library for converting images to PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Cropper.js for image cropping -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <!-- PWA Manifest & iOS Support -->
     <link rel="manifest" href="../manifest.json">
     <meta name="theme-color" content="#1a2a6c">
@@ -535,7 +540,15 @@
 
                 <div class="input-group">
                     <label>وێنەی گرێبەست (PDF)</label>
-                    <input type="file" id="contract_file" accept=".pdf" class="file-input-styled">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="file" id="contract_file" accept=".pdf" class="file-input-styled" style="flex-grow: 1;">
+                        <button type="button" id="clear-file-btn" class="action-btn" style="background: #ff7675; color: white; width: 45px; height: 42px; display: none;" title="لابردنی فایل">
+                            <i class='bx bx-trash'></i>
+                        </button>
+                        <button type="button" id="camera-btn" class="action-btn" style="background: #6c5ce7; color: white; width: 45px; height: 42px;" title="وێنەگرتن بە کامێرا">
+                            <i class='bx bxs-camera'></i>
+                        </button>
+                    </div>
                     <small id="file-hint" class="file-hint-text">ئەگەر ناتەوێت فایلەکە بگۆڕیت، ئەمە بە بەتاڵی جێبهێڵە.</small>
                 </div>
 
@@ -572,6 +585,49 @@
                 </div>
             </div>
             <iframe id="pdfFrame" class="pdf-iframe" src=""></iframe>
+        </div>
+    </div>
+
+    <!-- Camera Modal -->
+    <div id="cameraModal" class="modal">
+        <div class="modal-content" style="max-width: 500px; text-align: center;">
+            <h3 style="margin-bottom: 15px;">وێنەگرتنی گرێبەست</h3>
+            
+            <!-- Camera View -->
+            <div id="camera-view">
+                <div style="position: relative; width: 100%; height: 0; padding-bottom: 75%; background: #000; border-radius: 15px; overflow: hidden; margin-bottom: 15px;">
+                    <video id="camera-video" autoplay playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"></video>
+                </div>
+                <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    <button id="capture-btn" class="btn-submit" style="margin: 0; width: auto; background: #00b894;">
+                        <i class='bx bxs-camera'></i> وێنەگرتن
+                    </button>
+                    <button id="gallery-btn" class="btn-submit" style="margin: 0; width: auto; background: #0984e3;">
+                        <i class='bx bxs-image'></i> گەلەری
+                    </button>
+                    <button id="close-camera-btn" class="btn-submit" style="margin: 0; width: auto; background: #d63031;">
+                        داخستن
+                    </button>
+                    <input type="file" id="gallery-input" accept="image/*" style="display: none;">
+                </div>
+            </div>
+
+            <!-- Crop View -->
+            <div id="crop-view" style="display: none;">
+                <div style="height: 350px; width: 100%; background: #333; border-radius: 15px; overflow: hidden; margin-bottom: 15px;">
+                    <img id="image-to-crop" style="max-width: 100%; display: block;">
+                </div>
+                <div style="display: flex; justify-content: center; gap: 10px;">
+                    <button id="crop-confirm-btn" class="btn-submit" style="margin: 0; width: auto; background: #00b894;">
+                        <i class='bx bx-crop'></i> بڕین و پاشەکەوت
+                    </button>
+                    <button id="crop-cancel-btn" class="btn-submit" style="margin: 0; width: auto; background: #d63031;">
+                        پاشگەزبوونەوە
+                    </button>
+                </div>
+            </div>
+            
+            <canvas id="camera-canvas" style="display: none;"></canvas>
         </div>
     </div>
 
@@ -730,6 +786,7 @@
             document.getElementById('modal-title').textContent = 'زیادکردنی ئەرشیفی نوێ';
             document.getElementById('file-hint').style.display = 'none';
             document.getElementById('contract_file').required = true;
+            clearFileBtn.style.display = 'none';
         };
         window.closeModal = () => document.getElementById('archiveModal').classList.remove('visible');
         
@@ -750,6 +807,7 @@
             document.getElementById('modal-title').textContent = 'دەستکاریکردنی ئەرشیف';
             document.getElementById('file-hint').style.display = 'block';
             document.getElementById('contract_file').required = false;
+            clearFileBtn.style.display = 'none';
             document.getElementById('archiveModal').classList.add('visible');
         };
 
@@ -830,6 +888,136 @@
             document.getElementById('pdfViewerModal').classList.remove('visible');
             document.getElementById('pdfFrame').src = '';
         };
+
+        // --- Camera Logic ---
+        const cameraBtn = document.getElementById('camera-btn');
+        const cameraModal = document.getElementById('cameraModal');
+        const video = document.getElementById('camera-video');
+        const canvas = document.getElementById('camera-canvas');
+        const captureBtn = document.getElementById('capture-btn');
+        const closeCameraBtn = document.getElementById('close-camera-btn');
+        const galleryBtn = document.getElementById('gallery-btn');
+        const galleryInput = document.getElementById('gallery-input');
+        const cameraView = document.getElementById('camera-view');
+        const cropView = document.getElementById('crop-view');
+        const imageToCrop = document.getElementById('image-to-crop');
+        const cropConfirmBtn = document.getElementById('crop-confirm-btn');
+        const cropCancelBtn = document.getElementById('crop-cancel-btn');
+        const clearFileBtn = document.getElementById('clear-file-btn');
+        const contractFileInput = document.getElementById('contract_file');
+        let stream = null;
+        let cropper = null;
+
+        // Clear File Logic
+        const toggleClearBtn = () => {
+            if (contractFileInput.files.length > 0) {
+                clearFileBtn.style.display = 'inline-flex';
+            } else {
+                clearFileBtn.style.display = 'none';
+            }
+        };
+
+        contractFileInput.addEventListener('change', toggleClearBtn);
+        clearFileBtn.addEventListener('click', () => {
+            contractFileInput.value = '';
+            toggleClearBtn();
+        });
+
+        cameraBtn.addEventListener('click', async () => {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                video.srcObject = stream;
+                cameraModal.classList.add('visible');
+            } catch (err) {
+                alert('نەتوانرا کامێرا بکرێتەوە: ' + err.message);
+            }
+        });
+
+        const resetModal = () => {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            cropView.style.display = 'none';
+            cameraView.style.display = 'block';
+            imageToCrop.src = '';
+        };
+
+        const stopCamera = () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            resetModal();
+            cameraModal.classList.remove('visible');
+        };
+
+        closeCameraBtn.addEventListener('click', (e) => { e.preventDefault(); stopCamera(); });
+
+        const startCropping = (imageSrc) => {
+            cameraView.style.display = 'none';
+            cropView.style.display = 'block';
+            imageToCrop.src = imageSrc;
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(imageToCrop, {
+                viewMode: 1,
+                autoCropArea: 1,
+                responsive: true
+            });
+        };
+
+        captureBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            startCropping(canvas.toDataURL('image/jpeg'));
+        });
+
+        // Gallery Logic
+        galleryBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            galleryInput.click();
+        });
+
+        galleryInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    startCropping(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+            e.target.value = ''; // Reset input
+        });
+
+        // Crop Actions
+        cropConfirmBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!cropper) return;
+            
+            const canvas = cropper.getCroppedCanvas();
+            const imgData = canvas.toDataURL('image/jpeg', 0.8);
+            
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({ orientation: canvas.width > canvas.height ? 'l' : 'p', unit: 'px', format: [canvas.width, canvas.height] });
+            pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+            const pdfBlob = pdf.output('blob');
+            const file = new File([pdfBlob], `cropped_contract_${Date.now()}.pdf`, { type: 'application/pdf' });
+            
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            document.getElementById('contract_file').files = dataTransfer.files;
+            toggleClearBtn();
+            stopCamera();
+        });
+
+        cropCancelBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            resetModal();
+        });
 
         // Filter Logic
         const filterDropdown = document.getElementById('filter-dropdown');
