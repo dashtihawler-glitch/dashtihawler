@@ -221,6 +221,17 @@
             </div>
         </main>
     </div>
+
+    <!-- Status Modal -->
+    <div id="statusModal" class="modal">
+        <div class="modal-content status-modal-content">
+            <div id="modalIcon" class="status-modal-icon"></div>
+            <h3 id="modalTitle" class="status-modal-title"></h3>
+            <p id="modalMessage" class="status-modal-message"></p>
+            <button id="modalCloseBtn" class="btn-login status-modal-btn" onclick="closeStatusModal()">باشە</button>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="../shared.js"></script>
     <script>
@@ -320,10 +331,41 @@
             updateWords(assuranceInput, assuranceWords);
         });
 
+        // Modal Functions
+        const statusModal = document.getElementById('statusModal');
+        const modalIcon = document.getElementById('modalIcon');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+        window.closeStatusModal = () => {
+            statusModal.classList.remove('visible');
+        };
+
+        function showStatus(type) {
+            statusModal.classList.add('visible');
+            modalCloseBtn.style.display = 'none';
+            
+            if (type === 'loading') {
+                modalIcon.innerHTML = "<i class='bx bx-loader-alt bx-spin' style='color: #1a2a6c;'></i>";
+                modalTitle.textContent = '...ناردن';
+                modalMessage.textContent = 'تکایە چاوەڕێ بکە، داتاکان دەنێردرێن.';
+            } else if (type === 'success') {
+                modalIcon.innerHTML = "<i class='bx bxs-check-circle' style='color: #27ae60;'></i>";
+                modalTitle.textContent = 'سەرکەوتوو بوو';
+                modalMessage.textContent = 'گرێبەستەکە بە سەرکەوتوویی تۆمارکرا.';
+                modalCloseBtn.style.display = 'block';
+            } else if (type === 'error') {
+                modalIcon.innerHTML = "<i class='bx bxs-error-circle' style='color: #c0392b;'></i>";
+                modalTitle.textContent = 'هەڵە ڕوویدا';
+                modalMessage.textContent = 'نەتوانرا داتاکان بنێردرێت، تکایە دڵنیابەوە لە ئینتەرنێت.';
+                modalCloseBtn.style.display = 'block';
+            }
+        }
+
         form.addEventListener('submit', e => {
             e.preventDefault();
-            statusMessage.textContent = 'جارێک چاوەڕێ بکە...';
-            statusMessage.style.color = 'blue';
+            showStatus('loading');
             
             const formData = new FormData(form);
             
@@ -334,8 +376,7 @@
             
             fetch(scriptURL, { method: 'POST', body: formData})
                 .then(response => {
-                    statusMessage.textContent = 'بە سەرکەوتوویی تۆمارکرا!';
-                    statusMessage.style.color = 'green';
+                    showStatus('success');
                     form.reset();
                     // گەڕاندنەوەی ئیمەیڵی کارمەند چونکە reset دەیسڕێتەوە
                     setTimeout(() => {
@@ -347,8 +388,7 @@
                     }, 100);
                 })
                 .catch(error => {
-                    statusMessage.textContent = 'هەڵەیەک ڕوویدا! تکایە دووبارە هەوڵبدەرەوە.';
-                    statusMessage.style.color = 'red';
+                    showStatus('error');
                     console.error('Error!', error.message);
                 });
         });

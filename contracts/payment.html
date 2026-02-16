@@ -131,6 +131,16 @@
         </main>
     </div>
 
+    <!-- Status Modal -->
+    <div id="statusModal" class="modal">
+        <div class="modal-content status-modal-content">
+            <div id="modalIcon" class="status-modal-icon"></div>
+            <h3 id="modalTitle" class="status-modal-title"></h3>
+            <p id="modalMessage" class="status-modal-message"></p>
+            <button id="modalCloseBtn" class="btn-login status-modal-btn" onclick="closeStatusModal()">باشە</button>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="../shared.js"></script>
     
@@ -139,24 +149,52 @@
         const form = document.forms['submit-to-google-sheet'];
         const msg = document.getElementById("msg");
 
+        // Modal Functions
+        const statusModal = document.getElementById('statusModal');
+        const modalIcon = document.getElementById('modalIcon');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+        window.closeStatusModal = () => {
+            statusModal.classList.remove('visible');
+        };
+
+        function showStatus(type) {
+            statusModal.classList.add('visible');
+            modalCloseBtn.style.display = 'none';
+            
+            if (type === 'loading') {
+                modalIcon.innerHTML = "<i class='bx bx-loader-alt bx-spin' style='color: #1a2a6c;'></i>";
+                modalTitle.textContent = '...ناردن';
+                modalMessage.textContent = 'تکایە چاوەڕێ بکە، داتاکان دەنێردرێن.';
+            } else if (type === 'success') {
+                modalIcon.innerHTML = "<i class='bx bxs-check-circle' style='color: #27ae60;'></i>";
+                modalTitle.textContent = 'سەرکەوتوو بوو';
+                modalMessage.textContent = 'پسولەکە بە سەرکەوتوویی تۆمارکرا.';
+                modalCloseBtn.style.display = 'block';
+            } else if (type === 'error') {
+                modalIcon.innerHTML = "<i class='bx bxs-error-circle' style='color: #c0392b;'></i>";
+                modalTitle.textContent = 'هەڵە ڕوویدا';
+                modalMessage.textContent = 'نەتوانرا داتاکان بنێردرێت، تکایە دڵنیابەوە لە ئینتەرنێت.';
+                modalCloseBtn.style.display = 'block';
+            }
+        }
+
         form.addEventListener('submit', e => {
             e.preventDefault();
-
-            msg.style.color = "#1a2a6c";
-            msg.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> تکایە چاوەڕێ بکە...";
+            showStatus('loading');
             
             fetch(scriptURL, { method: 'POST', body: new FormData(form)})
                 .then(response => {
-                    msg.style.color = "#27ae60";
-                    msg.innerHTML = "<i class='bx bx-check-circle'></i> سوپاس! پسولەکە بە سەرکەوتوویی تۆمارکرا.";
+                    showStatus('success');
                     form.reset();
                     // پاککردنەوەی نووسینی ژێرەوەی خانەکان
                     receivedWords.innerHTML = "";
                     remainingWords.innerHTML = "";
                 })
                 .catch(error => {
-                    msg.style.color = "#b21f1f";
-                    msg.innerHTML = "<i class='bx bx-error'></i> کێشەیەک ڕوویدا! تکایە دڵنیابەوە لە ئینتەرنێتەکەت.";
+                    showStatus('error');
                     console.error('Error!', error.message);
                 });
         });
