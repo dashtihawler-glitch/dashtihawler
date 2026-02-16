@@ -254,7 +254,11 @@ form.addEventListener('submit', async (e) => {
 
     // 1. Upload file if a new one is selected
     if (file) {
-        const filePath = `public/${Date.now()}-${file.name}`;
+        // Sanitize filename to avoid issues with non-ASCII characters
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}.${fileExt}`;
+        const filePath = `public/${fileName}`;
+
         const { error: uploadError } = await supabase.storage
             .from('receipts')
             .upload(filePath, file);

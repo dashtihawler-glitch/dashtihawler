@@ -668,9 +668,19 @@
 
             // Upload File if selected
             if (file) {
-                const fileName = `${Date.now()}_${file.name}`;
+                // Sanitize filename
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}.${fileExt}`;
+
                 const { data, error } = await supabase.storage.from('archive_files').upload(fileName, file);
-                if (error) { alert('هەڵە لە بارکردنی فایل'); console.error(error); return; }
+                if (error) { 
+                    alert('هەڵە لە بارکردنی فایل: ' + error.message); 
+                    console.error(error);
+                    btn.disabled = false;
+                    loader.style.display = 'none';
+                    text.style.display = 'block';
+                    return; 
+                }
                 
                 const { data: urlData } = supabase.storage.from('archive_files').getPublicUrl(fileName);
                 fileData = { file_url: urlData.publicUrl, file_path: fileName };
