@@ -338,6 +338,24 @@
         const modalMessage = document.getElementById('modalMessage');
         const modalCloseBtn = document.getElementById('modalCloseBtn');
 
+        // Load Default Values
+        document.addEventListener('DOMContentLoaded', () => {
+            const defaultCurrency = localStorage.getItem('default_currency');
+            const defaultWitness1 = localStorage.getItem('default_witness1');
+            const defaultWitness2 = localStorage.getItem('default_witness2');
+
+            const currencyEl = document.getElementById('currencyType');
+            if (defaultCurrency && currencyEl) {
+                currencyEl.value = defaultCurrency;
+            }
+            const witness1El = document.getElementById('witness1');
+            const witness2El = document.getElementById('witness2');
+
+            if (defaultCurrency && currencyEl) currencyEl.value = defaultCurrency;
+            if (defaultWitness1 && witness1El) witness1El.value = defaultWitness1;
+            if (defaultWitness2 && witness2El) witness2El.value = defaultWitness2;
+        });
+
         window.closeStatusModal = () => {
             statusModal.classList.remove('visible');
         };

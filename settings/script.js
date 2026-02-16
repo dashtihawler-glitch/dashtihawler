@@ -11,6 +11,7 @@ const confirmPassInput = document.getElementById('confirm-password');
 const showPassCheckbox = document.getElementById('show-pass-checkbox');
 const updatePassBtn = document.getElementById('update-pass-btn');
 const rentNotifyToggle = document.getElementById('rent-notify-toggle');
+const notifyDaysSelect = document.getElementById('notify-days-before');
 const exportDataBtn = document.getElementById('export-data-btn');
 const exportModal = document.getElementById('exportModal');
 const closeExportModalBtn = document.getElementById('close-export-modal');
@@ -23,6 +24,12 @@ const confirmImportBtn = document.getElementById('confirm-import-btn');
 const importFileInput = document.getElementById('import-file-input');
 const fileDropArea = document.getElementById('file-drop-area');
 const importFileInfo = document.getElementById('import-file-info');
+const saveDefaultsBtn = document.getElementById('save-defaults-btn');
+const defaultCurrencySelect = document.getElementById('default-currency');
+const defaultLawyerInput = document.getElementById('default-lawyer');
+const defaultLawyerMobileInput = document.getElementById('default-lawyer-mobile');
+const factoryResetBtn = document.getElementById('factory-reset-btn');
+const checkUpdateBtn = document.getElementById('check-update-btn');
 
 // Load User Data
 async function loadUserData() {
@@ -31,6 +38,11 @@ async function loadUserData() {
         emailInput.value = user.email;
         fullNameInput.value = user.user_metadata?.full_name || '';
     }
+    
+    // Load Defaults
+    if(defaultCurrencySelect) defaultCurrencySelect.value = localStorage.getItem('default_currency') || '';
+    if(defaultLawyerInput) defaultLawyerInput.value = localStorage.getItem('default_lawyer') || '';
+    if(defaultLawyerMobileInput) defaultLawyerMobileInput.value = localStorage.getItem('default_lawyer_mobile') || '';
 }
 
 // Update Profile
@@ -148,6 +160,15 @@ if (rentNotifyToggle) {
 
     rentNotifyToggle.addEventListener('change', () => {
         localStorage.setItem('rent_notifications_enabled', rentNotifyToggle.checked);
+    });
+}
+
+if (notifyDaysSelect) {
+    const savedDays = localStorage.getItem('notify_days_before') || '0';
+    notifyDaysSelect.value = savedDays;
+
+    notifyDaysSelect.addEventListener('change', () => {
+        localStorage.setItem('notify_days_before', notifyDaysSelect.value);
     });
 }
 
@@ -416,6 +437,74 @@ if (confirmImportBtn) {
         } finally {
             confirmImportBtn.innerHTML = originalText;
             confirmImportBtn.disabled = false;
+        }
+    });
+}
+
+// Save Defaults
+if (saveDefaultsBtn) {
+    saveDefaultsBtn.addEventListener('click', () => {
+        const currency = defaultCurrencySelect.value;
+        const lawyer = defaultLawyerInput.value;
+        const lawyerMobile = defaultLawyerMobileInput.value;
+        
+        localStorage.setItem('default_currency', currency);
+        localStorage.setItem('default_lawyer', lawyer);
+        localStorage.setItem('default_lawyer_mobile', lawyerMobile);
+        
+        alert('بەها بنەڕەتییەکان بە سەرکەوتوویی تۆمارکران.');
+    });
+}
+
+// Factory Reset
+if (factoryResetBtn) {
+    factoryResetBtn.addEventListener('click', async () => {
+        if (confirm('ئاگاداربە! ئەم کردارە هەموو داتا پاشەکەوتکراوەکانی ناو مۆبایلەکەت دەسڕێتەوە و لە ئەکاونتەکەت دەچێتە دەرەوە. ئایا دڵنیایت؟')) {
+            factoryResetBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> ...";
+            factoryResetBtn.disabled = true;
+
+            // 1. Sign out first (هەوڵدان بۆ دەرچوون پێش سڕینەوەی داتا)
+            try { await supabase.auth.signOut(); } catch (e) { console.error(e); }
+            
+            // 2. Unregister Service Workers
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (let registration of registrations) {
+                    await registration.unregister();
+                }
+            }
+            
+            // 3. Clear Caches (سڕینەوەی کاشی وێبسایتەکە)
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                await Promise.all(cacheNames.map(name => caches.delete(name)));
+            }
+
+            // 4. Clear LocalStorage
+            localStorage.clear();
+            
+            alert('ئەپڵیکەیشنەکە ڕیسێت کرا.');
+            window.location.href = '../index.html';
+        }
+    });
+}
+
+// Check for Updates
+if (checkUpdateBtn) {
+    checkUpdateBtn.addEventListener('click', () => {
+        if ('serviceWorker' in navigator) {
+            checkUpdateBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i>";
+            navigator.serviceWorker.ready.then(registration => {
+                registration.update().then(() => {
+                    setTimeout(() => {
+                        checkUpdateBtn.innerHTML = "<i class='bx bx-check'></i>";
+                        setTimeout(() => checkUpdateBtn.innerHTML = "<i class='bx bx-refresh'></i>", 2000);
+                        // If update found, the SW lifecycle will handle it (showing toast from shared.js)
+                    }, 1000);
+                });
+            });
+        } else {
+            alert('خزمەتگوزاری Service Worker چالاک نییە.');
         }
     });
 }

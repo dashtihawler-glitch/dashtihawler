@@ -137,15 +137,16 @@ function checkNotifications() {
         return;
     }
 
-    const today = new Date();
-    const todayDay = today.getDate();
-    const todayDateString = today.toISOString().split('T')[0]; // 'YYYY-MM-DD'
+    // وەرگرتنی ژمارەی ڕۆژەکان لە ڕێکخستن (ئەگەر نەبوو 0 دابنێ)
+    const notifyDaysBefore = parseInt(localStorage.getItem('notify_days_before') || '0');
+    const todayDateString = new Date().toISOString().split('T')[0];
     
-    // دۆزینەوەی ئەو کرێچیانەی ئەمڕۆ کاتی کرێدانیانە و پارەیان نەداوە
+    // دۆزینەوەی ئەو کرێچیانەی کاتیان هاتووە (بەپێی ڕێکخستنەکە)
     const dueTenants = allTenants.filter(tenant => {
         if (tenant.is_paid) return false;
-        const registrationDay = new Date(tenant.registration_date).getDate();
-        return registrationDay === todayDay;
+        // بەکارهێنانی فەنکشنە ئامادەکراوەکە بۆ زانینی ڕۆژی ماوە
+        const daysRemaining = getDaysRemaining(tenant.registration_date);
+        return daysRemaining <= notifyDaysBefore;
     });
 
     // وەرگرتنی داتای ئاگادارییەکان لە localStorage
@@ -170,7 +171,7 @@ function checkNotifications() {
             item.innerHTML = `
                 <div class="icon"><i class='bx bxs-time-five'></i></div>
                 <div class="content">
-                    <p>ئەمڕۆ کاتی کرێدانی <strong>${tenant.full_name}</strong> هاتووە.</p>
+                    <p>کاتی کرێدانی <strong>${tenant.full_name}</strong> نزیک بووەتەوە یان هاتووە.</p>
                 </div>
             `;
             notificationList.appendChild(item);

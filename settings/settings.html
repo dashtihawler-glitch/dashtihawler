@@ -137,7 +137,7 @@
             display: block;
             font-size: 0.8rem;
         }
-        .input-group input {
+        .input-group input, .input-group select {
             width: 100%;
             padding: 10px 12px;
             border: 2px solid #f0f2f5;
@@ -149,7 +149,7 @@
             color: #2d3436;
             font-weight: 600;
         }
-        .input-group input:focus {
+        .input-group input:focus, .input-group select:focus {
             background: white;
             border-color: var(--primary-color);
             box-shadow: 0 10px 30px rgba(26, 42, 108, 0.1);
@@ -374,7 +374,7 @@
             color: var(--primary-color);
             text-align: center;
         }
-        .modal-select {
+        .input-group .modal-select {
             width: 100%;
             padding: 12px;
             border-radius: 12px;
@@ -675,7 +675,12 @@
                         <div class="about-info-box">
                             <div class="info-row">
                                 <span class="info-label">وەشان</span>
-                                <span class="version-badge" id="app-version-display">بارکردن...</span>
+                                <div class="version-container">
+                                    <span class="version-badge" id="app-version-display">بارکردن...</span>
+                                    <button id="check-update-btn" class="btn-action btn-primary-outline btn-update-check" title="پشکنین بۆ وەشان">
+                                        <i class='bx bx-refresh'></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">پەرەپێدەر</span>
@@ -702,6 +707,28 @@
                             </div>
                         </div>
                         <button id="save-profile-btn" class="btn-login mt-20">تۆمارکردنی گۆڕانکارییەکان</button>
+                    </div>
+
+                    <!-- Default Values -->
+                    <div class="settings-section">
+                        <h3><i class='bx bxs-edit'></i> بەها بنەڕەتییەکان</h3>
+                        <div class="input-group">
+                            <label for="default-currency">جۆری دراوی سەرەکی (بۆ گرێبەستەکان)</label>
+                            <select id="default-currency">
+                                <option value="">دیاری نەکراوە</option>
+                                <option value="دۆلاری ئەمریکی">دۆلاری ئەمریکی ($)</option>
+                                <option value="دیناری عێڕاقی">دیناری عێڕاقی (IQD)</option>
+                            </select>
+                        </div>
+                        <div class="input-group mt-10">
+                            <label for="default-lawyer">ناوی پارێزەری سەرەکی</label>
+                            <input type="text" id="default-lawyer" placeholder="ناوی پارێزەر بۆ گرێبەستەکان">
+                        </div>
+                        <div class="input-group mt-10">
+                            <label for="default-lawyer-mobile">ژمارەی مۆبایلی پارێزەر</label>
+                            <input type="tel" id="default-lawyer-mobile" placeholder="0750xxxxxxx">
+                        </div>
+                        <button id="save-defaults-btn" class="btn-login mt-20">تۆمارکردنی بەهاکان</button>
                     </div>
 
                     <!-- Data & Storage -->
@@ -765,6 +792,17 @@
                                 <span class="slider"></span>
                             </label>
                         </div>
+                        <div class="input-group mt-10">
+                            <label for="notify-days-before">کەی ئاگادارت بکاتەوە؟</label>
+                            <select id="notify-days-before">
+                                <option value="0">لە ڕۆژی کرێدان (هەمان ڕۆژ)</option>
+                                <option value="1">١ ڕۆژ پێش وادەی کرێ</option>
+                                <option value="2">٢ ڕۆژ پێش وادەی کرێ</option>
+                                <option value="3">٣ ڕۆژ پێش وادەی کرێ</option>
+                                <option value="5">٥ ڕۆژ پێش وادەی کرێ</option>
+                                <option value="7">١ هەفتە پێش وادەی کرێ</option>
+                            </select>
+                        </div>
                     </div>
 
                     <!-- Support -->
@@ -783,6 +821,18 @@
                                     <i class='bx bxl-whatsapp whatsapp-icon-size'></i> واتسئەپ
                                 </a>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Danger Zone -->
+                    <div class="settings-section danger-zone-section">
+                        <h3 class="text-danger"><i class='bx bxs-error'></i> ناوچەی مەترسیدار</h3>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>ڕیسێتکردنی ئەپڵیکەیشن</h4>
+                                <p>سڕینەوەی هەموو داتا ناوخۆییەکان و دەرچوون لە ئەکاونت.</p>
+                            </div>
+                            <button class="btn-action btn-danger" id="factory-reset-btn"><i class='bx bxs-bomb'></i> ڕیسێت</button>
                         </div>
                     </div>
                 </div>

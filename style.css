@@ -1684,3 +1684,43 @@ body.sidebar-closed .main-content {
     padding: 10px 30px;
     display: none;
 }
+
+/* Danger Zone Styles */
+.settings-section.danger-zone-section {
+    border-color: #ff7675;
+    background: rgba(255, 118, 117, 0.05);
+}
+.settings-section.danger-zone-section h3 {
+    color: #d63031;
+}
+.settings-section.danger-zone-section h3 i {
+    background: rgba(255, 118, 117, 0.2);
+    color: #d63031;
+}
+
+/* Version Check Button Styles */
+.version-container {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+.btn-update-check {
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+@media (max-width: 768px) {
+    .btn-update-check {
+        width: 32px;
+        height: 32px;
+        font-size: 1.3rem;
+    }
+}
+
+.version-badge {
+    white-space: nowrap;
+}

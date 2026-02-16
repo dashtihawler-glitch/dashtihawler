@@ -156,6 +156,15 @@
         const modalMessage = document.getElementById('modalMessage');
         const modalCloseBtn = document.getElementById('modalCloseBtn');
 
+        // Load Default Values
+        document.addEventListener('DOMContentLoaded', () => {
+            const defaultCurrency = localStorage.getItem('default_currency');
+            const currencyEl = document.getElementById('currencyType');
+            if (defaultCurrency && currencyEl) {
+                currencyEl.value = defaultCurrency;
+            }
+        });
+
         window.closeStatusModal = () => {
             statusModal.classList.remove('visible');
         };

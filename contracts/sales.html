@@ -368,6 +368,20 @@
         const modalMessage = document.getElementById('modalMessage');
         const modalCloseBtn = document.getElementById('modalCloseBtn');
 
+        // Load Default Values
+        document.addEventListener('DOMContentLoaded', () => {
+            const defaultCurrency = localStorage.getItem('default_currency');
+            const defaultLawyer = localStorage.getItem('default_lawyer');
+            const defaultLawyerMobile = localStorage.getItem('default_lawyer_mobile');
+            const currencyEl = document.getElementById('currencyType');
+            const lawyerEl = document.getElementById('lawyerName');
+            const lawyerMobileEl = document.getElementById('lawyerMobile');
+
+            if (defaultCurrency && currencyEl) currencyEl.value = defaultCurrency;
+            if (defaultLawyer && lawyerEl) lawyerEl.value = defaultLawyer;
+            if (defaultLawyerMobile && lawyerMobileEl) lawyerMobileEl.value = defaultLawyerMobile;
+        });
+
         window.closeStatusModal = () => {
             statusModal.classList.remove('visible');
         };
