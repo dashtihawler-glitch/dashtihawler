@@ -67,6 +67,12 @@ async function checkUserSession() {
                     else { alert('هەڵە: ' + error.message); saveBtn.textContent = 'تۆمارکردن'; }
                 };
             };
+
+            // پڕکردنەوەی ئۆتۆماتیکی ناوی کارمەند لە فۆڕمەکاندا
+            const employeeEmailInput = document.getElementById('employeeEmail');
+            if (employeeEmailInput) {
+                employeeEmailInput.value = fullName || session.user.email;
+            }
         }
     }
 }

@@ -66,7 +66,8 @@ async function checkUser() {
         // پڕکردنەوەی ئۆتۆماتیکی ئیمەیڵی کارمەند لە فۆڕمی پسولەدا
         const employeeEmailInput = document.getElementById('employeeEmail');
         if (employeeEmailInput) {
-            employeeEmailInput.value = session.user.email;
+            const fullName = session.user.user_metadata?.full_name;
+            employeeEmailInput.value = fullName || session.user.email;
         }
     }
 }
